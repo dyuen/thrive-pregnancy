@@ -1,0 +1,54 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/listViewItem"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:drawable/list_selector_background"
+    android:clickable="false"
+    android:minHeight="100dp"
+    tools:context=".MainActivity" >
+    
+    <View
+        android:id="@+id/fvdivider"
+        style="@style/listViewVerticalDivider"
+        android:layout_alignParentLeft="true"  
+        android:layout_alignParentTop="true"
+     />
+    
+    <ImageView
+        android:id="@+id/imgicon"
+        style="@style/listViewItemIconStyle"
+        android:clickable="false"
+        android:layout_toRightOf="@id/fvdivider"
+        android:layout_below="@id/fvdivider"
+        android:contentDescription="@string/icon" />
+    
+    <TextView
+        android:textIsSelectable="false"
+        android:id="@+id/lv_item_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/imgicon"        
+        android:layout_below="@id/fvdivider"
+        style="@style/listViewPrimaryDetail"
+        />
+
+    <TextView
+        android:textIsSelectable="false"
+        android:id="@+id/lv_item_subtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/listViewSecondaryDetail"
+        android:layout_below="@id/lv_item_header"
+       	android:layout_toRightOf="@id/imgicon"
+        />
+
+    <ImageView
+        android:id="@+id/event_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lv_item_subtext"
+        android:layout_toRightOf="@id/imgicon"
+        android:contentDescription="@string/photo" 
+        android:adjustViewBounds="true"/>
+</RelativeLayout>

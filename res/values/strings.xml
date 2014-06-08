@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Thrive Pregnancy</string>
+   	<string name="menu_timeline">My Timeline</string>  	
+   	<string name="menu_care">My Care</string>
+   	<string name="menu_need">I Need</string>
+   	<string name="icon">Icon</string>
+	<string name="photo">Photo</string>
+	<string name="note">Add a Note</string>
+	<string name="appt">Record Appointment</string>
+	<string name="needit">Need It</string>
+	<string name="gotit">Got It</string>
+</resources>

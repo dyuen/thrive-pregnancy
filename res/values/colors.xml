@@ -1,0 +1,12 @@
+<resources>
+    <color name="lvHeaderTextColor">#848482</color>
+    <color name="primaryTextColor">#333333</color>
+    <color name="secondaryTextColor">#777777</color>
+	<color name="actionTextColor">#ffffff</color>
+	
+    <color name="lvHeaderDividerColor">#fcc906</color>
+    <color name="lvDividerColor">#ffffff</color>
+    
+    <color name="topBackgroundColor">#ffcb00</color>
+    <color name="mainBackgroundColor">#ffffff</color>
+</resources>
