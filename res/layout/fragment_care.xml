@@ -1,5 +1,5 @@
 <!-- 
-Layout of the My Timeline page
+Layout of the My Care page
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +13,7 @@ Layout of the My Timeline page
 	        android:id="@+id/txtInfo"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-        	android:text="My Timeline"
+        	android:text="My Care"
         	android:textSize="@dimen/lvHeadingTextSize"
 	        />
 </LinearLayout>
