@@ -84,4 +84,64 @@ public class Event {
 	 */
 	@DatabaseField
 	private String		audioFile;
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public String getPurpose() {
+		return purpose;
+	}
+
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPhotoFile() {
+		return photoFile;
+	}
+
+	public void setPhotoFile(String photoFile) {
+		this.photoFile = photoFile;
+	}
+
+	public String getAudioFile() {
+		return audioFile;
+	}
+
+	public void setAudioFile(String audioFile) {
+		this.audioFile = audioFile;
+	}
+
+	public Integer getId() {
+		return id;
+	}
 }
