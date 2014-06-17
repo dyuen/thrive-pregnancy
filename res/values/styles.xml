@@ -1,15 +1,17 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 	
-    <style name="sevTheme" parent="@android:style/Theme.Holo.Light">
-        <item name="android:actionBarStyle">@style/actionBarStyle</item>
+    <style name="AppBaseTheme" parent="android:Theme.Light"></style>
+
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:windowBackground">@color/mainBackgroundColor</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
     </style>
-    
-	<style name="actionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
-	    <item name="android:background">@color/topBackgroundColor</item>
+
+    <style name="ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/topBackgroundColor</item>
 	    <item name="android:textColor">@color/actionTextColor</item>
 	    <item name="android:textStyle">bold</item>
-	    <item name="android:displayOptions">showHome|useLogo|showTitle</item>
-	</style>
+    </style>
 	
 	<style name="timelineTopButtons">
         <item name="android:layout_width">@dimen/lvItemWidth</item>
