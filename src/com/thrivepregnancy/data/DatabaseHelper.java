@@ -36,9 +36,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	// increment if schema changes, or a new app version contains a new Tips file
 	private static final int DATABASE_VERSION = 1;
 	// name of tips input CSV file
-	private static final String TIP_FILE = "tips.txt";
+	private static final String TIP_FILE = "tips.csv";
 	// name of needs input CSV file
-	private static final String NEED_FILE = "needs.txt";
+	private static final String NEED_FILE = "needs.csv";
 		
 	private Dao<Event, Integer> eventDao;
 	private Dao<Need, Integer> needDao;
@@ -53,6 +53,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		m_context = context;
+		Log.d("DatabaseHelper.DatabaseHelper", "database helper constructor");
 	}
 	
 	/** loads name and due date from user preferences */
@@ -153,6 +154,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 		List<String[]> needList = new ArrayList<String[]>();
 		
 		try {
+			ReadUserPreferences();
+			
 			TableUtils.createTable(connectionSource, Event.class);
 			getEventDao();		
 			
@@ -160,12 +163,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 			eventList = readCSVFile(TIP_FILE);
 			createEvents(eventList);
 			
+			Log.d("DatabaseHelper.onCreate", "tips created in database");
+			
 			TableUtils.createTable(connectionSource, Need.class);
 			getNeedDao();
 			
 			// Read the "Needs" file packaged in the app, create and write Need records to the Need table
 			needList = readCSVFile(NEED_FILE);
 			createNeeds(needList);
+			
+			Log.d("DatabaseHelper.onCreate", "needs created in database");
 		} 
 		catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to create databases", e);

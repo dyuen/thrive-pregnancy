@@ -1,7 +1,9 @@
 package com.thrivepregnancy.ui;
 
 //Vsevolod Geraskin
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.thrivepregnancy.R;
+import com.thrivepregnancy.data.DatabaseHelper;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,7 +21,9 @@ public class NeedFragment extends Fragment {
 	  
 	  String[] needs = {"food","vitamins","health cared","social worker","support worker","cas hook up", "place to live", "dental care", 
 			  "clothing","prenatal classes","labour support","hospital tour","supplies for baby","safety issues"};
-  
+	  
+	  private DatabaseHelper 	databaseHelper = null;
+	  
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
 	 */
@@ -34,6 +38,11 @@ public class NeedFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    
+	    if (databaseHelper == null) {
+	        databaseHelper = OpenHelperManager.getHelper(getView().getContext(), DatabaseHelper.class);
+	        databaseHelper.getWritableDatabase();
+	    }
+	    
 	    NeedList adapter = new NeedList(getView().getContext(), needs);
 	    
 	    list=(ListView)getView().findViewById(R.id.lstNeed);
@@ -46,7 +55,20 @@ public class NeedFragment extends Fragment {
 	                    //Toast.makeText(getView().getContext(), "clicked at " + needs[ + position], Toast.LENGTH_SHORT).show();
 	                }
 	            });
-  }
+	     
+		}
+	
+	/**
+	 * Releases the database helper
+	 */
+	@Override
+	public void onDestroy() {
+	    super.onDestroy();
+	    if (databaseHelper != null) {
+	        OpenHelperManager.releaseHelper();
+	        databaseHelper = null;
+	    }
+	}
   
   	private class NeedList extends BaseAdapter{
 		private final Context context;
