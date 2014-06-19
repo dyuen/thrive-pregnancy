@@ -85,14 +85,6 @@ public class Event {
 	@DatabaseField
 	private String		audioFile;
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
 	public Type getType() {
 		return type;
 	}
@@ -147,5 +139,9 @@ public class Event {
 
 	public void setAudioFile(String audioFile) {
 		this.audioFile = audioFile;
+	}
+
+	public Integer getId() {
+		return id;
 	}
 }
