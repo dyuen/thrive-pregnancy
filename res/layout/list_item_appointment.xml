@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Layout of a single APPOINTMENT Event in the timeline list
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/timeline_background"
+    >    
+    <!-- Appointment icon on top of timeline-->
+   	<ImageView
+   	    android:id="@+id/list_item_appt_timeline"
+    	android:src="@drawable/timeline_appt_icon"
+    	style="@style/listViewHeaderItemButtonStyle"
+       	android:layout_alignParentTop="true"
+       	android:layout_alignParentLeft="true"
+       	android:adjustViewBounds="true"
+    	/>
+    <LinearLayout 
+    	android:layout_width="300dp"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical" 
+    	android:layout_toRightOf="@id/list_item_appt_timeline"    	
+        >
+    	<RelativeLayout 
+    		android:layout_width="match_parent"
+    		android:layout_height="wrap_content"
+    		android:orientation="horizontal" 
+        	android:background="@android:color/holo_red_light"
+        	>
+        	<!-- Delete button -->
+    	    <ImageButton
+    	        android:id="@+id/list_item_appt_delete"
+	        	style="@style/listViewItemIconStyle"
+        		android:src="@drawable/grey_circle_icon"
+        		android:contentDescription="@string/note"
+        		android:layout_alignParentRight="true"
+        		android:adjustViewBounds="true"
+	        	/>
+    	    <!--  Edit button -->
+        	<ImageButton
+        	    android:id="@+id/list_item_appt_edit"
+	        	style="@style/listViewItemIconStyle"
+        		android:src="@drawable/pencil_icon"
+        		android:contentDescription="@string/appt"
+        		android:layout_toLeftOf="@id/list_item_appt_delete"
+        		android:adjustViewBounds="true"
+	        	/>
+    	    <!-- Appointment date/time -->
+        	<TextView
+	        	android:id="@+id/list_item_appt_time"
+        		android:layout_toLeftOf="@id/list_item_appt_edit"
+	        	android:layout_width="wrap_content"
+	        	android:layout_height="wrap_content"
+	        	android:textAppearance="?android:attr/textAppearanceMedium" 
+	        	/>
+        </RelativeLayout>
+        <!-- Appointment purpose -->
+        <TextView
+	        android:id="@+id/list_item_appt_purpose"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        />   	
+     </LinearLayout>
+</RelativeLayout>
