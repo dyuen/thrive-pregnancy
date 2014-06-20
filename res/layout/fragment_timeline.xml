@@ -9,13 +9,11 @@ Layout of the My Timeline page
     android:orientation = "vertical"
     android:background="@android:color/transparent"
     tools:context=".MainActivity" >
-   <RelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" 
-        android:background="@drawable/timeline_background"
-        >
-        
+        >        
         <ImageButton
 	        android:id="@+id/btnNote"
 	        style="@style/timelineTopButtons"
@@ -23,8 +21,7 @@ Layout of the My Timeline page
         	android:contentDescription="@string/note"
         	android:layout_alignParentRight="true"
         	android:adjustViewBounds="true"
-	        >
-	    </ImageButton>
+	        />
         <ImageButton
 	        android:id="@+id/btnAppt"
 	        style="@style/timelineTopButtons"
@@ -32,22 +29,12 @@ Layout of the My Timeline page
         	android:contentDescription="@string/appt"
         	android:layout_toLeftOf="@id/btnNote"
         	android:adjustViewBounds="true"
-	        >
-	    </ImageButton>
-	    
-        <TextView
-	        android:id="@+id/txtInfo"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-        	android:layout_toLeftOf="@id/btnAppt"
-	        >
-	    </TextView>
-	    <ListView
-	        android:id="@+id/lstTimeline"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:layout_alignParentTop="true"
-	        android:layout_margin="10dp"
-	        android:divider="@null">
-	    </ListView>
-	</RelativeLayout></LinearLayout>
+	        />
+     </RelativeLayout>
+	 <ListView
+	     android:id="@+id/lstTimeline"
+	     android:layout_width="match_parent"
+	     android:layout_height="match_parent"
+	     android:divider="@null"
+	     />
+</LinearLayout>

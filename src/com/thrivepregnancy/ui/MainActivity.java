@@ -1,21 +1,33 @@
 package com.thrivepregnancy.ui;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.thrivepregnancy.R;
+import com.thrivepregnancy.data.Event;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 /**
  * Contains the My Timeline, My Care and I Need screens ("pages")
  */
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
+	static final String DEBUG_TAG = "THRIVE";
+	
     private MainPagerAdapter 	mAppSectionsPagerAdapter;
     /**
      * The {@link ViewPager} implements the page swipe animation
@@ -25,10 +37,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		Log.d(DEBUG_TAG, "onCreate");
         setContentView(R.layout.activity_main);
 
         // Create the adapter that will return a fragment for each of the pages
-        mAppSectionsPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        mAppSectionsPagerAdapter = new MainPagerAdapter(fragmentManager);
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
@@ -77,14 +91,35 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
+    
+    public List<Event> getTimelineList(){
+    	List<Event> events = new ArrayList<Event>();
+     	
+    	Event e = new Event();
+    	e.setType(Event.Type.DIARY_ENTRY);
+    	e.setDate(new Date());
+    	e.setPhotoFile("rosy.jpg");
+    	e.setText("My first entry!");
+    	events.add(e);
+     	
+    	e = new Event();
+    	e.setType(Event.Type.APPOINTMENT);
+    	e.setDate(new Date());
+    	e.setPurpose("General Checkup");
+    	e.setText("...appointment notes");
+    	e.setAddress("My doctor's address");
+    	events.add(e);
+    	
+    	return events;    	
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to the My Timeline,
      * My Care or I Need page.
      */
     public static class MainPagerAdapter extends FragmentPagerAdapter {
-
-        public MainPagerAdapter(FragmentManager fm) {
+    	
+    	public MainPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -93,13 +128,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
          */
         @Override
         public Fragment getItem(int i) {
-            switch (i) {
-                case 0:
-                    return new TimelineFragment();
-                case 1:
-                    return new CareFragment();
-                default:
-                    return new NeedFragment();
+        	// Determine screen orientation
+        	switch (i) {
+        	case 0:
+        		return new TimelineFragment();
+        	case 1:
+        		return new CareFragment();
+        	default:
+        		return new NeedFragment();
             }
         }
 
