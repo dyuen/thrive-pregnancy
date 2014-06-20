@@ -62,7 +62,7 @@ public class EventDataHelper extends DatabaseHelper {
 			
 			events = eventDao.query(preparedQuery);
 		} catch (SQLException e) {
-			Log.e(EventDataHelper.class.getName(), "Unable to get timeline events", e);
+			Log.e(EventDataHelper.class.getName(), "Unable to get appointment events", e);
 		}
         
 		return events;
@@ -83,7 +83,7 @@ public class EventDataHelper extends DatabaseHelper {
 			
 			events = eventDao.query(preparedQuery);
 		} catch (SQLException e) {
-			Log.e(EventDataHelper.class.getName(), "Unable to get timeline events", e);
+			Log.e(EventDataHelper.class.getName(), "Unable to get question events", e);
 		}
         
 		return events;
@@ -104,7 +104,7 @@ public class EventDataHelper extends DatabaseHelper {
 			
 			events = eventDao.query(preparedQuery);
 		} catch (SQLException e) {
-			Log.e(EventDataHelper.class.getName(), "Unable to get timeline events", e);
+			Log.e(EventDataHelper.class.getName(), "Unable to get test result events", e);
 		}
         
 		return events;

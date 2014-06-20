@@ -8,8 +8,6 @@
 	<string name="photo">Photo</string>
 	<string name="note">Add a Note</string>
 	<string name="appt">Record Appointment</string>
-	<string name="needit">Need It</string>
-	<string name="gotit">Got It</string>
 
 <!--'Overall'-->
 
@@ -62,19 +60,8 @@
         <string name="INeed_Checklist_Title">Checklist</string>
         <string name="INeed_Checklist_GotIt">Got it</string>
         <string name="INeed_Checklist_NeedIt">Need it</string>
-        <string-array name="INeed_Items">
-                <item>Food</item>
-                <item>Housing</item>
-                <item>Help with Drugs and Alcohol</item>
-                <item>Social Work</item>
-                <item>Income assistance</item>
-                <item>Dental care</item>
-                <item>Family Doctor</item>
-                <item>Doula</item>
-                <item>Baby stuff</item>
-                <item>ID</item>
-        </string-array>
         
+        <string name="INeed_Resources_Title">Resource</string>
   <!--'More I Need'-->
 
 
