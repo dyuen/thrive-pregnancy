@@ -1,9 +1,13 @@
 package com.thrivepregnancy.ui;
 
 //Vsevolod Geraskin
+import java.util.List;
+
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.thrivepregnancy.R;
 import com.thrivepregnancy.data.DatabaseHelper;
+import com.thrivepregnancy.data.EventDataHelper;
+import com.thrivepregnancy.data.Need;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,10 +23,7 @@ import android.content.Context;
 public class NeedFragment extends Fragment {
 	  ListView list;
 	  
-	  String[] needs = {"food","vitamins","health cared","social worker","support worker","cas hook up", "place to live", "dental care", 
-			  "clothing","prenatal classes","labour support","hospital tour","supplies for baby","safety issues"};
-	  
-	  private DatabaseHelper 	databaseHelper = null;
+	  private EventDataHelper 	needHelper = null;
 	  
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -38,12 +39,12 @@ public class NeedFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    
-	    if (databaseHelper == null) {
-	        databaseHelper = OpenHelperManager.getHelper(getView().getContext(), DatabaseHelper.class);
-	        databaseHelper.getWritableDatabase();
+
+	    if (needHelper == null) {
+	    	needHelper = OpenHelperManager.getHelper(getView().getContext(), EventDataHelper.class);
 	    }
 	    
-	    NeedList adapter = new NeedList(getView().getContext(), needs);
+	    NeedList adapter = new NeedList(getView().getContext(), needHelper.getNeeds());
 	    
 	    list=(ListView)getView().findViewById(R.id.lstNeed);
 	    list.setAdapter(adapter);
@@ -64,19 +65,19 @@ public class NeedFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 	    super.onDestroy();
-	    if (databaseHelper != null) {
+	    if (needHelper != null) {
 	        OpenHelperManager.releaseHelper();
-	        databaseHelper = null;
+	        needHelper = null;
 	    }
 	}
   
   	private class NeedList extends BaseAdapter{
 		private final Context context;
-		private final String[] needs;
+		private final List<Need> needs;
 		
-		public NeedList(Context context, String[] needArray) {
+		public NeedList(Context context, List<Need> needs) {
 			this.context = context;
-			this.needs = needArray;
+			this.needs = needs;
 		}
 		
 		@Override
@@ -88,7 +89,7 @@ public class NeedFragment extends Fragment {
 			
 			TextView txtNeed = (TextView) item.findViewById(R.id.need);
 			
-			txtNeed.setText(needs[position]);
+			txtNeed.setText(needs.get(position).getTitle());
 			
 			return item;
 		}
@@ -96,7 +97,7 @@ public class NeedFragment extends Fragment {
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return needs.length;
+			return needs.size();
 		}
 
 		@Override

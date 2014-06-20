@@ -44,7 +44,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	private Dao<Need, Integer> needDao;
 	
 	private Context m_context;
-	
 	private Calendar m_duedate;
 	private String m_name;
 	
