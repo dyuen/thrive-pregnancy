@@ -63,4 +63,5 @@
     <string name="INeed_Checklist_Title">Checklist</string>
     <string name="INeed_Checklist_GotIt">Got it</string>
     <string name="INeed_Checklist_NeedIt">Need it</string>
+    <string name="INeed_Resources_Title">Resource</string>
 </resources>
