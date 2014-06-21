@@ -2,38 +2,56 @@
 <!--
 Defines the layout of individual items in the I Need list 
 -->
- <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    <TableRow>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="0"
+    android:shrinkColumns="0"
+    tools:context=".NeedFragment" >
+
+	<TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            
         <TextView
 	            android:id="@+id/txt_needtitle"
-	            android:layout_width="150dp"
+	            android:layout_width="0dp"
+	            android:layout_weight="0.50"
 	            android:layout_height="wrap_content"
 	            android:padding="5dp"
-	            android:textSize="15sp" />
+	            android:textSize="13sp" />
 		
 		<RadioGroup
-		    android:layout_width="100dp"
-		    android:orientation="horizontal">
-		    <RadioButton 
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="0.40"
+		    android:orientation="horizontal" >
+
+		    <RadioButton
 		        android:id="@+id/radio_needit"
-		        android:width="50dp"
-		        android:height="50dp" />
-		    <RadioButton 
-		        android:id="@+id/radio_gotit" 
-		        android:width="50dp"
-		        android:height="50dp"/>
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.20"/>
+
+		    <RadioButton
+		        android:id="@+id/radio_gotit"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="0.20" />
+
 		</RadioGroup>
 	                
         <ImageButton
                 android:id="@+id/img_needresource"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/red_plus_circle"
+                android:layout_width="0dp"
+                android:layout_weight="0.10"
+                android:layout_height="30dp"
+                android:src="@drawable/red_information_button"
                 android:scaleType="centerInside"
                 android:background="#ffffff" 
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:contentDescription="@string/INeed_Resources_Title"/>
-	    
 	</TableRow>
 </TableLayout>
