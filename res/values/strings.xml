@@ -1,640 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Thrive Pregnancy</string>
-   	<string name="menu_timeline">My Timeline</string>  	
-   	<string name="menu_care">My Care</string>
-   	<string name="menu_need">I Need</string>
-   	<string name="icon">Icon</string>
-	<string name="photo">Photo</string>
-	<string name="note">Add a Note</string>
-	<string name="appt">Record Appointment</string>
-	<string name="needit">Need It</string>
-	<string name="gotit">Got It</string>
+    <string name="menu_timeline">My Timeline</string>   
+    <string name="menu_care">My Care</string>
+    <string name="menu_need">I Need</string>
+    <string name="icon">Icon</string>
+    <string name="photo">Photo</string>
+    <string name="note">Add a Note</string>
+    <string name="appt">Record Appointment</string>
+    <string name="needit">Need It</string>
+    <string name="gotit">Got It</string>
 
 <!--'Overall'-->
+    <string name="save">Save</string>
 
-        <string name="TabName_Timeline">My Timeline</string>
-        <string name="TabName_MyCare">My Care</string>
-        <string name="TabName_INeed">I Need...</string>
+<!-- Warning messages for Save -->
+    <string name="startup_warning">Please enter your full name and your due date</string>
+        
+    <string name="TabName_Timeline">My Timeline</string>
+    <string name="TabName_MyCare">My Care</string>
+    <string name="TabName_INeed">I Need...</string>
 
 <!--'Tab: Timeline'-->
 
-        <string name="Timeline_Week">Week </string>
-        <string name="Timeline_AddType_Diary">Add a Diary Entry</string>
-        <string name="Timeline_AddType_Appointment">Add an Appointment</string>
+    <string name="Timeline_Week">Week </string>
+    <string name="Timeline_AddType_Diary">Add a Diary Entry</string>
+    <string name="Timeline_AddType_Appointment">Add an Appointment</string>
 
 <!--'Tab: My Care'-->
 
-  <!--'Personal Info'-->
+<!--'Personal Info'-->
 
-        <string name="PersonalInfo_Title">Personal Info</string>
-        <string name="PersonalInfo_Mother_Name">My Name:</string>
-        <string name="PersonalInfo_Due_Date">Estimated Due Date:</string>
-        <string name="PersonalInfo_Primary_Doctor">My Doctors Name:</string>
-        <string name="PersonalInfo_Hospital">My Hospital:</string>
-        <string name="PersonalInfo_DrPhone">24-Hour Doctor on Call:</string>
-        <string name="PersonalInfo_DrPhone_Default">604-875-2161</string>
+    <string name="PersonalInfo_Title">Personal Info</string>
+    <string name="PersonalInfo_Mother_Name">My Name:</string>
+    <string name="PersonalInfo_Due_Date">Estimated Due Date:</string>
+    <string name="PersonalInfo_Primary_Doctor">My Doctors Name:</string>
+    <string name="PersonalInfo_Hospital">My Hospital:</string>
+    <string name="PersonalInfo_DrPhone">24-Hour Doctor on Call:</string>
+    <string name="PersonalInfo_DrPhone_Default">604-875-2161</string>
 
-  <!--'Questions'-->
+<!--'Questions'-->
 
-        <string name="Question_Title">My Questions</string>
+    <string name="Question_Title">My Questions</string>
 
-  <!--'Appointments'-->
+<!--'Appointments'-->
 
-        <string name="Appointment_Title">My Appointments</string>
-        <string name="Appointment_Doctor">Appointment For:</string>
-        <string name="Appointment_Date">Date:</string>
-        <string name="Appointment_Time">Time:</string>
-        <string name="Appointment_Location">Address:</string>
-        <string name="Appointment_Note">Notes:</string>
-        <string name="Appointment_Help">You can add a photo, such as of an appointment card or map.</string>
+    <string name="Appointment_Title">My Appointments</string>
+    <string name="Appointment_Doctor">Appointment For:</string>
+    <string name="Appointment_Date">Date:</string>
+    <string name="Appointment_Time">Time:</string>
+    <string name="Appointment_Location">Address:</string>
+    <string name="Appointment_Note">Notes:</string>
+    <string name="Appointment_Help">You can add a photo, such as of an appointment card or map.</string>
 
-  <!--'Test Results'-->
+<!--'Test Results'-->
 
-        <string name="TestResults_Title">My Test Results</string>
-        <string name="TestResults_Photo_Date">Date:</string>
-        <string name="TestResults_Note">Notes:</string>
+    <string name="TestResults_Title">My Test Results</string>
+    <string name="TestResults_Photo_Date">Date:</string>
+    <string name="TestResults_Note">Notes:</string>
 
 <!--'Tab: I Need'-->
 
-  <!--'Checklist'-->
+<!--'Checklist'-->
 
-        <string name="INeed_Checklist_Title">Checklist</string>
-        <string name="INeed_Checklist_GotIt">Got it</string>
-        <string name="INeed_Checklist_NeedIt">Need it</string>
-        <string-array name="INeed_Items">
-                <item>Food</item>
-                <item>Housing</item>
-                <item>Help with Drugs and Alcohol</item>
-                <item>Social Work</item>
-                <item>Income assistance</item>
-                <item>Dental care</item>
-                <item>Family Doctor</item>
-                <item>Doula</item>
-                <item>Baby stuff</item>
-                <item>ID</item>
-        </string-array>
-        
-  <!--'More I Need'-->
-
-
-        <string name="INeed_Food_Title">Food</string>
-
-
-        <string name="INeed_FoodResources_Title">Food Resources</string>
-        <string name="INeed_FoodResources_Text"><![CDATA[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-<h1>Food Resources</h1>
-<h2>Food Banks</h2>
-<p><strong>Vancouver Food Bank</strong></p>
-<p>To find which food bank  is closest to you, please phone 604-876-3601, Mon-Fri  8:30-4:00.<br />
-  Usually food banks are closed the week the income assistance cheques are given.</p>
-<p><a href="https://www.foodbank.bc.ca/find-help">https://www.foodbank.bc.ca/find-help</a></p>
-<p><strong>City Reach Food Bank </strong><br />
-  The Food For Families program is a weekly nutritious food bank for families with children living at or below the poverty line. We offer wholesome, nourishing food appropriate for growing brains. <br />
-  The food bank operates every <strong>Tuesday evening</strong> (Doors at 6:00pm and food bank from 7-8:30pm), and <strong>Thursday morning (</strong>Doors at 9:30am and food bank from 10:30-12 noon). Our office hours are Monday to Thursday 9am-5pm.<br />
-  It is run by Broadway Church, but is not in a church building. Located in &ldquo;the Warehouse&rdquo; 2650 Slocan St (near Broadway), across from the Van Tech soccer field.  Closest skytrain in Renfrew.<br />
-  There is a $5 one-time registration fee.  Please bring ID to register.<br />
-  Contact <a href="mailto:damarisg@cityreach.org?Subject=Food%20For%20Families">Damaris</a> or <a href="mailto:sarahs@cityreach.org?Subject=Food%20for%20Families">Sarah S</a>.&nbsp;&nbsp;for more information.<br />
-<a href="http://broadwaychurch.com/cityreach/">http://broadwaychurch.com/cityreach/</a></p>
-<p><strong>Covenant House</strong><br />
-  Covenant House provides shelter, free food and much more, for youth 16-22 <br />
-  Fri -  women only drop-in 9:30 - 12:00, snack provided<br />
-  Mon/Fri hot meal 3:30-5:00<br />
-  Thurs sandwiches 1:00-4:00<br />
-  <a href="http://covenanthousebc.org/">http://covenanthousebc.org/</a>   604-875-7474</p>
-<p><strong>Broadway Youth Resource Centre</strong><br />
-  BYRC provides counselling, free food and much more for youth under 24<br />
-  Mon/Tues/Wed/Thur/Fri breakfast 10:00-11:00 am<br />
-  Mon/Tues/Thur/Fri lunch 1:00 pm ; Wed 2:30<br />
-  Thurs dinner 5:00 pm<br />
-  LOCATION:<strong><br />
-  </strong>#103 - 2780 East Broadway Street<br />
-  Vancouver, BC, V5M 1Y8 <br />
-  CONTACT:<strong><br />
-  </strong>Phone: 604-709-5720<br />
-  Fax: 604-709-5721<br />
-  Email: <a href="mailto:byrc@pcrs.ca">byrc@pcrs.ca</a> <br />
-  <a href="http://www.pcrs.ca/services">http://www.pcrs.ca/services</a></p>
-<p><strong>Cedar Cottage Neighbourhood House Aboriginal Family Night</strong><br />
-  For Aboriginal families who live in East Van<br />
-  Tues dinner 6:00 – 8:00 pm<br />
-  4065 Victoria Dr.<br />
-  Please call Sharnelle to say you&rsquo;re coming.  604-874-4231</p>
-<p><strong>Quest Food Exchange</strong><br />
-  Quest operates four not-for-profit grocery markets where clients can shop by referral. Families can access healthy food at an affordable price, and are empowered to make their own choices about what they purchase.<br />
-  2020 DUNDAS ST., VANCOUVER, BC V5L 1B1<br />
-  Tel: 604-602-0186 Fax: 604-682-3494<em><br />
-  <em>Hours of Operation:</em></em><br />
-  9am-4:15pm Monday-Saturday<br />
-  Closed: Sunday and holidays<br />
-  611 EAST HASTINGS ST., VANCOUVER, BC V6A 1R2<br />
-  Tel: 604-605-0735<em><br />
-  <em>Hours of Operation:</em></em><br />
-  9am-4:15pm Monday-Saturday<br />
-Closed: Sunday and holidays </p>
-<h2><strong>For Youth Pregnancy and Parenting Program clients:  Good Food Bag</strong></h2>
-<p>Through the generous donation from ProOrganics, the Good Food Bag program can provide you with fresh fruits and vegetables for only $2.</p>
-<p>How to Join:<br />
-  - You have to be in YPPP (Youth Pregnancy and Parenting Program) or Healthiest Babies Possible<br />
-- Let your dietitian know you are interested and pay $2.  She will sign you up.</p>
-<p>How to get it:<br />
-</p>
- <p>- On the Tuesday, pick up your bags at:</p>
- <p align="left"><strong>Evergreen </strong><br />
-   Community Health Centre<br />
-   3425 Crowley Dr<br />
-   near Joyce skytrain<br />
-   (North East Room)</p>
- <p align="left"><strong>Tuesday     1:30 – 3:00 pm</strong></p>
- <p align="left"><strong>Dates for 2014</strong><br />
-June     17<br />
-July     15<br />
-Aug     19<br />
-Sept     16<br />
-Oct     21<br />
-Nov     18<br />
-Dec     16<br clear="all" />
-</p>
-<p align="left">- You can be in the Good food bag program until your baby is 1 year old.<br />
-  - Please call 604-675-3982  extension 3 if you can&rsquo;t pick up your bag.<br />
-- If you don&rsquo;t pick up your bag, you lose your $2 and can&rsquo;t sign up again because many people want this program.</p>
-<p align="left">In partnership with United Way, ProOrganics and Sharing Farm<br />
-</p>
-</body>
-</html>
-        ]]></string>
-
-
-        <string name="INeed_HealthyEatingTips_Title">Healhy Eating Tips</string>
-
-        <string name="INeed_MealIdeas_Title">Quick and Easy Meal Ideas</string>
-
-        <string name="INeed_FoodSafety_Title">Food Safety</string>
-
-
-
-        <string name="INeed_Housing_Title">Housing</string>
-
-        <string name="INeed_Shelter_Title">Shelters</string>
-        <string name="INeed_Shelter_Text"><![CDATA[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-<h1>Shelters</h1>
-<h2><strong>Adults (all genders)</strong></h2>
-<p><strong>Aboriginal Shelter</strong> – 201 Central Street, Vancouver<br />
-  604-682-5556<br />
-5:30 pm – 10 am. 2 meals. No alcohol/drug use on site. Pets allowed; carts allowed. Wheelchair accessible.</p>
-<p><strong>First Baptist Church</strong> - 969 Burrard Street, Vancouver<br />
-  604-683-8441<br />
-Tuesday nights only. Meal at 9:00 pm. Shelter priority for under 19. No alcohol/drug use on site.</p>
-<p><strong>First United Church</strong> - 320 East Hastings St, Vancouver<br />
-  604-681-8365<br />
-Wheelchair accessible, carts and pets allowed. Harm reduction. <br />
-After 4:00 pm: 604-839-6880</p>
-<p><strong>Lookout Downtown</strong> - 346 Alexander, Vancouver<br />
-  604-681-9126<br />
-Pets allowed. Wheelchair accessible. Medication/money administration. Harm reduction.</p>
-<p><strong>New Fountain</strong>  - 51B W. Cordova Street, Vancouver<br />
-  604-331-1246<br />
-7 pm – 9 am; 2 meals. Harm reduction. Pets allowed; carts allowed.</p>
-<p><strong>RainCity Ontario Shelter</strong> (seasonal, Dec  to April) - 21 East 5th Ave, Vancouver<br />
-  604-875-0630<br />
-Entrance in alley. Harm reduction. Pets allowed; carts allowed.</p>
-<p><strong>RainCity Richards Shelter</strong> (seasonal, Dec  to April) 860 Richards St, Vancouver<br />
-  604-682-7458<br />
-Harm reduction. Pets allowed; carts allowed.</p>
-<p><strong>Salvation Army Anchor of Hope</strong> (seasonal, Nov 1 to March 31) – 134 E. Cordova, Vancouver<br />
-  604-646-6899<br />
-9:30 pm to 7:30 am. No admissions past 2:00 am. Mats. Coffee/bun, showers. Wheelchair accessible.</p>
-<p><strong>Salvation Army Belkin House</strong> – 555 Homer St., Vancouver<br />
-  604-681-3405<br />
-Dorms. No alcohol/drug use on site.</p>
-<p><strong>Salvation Army Crosswalk</strong> – 136 E Cordova, Vancouver<br />
-  604-646-6875<br />
-Open 9:30 pm to 7:30 am. No admissions past 2:00 am. Wheelchair accessible. No alcohol/drug use on site.</p>
-<p><strong>Tenth Avenue Church</strong> (seasonal) - 11 West 10th Avenue, Vancouver<br />
-  604 876-2181<br />
-  Monday nights only. Registration 6:00 pm, meal 7:00 pm. Wheelchair accessible. No alcohol/drug use on site.</p>
-<p><strong>Triage</strong> - 707 Powell St., Vancouver<br />
-  604-254-3700<br />
-  Harm reduction; needle exchange. Medication administration. Wheelchair accessible.</p>
-<p><strong>Yukon Shelter</strong> - 2088 Yukon Street (at 5th), Vancouver<br />
-  604-264-1680<br />
-  Pets allowed. Wheelchair accessible. Medication/money administration. Harm reduction.</p>
-<h2><strong>Women / Families (Please note: these facilities are not transition houses.)</strong></h2>
-<p><strong>412 Women\'s Emergency Shelter</strong> - Downtown Eastside<br />
-  604-715-8480 <br />
-  Single women. Mon – Thurs 5:45 pm – 8:45 am, 2 meals; Fri - Sunday and stat holidays 24 hrs. Showers, <br />
-laundry. Harm reduction. Shopping carts and pets ok. Wheelchair accessible.</p>
-<p><strong>Bridge Women&rsquo;s Emergency Shelter</strong> - Downtown Eastside<br />
-  604-684-3542<br />
-Transition Housing. NO LONGER EMERGENCY SHELTER.</p>
-<p><strong>Powell Place – The Bloom Group</strong> – Downtown East Side<br />
-  604-606-0403<br />
-Single women and lesbian couples. Harm reduction.</p>
-<p><strong>Salvation Army Belkin House</strong> – Vancouver<br />
-  604-694-6623<br />
-Single women and women with kids (no boys over 13). No alcohol/drug use on site. Men also housed at site.</p>
-<p><strong>Springhouse – The Bloom Group</strong> – Mount Pleasant<br />
-  604-606-0412<br />
-  Female-headed families, single women, and lesbian couples. Harm Reduction.<br />
-Pets welcome. Laundry. Wheelchair accessible.</p>
-<p><strong>Union Gospel Mission - Women and Families Centre</strong> - Downtown Eastside<br />
-  604.253.4044<br />
-Families and Single Women. Day Shelter. Monday–Friday 9am - 5pm. Showers and sleeping program/beds.</p>
-<p><strong>Vi Fineday</strong> - Kitsilano<br />
-  604-736-2423<br />
-Male or female headed families, childless couples or single women 19+. No alcohol/drug use on site.</p>
-<p><strong>Welcome House for Immigrants</strong> – 530 Drake St, Vancouver<br />
-  604-684-7498<br />
-Families and singles - priority to newcomers. Apartments - fee for service. Call 9:00 – 5:00.</p>
-<h2><strong>Youth (all genders)</strong></h2>
-<p><strong>ASH (Aboriginal Youth Safe House)</strong> - Vancouver<br />
-  604-254-5147<br />
-16-18 years. 72 hours clean/sober, no alcohol/drug use. Hot meals.</p>
-<p><strong>Covenant House</strong> - 575 Drake, Vancouver<br />
-  604-685-7474<br />
-  16-22 years. 3 meals. No alcohol/drug use 12 hours prior; no detoxing. Curfew. Structured service.</p>
-<p><strong>Directions Youth Centre</strong> - 900 Pacific, Vancouver (new location)<br />
-  604-633-1472<br />
-  21 years &amp; under, open 24 hours but no sleeping allowed.<br />
-  Dusk to Dawn drop-in 4:00 pm - midnight - laundry, showers, doctor/nurse access. Hot meal 8:00 pm.<br />
-  After hours emergency services midnight – 8 am, coffee and snacks</p>
-<p><strong>Marc&rsquo;s Place</strong> - Southwest Vancouver (after 10:00 pm call After Hours, 604-660-4927)<br />
-  604-261-7827<br />
-  13-15 years. Referral via social worker or After Hours. Requires parent/guardian consent.<br />
-  Family setting, serving teens not in care who ordinarily live in Vancouver, Richmond or North Shore</p>
-<p><strong>Walden Safe House</strong> - Vancouver<br />
-  604-877-1234<br />
-  16-18 yrs. 3 meals. Hard drug-free. Goal-oriented.</p>
-<h2><strong>Shelter Information - All Ages and Genders</strong></h2>
-<p><strong>BC 211</strong> – A region-wide referral line for shelter and other essential services<br />
-  211 or 604 875-6381</p>
-</body>
-</html>
-        ]]></string>
-
-
-        <string name="INeed_LongTermHousing_Title">Long Term Housing</string>
-        <string name="INeed_LongTermHousing_Text"><![CDATA[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-<h1><strong>BC Housing/Rental Assistance Program (RAP)</strong></h1>
-<ul>
-  <li>Although there is a long wait for BC Housing, it doesn&rsquo;t hurt to be put on the list.<br />
-    <br />
-  There are two ways to apply, on-line or through filling out their application form <a href="http://www.cra-arc.gc.ca/E/pbg/tf/rc66sch/rc66sch-13e.pdf">http://www.cra-arc.gc.ca/E/pbg/tf/rc66sch/rc66sch-13e.pdf</a> or call their office at 604-609-7024 to get more information.<br />
-  Their address is 101-4555 Kingsway, Burnaby B.C., V5H 4V8</li>
-</ul>
-<ul>
-  <li>Another option for housing is applying for the Rental Assistance Program.<br />
-    <br />
-  To be eligible, you need to answer these questions: <br />
-  Are you getting rent receipts, are there NO sponsorships in place, have you resided in the province for more than 12 months?<br />
-  If the answer is yes to all three, then do the on-line estimator with the social worker.  </li>
-</ul>
-</body>
-</html>
-        ]]></string>
-
-
-
-
-
-        <string name="INeed_DrugAlcohol_Title">Youth Drug and Alcohol</string>
-        <string name="INeed_DrugAlcohol_Text"><![CDATA[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-<h1><strong>Youth Substance Use</strong> <br />
-Treatment Services</h1>
-<h2><strong>Day Treatment</strong> </h2>
-<p><strong>Watari Counselling &amp; Support Services<br />
-</strong>7-week alcohol and drug day treatment program for youth and young adults aged 13–24.<br />
-<a href="http://www.watari.ca">www.watari.ca</a><u><br />
-</u><strong>604-438-3755</strong> <br />
-</p>
-<h2><strong>Residential Treatment</strong> <br />
-</h2>
-<p><strong>Peak House - </strong>Pacific Youth and Family Services Society<br />
-10-week, all genders, live-in alcohol and drug treatment program for youth aged 13–18.<br />
-<a href="http://www.peakhouse.ca">www.peakhouse.ca</a><u><br />
-</u><strong>604-253-6319</strong></p>
-<p><strong>The Crossing at Keremeos</strong> <br />
-Long-term residential treatment centre for youth aged 14–18. <br />
-<strong>1-877-218-7746</strong></p>
-<p><strong>Urban Native Youth Association </strong>(UNYA) – Young Bears Lodge <br />
-Culturally-based empowerment programming with a focus on alcohol and drugs for youth aged 13–18.<br />
-<a href="http://www.unya.bc.ca">www.unya.bc.ca </a><br />
-<strong>604-322-7577</strong> </p>
-<h2><strong>Supported Recovery Program</strong> </h2>
-<p><strong>PLEA Community Services Society of BC<br />
-</strong>  28-day stabilization placements for youth aged 21 and under who are determining their next steps for addiction treatment.<br />
-  <a href="http://www.plea.ca">www.plea.ca</a><u><br />
-  </u><strong>604-708-2616</strong> <br />
-</p>
-<h2><strong>Detox Services</strong> </h2>
-<p><strong>Family Services of Greater Vancouver</strong> <br />
-  Community-based detox service for youth aged 16–21. Voluntary admission program with a harm reduction approach as the primary service delivery model. <br />
-  Youth D-Talks Intake: (9:00am – 7:45pm daily) <strong>1-866-658-1221 </strong> <br />
-Afterhours intake: <strong>1-877-872-4349 </strong>(24 hour admissions)</p>
-<p><strong>PLEA Community Services Society of BC</strong> <br />
-  Community-based detox service for youth aged 16 and under. <br />
-  <a href="http://www.plea.ca">www.plea.ca</a> or <a href="mailto:youthdetox@plea.bc.ca">youthdetox@plea.bc.ca</a> <strong>604-708-2616</strong> <br />
-Youth D-Talks Intake: (9:00am – 7:45pm daily) <strong>1-866-658-1221</strong></p>
-<p><strong>LGBTQ</strong> <strong>THIP</strong> <br />
-The Transgender Health Information Program [THIP] helps people access gender affirming information and resources across BC. All transgender-health related questions from youth, adults, families, health care providers and others are welcome.<br />
-Call <strong>604-734-1514 </strong>or <strong>866-999-1514 </strong>(BC wide) or email <a href="mailto:transhealth@vch.ca">transhealth@vch.ca</a> </p>
-<p><strong>Qmunity</strong> <br />
-  BC&rsquo;s Queer Resource Centre. Prideline, information, referral and peer support.<br />
-  1170 Bute St<br />
-  <a href="http://www.qmunity.ca">www.qmunity.ca</a> <strong>604-684-5307</strong></p>
-</body>
-</html>
-            ]]></string>
-
-
-        <string name="INeed_DentalCare_Title">Dental Care</string>
-        <string name="INeed_DentalCare_Text"><![CDATA[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-<h1><strong><u>Dental care</u></strong></h1>
-<h2>Vancouver&rsquo;s Community Dental Program</h2>
-<p>We are a public health dental program&nbsp;that provides preventive education and dental services for families living in the city of Vancouver. We can help your family prevent tooth decay.</p>
-<p>We provide dental care and advice about dental health for&nbsp;<a href="http://dentalhealth.vch.ca/child.htm">babies</a>&nbsp;and preschool aged children. We are presently seeing children grade seven and under for check-ups in our public health dental clinic. There are some limited services provided for&nbsp;pregnant women.  Our dental hygienist cleans teeth, and offers advice on good dental health for moms and babies. Our dentist provides a check up.</p>
-<p>Make an appointment to see us:<br />
-  <strong>Vancouver Community Dental Clinic</strong><br />
-  Second Floor - Grandview Woodland Community Health Centre<br />
-  210 - 1669 East Broadway<br />
-Vancouver, BC V5N 1V9</p>
-<p>By Telephone:<br />
-  Please call from Monday to Friday between 8:30 am - 4:30 pm.<br />
-Tel:&nbsp;604.675.3981</p>
-</body>
-</html>
-        ]]></string>
-
-
-
-        <string name="INeed_MentalHealth_Title">Youth Mental Health</string>
-        <string name="INeed_MentalHealth_Text"><![CDATA[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-<h1><strong>Outreach, Counselling &amp; Support Services</strong> </h1>
-<p><strong>Broadway Youth Resource Centre<br />
-</strong>Life skills, counselling, health services, employment training, meals, housing supports and referrals. <br />
-103-2780 East Broadway <strong>604-709-5720</strong> </p>
-<p><strong>Directions Youth Services Centre</strong> <br />
-  Life skills, counselling, health services, employment training, meals, housing supports and referrals. <u>www.fsgv.ca</u> <br />
-  900 Pacific St (Pacific &amp; Hornby) <br />
-<strong>604-633-1472 </strong>or <strong>1-866-249-6884</strong></p>
-<p><strong>Hey&rsquo;-Way&rsquo;-Noqu&rsquo; Healing Circle for Addictions Society</strong> <br />
-401-1638 East Broadway <strong>604-874-1831</strong> </p>
-<p><strong>NEXUS </strong>(Boys and Girls Club of South Coast BC) <br />
-  Substance abuse counselling and outreach program <br />
-  for youth aged 12–24. <u>www.bgcbc.ca</u> <br />
-550 Cambie St <strong>604-660-5216</strong></p>
-<p><strong>Odyssey II </strong>(Boys and Girls Club of South Coast BC) <br />
-  Substance abuse counselling program for youth aged 12–24 and their families. <u><a href="http://www.bgcbc.ca">www.bgcbc.ca</a></u> <br />
-2875 Saint George St <strong>604-879-8853</strong></p>
-<p><strong>Parents Forever </strong>(Boys and Girls Club of South Coast BC and From Grief to Action) <br />
-Professionally supported, mutual support/self-help program for parents of adult children (19 and over).<br />
-<a href="http://www.bgcbc.ca">www.bgcbc.ca</a> <strong>604-524-4230</strong></p>
-<p><strong>Parents Together </strong>(Boys and Girls Club of South Coast BC) <br />
-Professionally supported, mutual support/self-help program for parents of teens aged 12–18. <br />
-<a href="http://www.bgcbc.ca">www.bgcbc.ca</a><strong> 604-325-0556</strong></p>
-<p><strong>PRISM</strong> <br />
-PRISM is Vancouver Coastal Health&rsquo;s clinical, education, information and referral service for the lesbian, gay, bisexual, trans, queer and Two Spirit (LGBTQ2S) communities. prism@vch.ca303-1290 Hornby St <strong>604-658-1214</strong></p>
-<p><strong>South Vancouver Youth Centre</strong> <br />
-  Youth services, family services and family supports. <br />
-4920 Fraser St <strong>604-325-2004</strong></p>
-<p><strong>Urban Native Youth Association </strong>(UNYA) <br />
-  Outreach, counselling, drop-in, school support, prevention services and more. <a href="http://www.unya.bc.ca">www.unya.bc.ca </a><br />
-1618 East Hastings St <strong>604-254-7732</strong></p>
-<p><strong>Watari Counselling &amp; Support Services</strong> <br />
-  Counselling services for children, youth, adults and families. <br />
-  <a href="http://www.watari.ca">www.watari.ca</a> 301-877 East Hastings St <strong>604-254-6995<br clear="all" />
-</strong></p>
-</body>
-</html>
-        ]]></string>
-
-
-       <string name="INeed_Clinic_Title">Youth Clinics</string>
-       <string name="INeed_Clinic_Text"><![CDATA[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-<h1>Youth Clinics</h1>
-<h2>Vancouver Public Health Youth Clinics </h2>
-<p>Youth clinics offer free and confidential drop in services for youth up to and including age 24. Services are provided by trained health care providers and include: <br />
-  • Testing for sexually transmitted infections <br />
-  • Free condoms and water-based lubricant <br />
-  • Emergency contraception <br />
-  • Pap tests <br />
-  • Free or low-cost birth control options <br />
-  • Pregnancy testing and options counselling <br />
-  • General counselling<br />
-  Visit: www.vch.ca/youthclinic for more information and additional youth clinic locations. </p>
-<p><strong>Boulevard Youth Clinic </strong><br />
-  2110 West 43rd Ave, Vancouver, BC, V6M 2E1 <strong>604-261-6366</strong> <br />
-  Hours: Tues 2:30 – 5:00pm, Thurs 3:30 – 6:00 </p>
-<p>Broadway Youth Resource Centre Youth Clinic <br />
-  2780 East Broadway (at Kaslo St), Vancouver, BC, V5M 1Y8 <br />
-  <strong>604-786-2228 </strong>Fax: 604-435-5694 <br />
-  Hours: Thurs 2:30 – 5:00pm </p>
-<p>East Van Youth Clinic <br />
-  1669 East Broadway (at Commercial Drive), <br />
-  Vancouver, BC V5N 1V9 <strong>604-675-3986</strong> <br />
-  Hours: Mon, Tue, Wed 3:00 – 6:00pm, Fri 2:00 – 5:00pm</p>
-<p>Knight Street Youth Clinic <br />
-  6405 Knight St, Vancouver, BC, V5P 2V9 <strong>604-321-6151</strong> <br />
-  Hours: Mon 2:00 – 4:30pm, Thurs 3:30pm – 6:00pm</p>
-<h2><strong>Vancouver Youth Primary Care Clinics</strong></h2>
-<p><strong>Pine Free Community Health Clinic</strong> <br />
-  1985 West 4th Ave, Vancouver, BC, V6J 1M7 <br />
-  <strong>604-736-2391 </strong>Fax: 604-731-9479 <br />
-  Hours: Mon 9:00 am – 5:00 pm, Tues 9:00 am – 6:30 pm,Wed 9:00 am – 6:30 pm (closed 1st Wed of month 1:30 – 3:30pm),Thurs 9:00 am – 6:30 pm, Fri 9:00 am – 5:00 pm, Sat 12:30 pm – 4:30 pm <br />
-  People without medical insurance and who are over the age of 25 are only seen in the mornings. Must be at the clinic before 12:30 pm.</p>
-<p><strong>Three Bridges Community Health Centre </strong>– Youth Services <br />
-  1292 Hornby St, V6Z 1W2, Vancouver, BC <strong>604-736-9844</strong> <br />
-  Hours: Mon – Fri 4:00 – 8:00pm, Sat 10:00am – 5:00pm</p>
-</body>
-</html>
-        ]]></string>
-
-
-
-
-
-
-
-
-
-
-
-        <string name="INeed_LabourBirth_Title">Labour and Birth FAQ</string>
-        <string name="INeed_LabourBirth_Text"><![CDATA[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-<h1>Labour and Birth FAQ</h1>
-<h2>When do I call the doctor?</h2>
-<p>A doctor is always on call for you at BC Women&rsquo;s Hospital.  Dial 604-875-2161 and ask for the doctor on call for your doctor.</p>
-<p>If you&rsquo;re really worried, call 911 and ask foran ambulance to take you to BC Women&rsquo;s Hospital.</p>
-<h2>Call your doc if:</h2>
-<ul>
-  <li>You&rsquo;re bleeding like a period</li>
-  <li>Your baby isn&rsquo;t moving as much as usual</li>
-  <li>Your water breaks with or without contractions</li>
-  <li>You&rsquo;re having more than six contractions in an hour</li>
-  <li>You&rsquo;re worried    </li>
-  <li>You need medication</li>
-</ul>
-<h2>How long is labour?</h2>
-<p>Some labours take a few hours, some take a few days.  Both are normal.  The average is 12 hours.</p>
-<h2>What helps with the pain?</h2>
-<ul>
-  <li>Warm water:  a tub or a shower</li>
-  <li>Friends and family</li>
-  <li>A doula</li>
-  <li>Massage</li>
-  <li>Moving</li>
-  <li>Dancing</li>
-  <li>Music</li>
-  <li>Laughing Gas</li>
-  <li>IM Morphine</li>
-  <li>Epidural</li>
-</ul>
-<h2>When do I go to the hospital?</h2>
-<p>Call the doctor to help you decide.  604-875-2161</p>
-<h2>What happens if I go to the hospital too early?</h2>
-<p>You might go home again.</p>
-<h2>Who can come with me to the hospital?</h2>
-<p>Anyone you like.</p>
-<h2>Do I get an IV in labour?</h2>
-<p>If you get an epidural, yes.  An IV is a treatment for some labour complications.  In a normal labour without an epidural, you won&rsquo;t need an IV.</p>
-<h2>What are my chances of having a Caesarian?</h2>
-<p>If your pregnancy is healthy, about one in ten.</p>
-<h2>Can I eat during labour?</h2>
-<p>Yes.</p>
-<h2>Do women in labour throw up a lot?</h2>
-<p>Yes.</p>
-<h2>Will I poop during the birth of my baby?</h2>
-<p>Yes.</p>
-<h2>What if I&rsquo;m too tired to push my baby out?</h2>
-<p>You can rest a little while your body gets the strength to do it.                  <br />
-                    </p>
-</body>
-</html>
-        ]]></string>
-
-
-
-
-
-
-        <string name="INeed_Breastfeeding_Title">Breastfeeding Help</string>
-        <string name="INeed_Breastfeeding_Text"><![CDATA[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
-</head>
-
-<body>
-<h1><strong>Breastfeeding Service</strong></h1>
-<h2>Vancouver Coastal Community Health Centres</h2>
-<p>Public Health Nurses are available for breastfeeding support by phone or in person on a&nbsp;<br />
-  drop-in basis&nbsp;Monday&nbsp;to&nbsp;Friday&nbsp;at Community Health Centres.&nbsp; Call any centre for more&nbsp;<br />
-information:</p>
-<p><strong>Three Bridges Community Health Centre</strong><br />
-1292 Hornby Street&nbsp;604-736-9844 </p>
-<p><strong>Pacific Spirit Community Health Centre</strong><br />
-2110 West 43rd Avenue&nbsp;604-261-6366 </p>
-<p><strong>Robert &amp; Lily Lee Community Health Centre</strong><br />
-1669 East Broadway&nbsp;604-675-3980 </p>
-<p><strong>Raven Song Community Health Centre</strong><br />
-2450 Ontario Street&nbsp;604-709-6400 </p>
-<p><strong>Evergreen Community Health Centre&nbsp;</strong><br />
-3425 Crowley Drive&nbsp;604-872-2511&nbsp;</p>
-<p><strong>South Community Health Centre</strong><br />
-  6405 Knight Street&nbsp;604-321-6151 </p>
-<h2>Breastfeeding Clinics (by appointment)</h2>
-<p>• &nbsp;<strong>Robert &amp; Lily Lee Family Community Health Centre</strong>&nbsp;&nbsp;604-675-3980 <br />
-  • &nbsp;<strong>Pacific Spirit Community Health Centre</strong>&nbsp;&nbsp;604-261-6366</p>
-<h2>BC Women&rsquo;s Hospital</h2>
-<p>BC Women&rsquo;s nurse lactation consultants work (and carry a pager)&nbsp;Monday&nbsp;to&nbsp;Friday from 8:00&nbsp;<br />
-  a.m. until&nbsp;4:00 p.m.&nbsp; Our patient services are open to everyone.&nbsp; A referral is not required.&nbsp;<br />
-  To make an appointment, please call&nbsp;604-875-3135.</p>
-<p>For Information about breastfeeding, please call:&nbsp;<br />
-  604-875-2282&nbsp;or page&nbsp;604-875-4200 #01445&nbsp;or #01767<br />
-</p>
-<p><strong>BC Women\'s Hospital</strong><br />
-  4500 Oak Street&nbsp;<br />
-  Vancouver, BC V6H 3N1<br />
-  604-875-3135&nbsp;or Direct line: 604-875-2282<br />
-Pager: 604-875-4200 #01445 or #01767</p>
-<h2>Vancouver Breastfeeding Centre</h2>
-<p>Advice and support for breastfeeding mothers.&nbsp; Appointments require a referral.<br />
-Monday&nbsp;to&nbsp;Friday, 9:30 am to 3:30 pm</p>
-<p><strong>Vancouver Breastfeeding Centre</strong><br />
-  #340 - 943 West Broadway<br />
-  Vancouver BC V5Z 4E1<br />
-  Tel: 604-738-1912 Fax: 604-738-1231<br />
-<a href="http://www.breastfeedingclinic.com">www.breastfeedingclinic.com</a></p>
-</body>
-</html>
-        ]]></string>
-
-
-
+    <string name="INeed_Checklist_Title">Checklist</string>
+    <string name="INeed_Checklist_GotIt">Got it</string>
+    <string name="INeed_Checklist_NeedIt">Need it</string>
 </resources>
