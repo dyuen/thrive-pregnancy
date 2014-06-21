@@ -1,28 +1,34 @@
 package com.thrivepregnancy.ui;
 
-//Vsevolod Geraskin
+import java.sql.SQLException;
+import java.util.List;
+
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
-import com.thrivepregnancy.data.DatabaseHelper;
+import com.thrivepregnancy.data.EventDataHelper;
+import com.thrivepregnancy.data.Need;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 
 public class NeedFragment extends Fragment {
 	  ListView list;
 	  
-	  String[] needs = {"food","vitamins","health cared","social worker","support worker","cas hook up", "place to live", "dental care", 
-			  "clothing","prenatal classes","labour support","hospital tour","supplies for baby","safety issues"};
-	  
-	  private DatabaseHelper 	databaseHelper = null;
+	  private EventDataHelper 	needHelper = null;
+	  private Dao<Need, Integer> needDao;
 	  
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -38,21 +44,24 @@ public class NeedFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    
-	    if (databaseHelper == null) {
-	        databaseHelper = OpenHelperManager.getHelper(getView().getContext(), DatabaseHelper.class);
-	        databaseHelper.getWritableDatabase();
+	    if (needHelper == null) {
+	    	needHelper = OpenHelperManager.getHelper(getView().getContext(), EventDataHelper.class);
+	    	
+	    	try {
+				needDao = needHelper.getNeedDao();
+			} catch (SQLException e) {
+				Log.e(NeedFragment.class.getName(), "Unable to get need dao", e);
+			}
 	    }
 	    
-	    NeedList adapter = new NeedList(getView().getContext(), needs);
+	    NeedAdapter adapter = new NeedAdapter(getView().getContext(), needHelper.getNeeds());
 	    
-	    list=(ListView)getView().findViewById(R.id.lstNeed);
+	    list=(ListView)getView().findViewById(R.id.lst_need);
 	    list.setAdapter(adapter);
 	    
 	        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 	                @Override
-	                public void onItemClick(AdapterView<?> parent, View view,
-	                                        int position, long id) {
-	                    //Toast.makeText(getView().getContext(), "clicked at " + needs[ + position], Toast.LENGTH_SHORT).show();
+	                public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
 	                }
 	            });
 	     
@@ -64,39 +73,122 @@ public class NeedFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 	    super.onDestroy();
-	    if (databaseHelper != null) {
+	    
+	    if (needHelper != null) {
 	        OpenHelperManager.releaseHelper();
-	        databaseHelper = null;
+	        needHelper = null;
 	    }
 	}
   
-  	private class NeedList extends BaseAdapter{
+  	private class NeedAdapter extends BaseAdapter{
 		private final Context context;
-		private final String[] needs;
+		private final List<Need> needs;
 		
-		public NeedList(Context context, String[] needArray) {
+		public NeedAdapter(Context context, List<Need> needs) {
 			this.context = context;
-			this.needs = needArray;
+			this.needs = needs;
 		}
 		
 		@Override
-		public View getView(int position, View view, ViewGroup parent) {
+		public View getView(final int position, View view, ViewGroup parent) {
 			View item;
+			String needTitle = "";
 			
 			item = view;
+			
+			needTitle = needs.get(position).getTitle();
+			
 			if(view == null) item = LayoutInflater.from(context).inflate(R.layout.need_list, parent, false);
 			
-			TextView txtNeed = (TextView) item.findViewById(R.id.need);
+			TextView txtNeed = (TextView) item.findViewById(R.id.txt_needtitle);
+			txtNeed.setText(needTitle);
 			
-			txtNeed.setText(needs[position]);
+			RadioButton radioNeedIt = (RadioButton) item.findViewById(R.id.radio_needit);
+			RadioButton radioGotIt = (RadioButton) item.findViewById(R.id.radio_gotit);
+
+			if (needs.get(position).getNeedit()) radioNeedIt.setChecked(true);
+			if (needs.get(position).getGotit()) radioGotIt.setChecked(true);
 			
+			ImageButton resource = (ImageButton) item.findViewById(R.id.img_needresource);
+			
+			resource.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(v.getContext(), InformationActivity.class);
+					Bundle parentBundle = new Bundle();
+					String htmlfile = needs.get(position).getResources();
+					
+					if (htmlfile == null || htmlfile.length() == 0) htmlfile = "empty.html";
+					
+					Log.d("NeedFragment.getView", "htmlfile: " + htmlfile);
+					
+					parentBundle.putString("htmlfile", htmlfile);
+					intent.putExtras(parentBundle);
+					startActivity(intent);
+				}
+			});
+			
+			radioNeedIt.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					RadioButton current = (RadioButton) v;
+					
+					boolean checked = current.isChecked();
+					
+					try {
+						Log.d("NeedFragment.getView", "position: " + position);
+						Need need = needDao.queryForId(position + 1);
+						
+						if (checked) {
+							need.setNeedit(true);
+							need.setGotit(false);
+						} else {
+							need.setNeedit(false);
+							need.setGotit(true);
+						}
+						
+						needDao.update(need);
+					} catch (SQLException e) {
+						Log.e(NeedAdapter.class.getName(), "Unable to set need it flag", e);
+					}
+				}
+			});
+			
+			radioGotIt.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					RadioButton current = (RadioButton) v;
+					
+					boolean checked = current.isChecked();
+					
+					try {
+						Log.d("NeedFragment.getView", "position: " + position);
+						Need need = needDao.queryForId(position + 1);
+						
+						if (checked) {
+							need.setGotit(true);
+							need.setNeedit(false);
+						} else {
+							need.setGotit(false);
+							need.setNeedit(true);
+						}
+						
+						needDao.update(need);
+					} catch (SQLException e) {
+						Log.e(NeedAdapter.class.getName(), "Unable to set got it flag", e);
+					}
+				}
+			});
 			return item;
 		}
 
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return needs.length;
+			return needs.size();
 		}
 
 		@Override
