@@ -10,7 +10,7 @@ Layout of the I Need page
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    tools:context=".NeedFragment" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,14 +19,16 @@ Layout of the I Need page
 
             <TextView
                 android:id="@+id/need_main_row"
-                android:layout_width="130dp"
+                android:layout_width="0dp"
+                android:layout_weight="0.45"
                 android:layout_height="50dp"
                 android:padding="5dp"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/txt_gotit"
-                android:layout_width="75dp"
+                android:layout_width="0dp"
+                android:layout_weight="0.20"
                 android:layout_height="50dp"
                 android:padding="5dp"
                 android:text="@string/INeed_Checklist_GotIt"
@@ -35,12 +37,19 @@ Layout of the I Need page
 
             <TextView
                 android:id="@+id/txt_needit"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="0.25"
                 android:layout_height="50dp"
                 android:padding="5dp"
                 android:text="@string/INeed_Checklist_NeedIt"
                 android:textColor="#f47954"
                 android:textSize="20sp" />
+            
+            <TextView
+                android:id="@+id/txt_placeholder"
+                android:layout_width="0dp"
+                android:layout_weight="0.10"
+                android:layout_height="50dp" />
 
         </LinearLayout>
 
