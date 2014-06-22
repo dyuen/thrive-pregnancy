@@ -17,7 +17,7 @@ public class EventDataHelper{
 	
 	public EventDataHelper(DatabaseHelper databaseHelper) {
 		eventDao = databaseHelper.getEventDao();
-		needDao = databaseHelper.getNeedDao();			
+		needDao = databaseHelper.getNeedDao();	
 	}
 	
 	/** returns date-ordered list of all Tip, Diary Entry, and Appointment objects */
@@ -115,5 +115,13 @@ public class EventDataHelper{
 		}
         
 		return needs;
+	}
+
+	public Dao<Need, Integer> getNeedDao() {
+		return needDao;
+	}
+
+	public void setNeedDao(Dao<Need, Integer> needDao) {
+		this.needDao = needDao;
 	}
 }

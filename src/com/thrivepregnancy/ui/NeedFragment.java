@@ -48,6 +48,7 @@ public class NeedFragment extends Fragment {
 	    if (dataHelper == null) {
 			MainActivity activity = (MainActivity)getActivity();		
 	    	dataHelper = new EventDataHelper(activity.getHelper());
+	    	needDao = dataHelper.getNeedDao();
 	    }
 	    
 	    NeedAdapter adapter = new NeedAdapter(getView().getContext(), dataHelper.getNeeds());
