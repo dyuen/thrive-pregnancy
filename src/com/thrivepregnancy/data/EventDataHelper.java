@@ -20,31 +20,6 @@ public class EventDataHelper{
 		needDao = databaseHelper.getNeedDao();			
 	}
 	
-	/** returns date-ordered list of all Appointment, Question, TestResult objects */
-	//TODO: Must prepend with an object representing the primary care contact
-	//*****************************************************************************
-	public List<Event> getCareEvents() {
-		List<Event> events = null;
-		
-		try {
-			QueryBuilder<Event, Integer> queryBuilder = eventDao.queryBuilder();
-    		
-			Where<Event, Integer> where = queryBuilder.where();
-    		where.eq("type", Event.Type.APPOINTMENT).or();
-    		where.eq("type", Event.Type.QUESTION).or();
-    		where.eq("type", Event.Type.TEST_RESULT);
-    		queryBuilder.orderBy("date", true);
-    		
-    		PreparedQuery<Event> preparedQuery = queryBuilder.prepare();
-    		events = eventDao.query(preparedQuery);
-		} 
-		catch (SQLException e) {
-			Log.e(EventDataHelper.class.getName(), "Unable to get timeline events", e);
-		}
-        
-		return events;
-	}
-	
 	/** returns date-ordered list of all Tip, Diary Entry, and Appointment objects */
 	public List<Event> getTimelineEvents() {
 		List<Event> events = null;
