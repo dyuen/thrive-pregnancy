@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 
         // Create the adapter that will return a fragment for each of the pages
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mAppSectionsPagerAdapter = new MainPagerAdapter(fragmentManager);
+        mAppSectionsPagerAdapter = new MainPagerAdapter(fragmentManager, this);
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
@@ -145,48 +145,51 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
      * My Care or I Need page.
      */
     public static class MainPagerAdapter extends FragmentPagerAdapter {
-    	
-    	public MainPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
 
-        /**
-         * @return the Fragment belonging to the tab
-         */
-        @Override
-        public Fragment getItem(int i) {
-        	// Determine screen orientation
-        	switch (i) {
-        	case 0:
-        		return new TimelineFragment();
-        	case 1:
-        		return new CareFragment();
-        	default:
-        		return new NeedFragment();
-            }
-        }
+    	private MainActivity activity;
 
-        /**
-         * @return the number of tabs
-         */
-        @Override
-        public int getCount() {
-            return 3;
-        }
+    	public MainPagerAdapter(FragmentManager fm, MainActivity activity) {
+    		super(fm);
+    		this.activity = activity;
+    	}
 
-        /**
-         * @return the label for the tab corresponding to the page
-         */
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-            case 0:
-                return "My Timeline";
-            case 1:
-                return "My Care";
-            default:
-                return "I Need";
-            }
-        }
+    	/**
+    	 * @return the Fragment belonging to the tab
+    	 */
+    	@Override
+    	public Fragment getItem(int i) {
+    		// Determine screen orientation
+    		switch (i) {
+    		case 0:
+    			return new TimelineFragment();
+    		case 1:
+    			return new CareFragment();
+    		default:
+    			return new NeedFragment();
+    		}
+    	}
+
+    	/**
+    	 * @return the number of tabs
+    	 */
+    	@Override
+    	public int getCount() {
+    		return 3;
+    	}
+
+    	/**
+    	 * @return the label for the tab corresponding to the page
+    	 */
+    	@Override
+    	public CharSequence getPageTitle(int position) {
+    		switch (position) {
+    		case 0:
+    			return activity.getText(R.string.TabName_Timeline);
+    		case 1:
+    			return activity.getText(R.string.TabName_MyCare);
+    		default:
+    			return activity.getText(R.string.TabName_INeed);
+    		}
+    	}
     }
 }

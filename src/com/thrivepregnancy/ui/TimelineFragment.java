@@ -161,7 +161,7 @@ public class TimelineFragment extends Fragment {
 					photoView = (ImageView)view.findViewById(R.id.list_item_tip_photo);
 					
 					text.setText(event.getText());
-					date.setText(event.getDate().toString());
+					date.setText("(TBR) " + event.getDate().toString());
 					break;
 			
 				case APPOINTMENT:
