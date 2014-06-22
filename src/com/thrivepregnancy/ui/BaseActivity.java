@@ -1,7 +1,6 @@
 package com.thrivepregnancy.ui;
 
-import android.app.Activity;
-import android.widget.TextView;
+import android.support.v4.app.FragmentActivity;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.thrivepregnancy.data.DatabaseHelper;
@@ -9,7 +8,7 @@ import com.thrivepregnancy.data.DatabaseHelper;
  * A convenience superclass for Activity classes which may require
  * the ORMLITE DatabaseHelper object
  */
-public class BaseActivity extends Activity{
+public class BaseActivity extends FragmentActivity{
 
 	private DatabaseHelper 	databaseHelper = null;
 

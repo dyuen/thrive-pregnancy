@@ -9,44 +9,63 @@ import android.util.Log;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
-public class EventDataHelper extends DatabaseHelper {
+public class EventDataHelper{
 	private Dao<Event, Integer> eventDao;
 	private Dao<Need, Integer> needDao;
 	
-	public EventDataHelper(Context context) {
-		super(context);
-		
-		try {
-			eventDao = getEventDao();
-			needDao = getNeedDao();
-		} catch (SQLException e) {
-			Log.e(EventDataHelper.class.getName(), "Unable to get dao", e);
-		}
-		
-		
-		Log.d("EventDataHelper.EventDataHelper", "EventDataHelper constructor");
+	public EventDataHelper(DatabaseHelper databaseHelper) {
+		eventDao = databaseHelper.getEventDao();
+		needDao = databaseHelper.getNeedDao();			
 	}
 	
-	/** returns date-ordered list of all event objects */
-	public List<Event> getTimelineEvents() {
+	/** returns date-ordered list of all Appointment, Question, TestResult objects */
+	//TODO: Must prepend with an object representing the primary care contact
+	//*****************************************************************************
+	public List<Event> getCareEvents() {
 		List<Event> events = null;
 		
 		try {
 			QueryBuilder<Event, Integer> queryBuilder = eventDao.queryBuilder();
-			PreparedQuery<Event> preparedQuery;
-			
-			queryBuilder.orderBy("date",true);
-			preparedQuery = queryBuilder.prepare();
-			
-			events = eventDao.query(preparedQuery);
-		} catch (SQLException e) {
+    		
+			Where<Event, Integer> where = queryBuilder.where();
+    		where.eq("type", Event.Type.APPOINTMENT).or();
+    		where.eq("type", Event.Type.QUESTION).or();
+    		where.eq("type", Event.Type.TEST_RESULT);
+    		queryBuilder.orderBy("date", true);
+    		
+    		PreparedQuery<Event> preparedQuery = queryBuilder.prepare();
+    		events = eventDao.query(preparedQuery);
+		} 
+		catch (SQLException e) {
 			Log.e(EventDataHelper.class.getName(), "Unable to get timeline events", e);
 		}
         
 		return events;
 	}
 	
+	/** returns date-ordered list of all Tip, Diary Entry, and Appointment objects */
+	public List<Event> getTimelineEvents() {
+		List<Event> events = null;
+		
+		try {
+			QueryBuilder<Event, Integer> queryBuilder = eventDao.queryBuilder();
+    		
+			Where<Event, Integer> where = queryBuilder.where();
+    		where.eq("type", Event.Type.APPOINTMENT).or();
+    		where.eq("type", Event.Type.TIP).or();
+    		where.eq("type", Event.Type.DIARY_ENTRY);
+    		queryBuilder.orderBy("date", true);
+    		
+    		PreparedQuery<Event> preparedQuery = queryBuilder.prepare();
+    		events = eventDao.query(preparedQuery);
+		} catch (SQLException e) {
+			Log.e(EventDataHelper.class.getName(), "Unable to get timeline events", e);
+		}
+        
+		return events;
+	}
 	/** returns date-ordered list of all Appointment event objects */
 	public List<Event> getAppointments() {
 		List<Event> events = null;

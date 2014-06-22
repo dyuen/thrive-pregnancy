@@ -21,6 +21,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
 import com.thrivepregnancy.R;
+import com.thrivepregnancy.ui.MainActivity;
 
 /**
  * Database helper which creates and upgrades the database and provides the DAOs for the app.
@@ -40,8 +41,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	// name of needs input CSV file
 	private static final String NEED_FILE = "needs.csv";
 		
-	private Dao<Event, Integer> eventDao;
-	private Dao<Need, Integer> needDao;
+	private Dao<Event, Integer> 	eventDao;
+	private Dao<Need, Integer> 		needDao;
 	
 	private Context m_context;
 	private Calendar m_duedate;
@@ -184,15 +185,25 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion){
 	}
 
-	public Dao<Event, Integer> getEventDao() throws SQLException {
+	public Dao<Event, Integer> getEventDao() {
 		if (eventDao == null) {
-			eventDao = getDao(Event.class);
+			try {
+				eventDao = getDao(Event.class);
+			}
+			catch (SQLException e){
+				Log.e(MainActivity.DEBUG_TAG, "Cannot retrieve event dao", e);
+			}
 		}
 		return eventDao;
 	}
-	public Dao<Need, Integer> getNeedDao() throws SQLException {
+	public Dao<Need, Integer> getNeedDao() {
 		if (needDao == null) {
-			needDao = getDao(Need.class);
+			try {
+				needDao = getDao(Need.class);
+			}
+			catch (SQLException e){
+				Log.e(MainActivity.DEBUG_TAG, "Cannot retrieve need dao", e);
+			}
 		}
 		return needDao;
 	}

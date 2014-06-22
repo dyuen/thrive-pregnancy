@@ -6,6 +6,7 @@ import java.util.List;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
+import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 import com.thrivepregnancy.data.Need;
 
@@ -25,10 +26,10 @@ import android.content.Context;
 import android.content.Intent;
 
 public class NeedFragment extends Fragment {
-	  ListView list;
-	  
-	  private EventDataHelper 	needHelper = null;
-	  private Dao<Need, Integer> needDao;
+	ListView list;
+
+	private EventDataHelper 	dataHelper = null;
+	private Dao<Need, Integer> needDao;
 	  
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -44,42 +45,23 @@ public class NeedFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    
-	    if (needHelper == null) {
-	    	needHelper = OpenHelperManager.getHelper(getView().getContext(), EventDataHelper.class);
-	    	
-	    	try {
-				needDao = needHelper.getNeedDao();
-			} catch (SQLException e) {
-				Log.e(NeedFragment.class.getName(), "Unable to get need dao", e);
-			}
+	    if (dataHelper == null) {
+			MainActivity activity = (MainActivity)getActivity();		
+	    	dataHelper = new EventDataHelper(activity.getHelper());
 	    }
 	    
-	    NeedAdapter adapter = new NeedAdapter(getView().getContext(), needHelper.getNeeds());
+	    NeedAdapter adapter = new NeedAdapter(getView().getContext(), dataHelper.getNeeds());
 	    
 	    list=(ListView)getView().findViewById(R.id.lst_need);
 	    list.setAdapter(adapter);
 	    
-	        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-	                @Override
-	                public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-	                }
-	            });
-	     
-		}
-	
-	/**
-	 * Releases the database helper
-	 */
-	@Override
-	public void onDestroy() {
-	    super.onDestroy();
-	    
-	    if (needHelper != null) {
-	        OpenHelperManager.releaseHelper();
-	        needHelper = null;
-	    }
+	    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+	    	@Override
+	    	public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+	    	}
+	    });
 	}
-  
+	
   	private class NeedAdapter extends BaseAdapter{
 		private final Context context;
 		private final List<Need> needs;

@@ -2,33 +2,19 @@ package com.thrivepregnancy.ui;
 
 import com.thrivepregnancy.R;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.thrivepregnancy.R;
-import com.thrivepregnancy.R.layout;
 import com.thrivepregnancy.data.Event;
-import com.thrivepregnancy.data.Event.Type;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap;
-import android.graphics.Picture;
-import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -36,8 +22,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -49,12 +37,15 @@ public class TimelineFragment extends Fragment {
 
 	private View 				fragmentView;
 	private Resources 			appResources;
-	private TimelineFragment 	theFragment;
+	private TimelineFragment 	fragment;
+	private MainActivity 		activity;
+	private ImageButton 				apptButton;
+	private ImageButton 				entryButton;
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
 	 */
 	public TimelineFragment(){
-		theFragment = this;
+		fragment = this;
 		Log.d(MainActivity.DEBUG_TAG, "---new TimelineFragment instance");
 	}
 	
@@ -65,13 +56,18 @@ public class TimelineFragment extends Fragment {
 		fragmentView = inflater.inflate(R.layout.fragment_timeline, container, false);
 		return fragmentView;
 	}
-
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		activity = (MainActivity)getActivity();
+	}
+	
 	@Override
 	public void onResume() {
 		super.onResume();
 		Log.d(MainActivity.DEBUG_TAG, "---onResume");
 		// Get the list of all timeline Events
-		MainActivity activity = (MainActivity)getActivity();		
 		List<Event> events = activity.getTimelineList();
 		
 		// Determine screen width and current orientation
@@ -87,6 +83,43 @@ public class TimelineFragment extends Fragment {
 		TimelineListAdapter adapter = new TimelineListAdapter(getView().getContext(), events, screenWidth, orientation);		
 		ListView listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
 		listView.setAdapter(adapter);
+		
+		if (apptButton == null){
+			apptButton = (ImageButton)fragmentView.findViewById(R.id.btnAppt);
+			apptButton.setOnClickListener(new View.OnClickListener() {			
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
+					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+				}
+			});
+		}
+		if (entryButton == null){
+			entryButton = (ImageButton)fragmentView.findViewById(R.id.btnNote);
+			entryButton.setOnClickListener(new View.OnClickListener() {			
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
+					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
+					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+				}
+			});		
+		}
+	}
+
+	/**
+	 * Handles the result from Appointment, TestResult or DiaryEntry activity
+	 */
+	@Override
+	public void onActivityResult(int requestCodeIgnored, int resultCode, Intent intent){
+		if (intent == null){
+			// Return from called activity by pressing back button
+			return;
+		}
+		else {
+			
+		}
 	}
 
 	private class TimelineListAdapter extends BaseAdapter{
@@ -104,72 +137,98 @@ public class TimelineFragment extends Fragment {
 
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
+			TextView 	date;
+			ImageView 	photoView = null;
+			Uri 		uri = null;
+			
 			Event event = events.get(position);
+			String photoFile = event.getPhotoFile();
+			if (photoFile != null && photoFile.length() > 0){
+				uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
+			}
 			
 			switch (event.getType()){
 			
+				case TIP:
+					if(view == null || !view.getTag().equals(Event.Type.TIP.name())) {
+						if (view != null){
+							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = TIP");
+						}
+						view = LayoutInflater.from(context).inflate(R.layout.list_item_tip, parent, false);
+					}						
+					TextView text = (TextView)view.findViewById(R.id.list_item_tip_text);
+					date = (TextView)view.findViewById(R.id.list_item_tip_date);
+					photoView = (ImageView)view.findViewById(R.id.list_item_tip_photo);
+					
+					text.setText(event.getText());
+					date.setText(event.getDate().toString());
+					break;
+			
 				case APPOINTMENT:
-					if(view == null) {
+					if(view == null || !view.getTag().equals(Event.Type.APPOINTMENT.name())) {
+						if (view != null){
+							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = APPOINTMENT");
+						}
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_appointment, parent, false);
-					}
-						
+					}						
 					TextView purpose = (TextView)view.findViewById(R.id.list_item_appt_purpose);
 					TextView dateTime = (TextView)view.findViewById(R.id.list_item_appt_time);
+					photoView = (ImageView)view.findViewById(R.id.list_item_tip_photo);
+					
 					purpose.setText(event.getPurpose());
 					dateTime.setText(event.getDate().toString());
 					break;
 					
 				case DIARY_ENTRY:
-					if(view == null) {
+					if(view == null  || !view.getTag().equals(Event.Type.DIARY_ENTRY.name())) {
+						if (view != null){
+							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = DIARY_ENTRY");
+						}
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_entry, parent, false);
-					}
-						
+					}						
 					TextView notes = (TextView)view.findViewById(R.id.list_item_entry_notes);
-					TextView date = (TextView)view.findViewById(R.id.list_item_entry_date);
-					ImageView photo = (ImageView)view.findViewById(R.id.list_item_entry_photo);
+					date = (TextView)view.findViewById(R.id.list_item_entry_date);
+					photoView = (ImageView)view.findViewById(R.id.list_item_entry_photo);
 
 					notes.setText(event.getText());
 					date.setText(event.getDate().toString());
-					FileOutputStream fos;
-					
-					try {
-						// This works, but the image isn't scaled up to fill available space
-						// even though the image width (800) is wider than my screen (768)!!
-						// In fact, it looks as if it might have reduced the size by exactly half
-						Uri uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/baby.jpg");
-						photo.setMaxHeight(1072);
-						photo.setMaxWidth(1600);
-						photo.setImageURI(uri);
-						
-						// This doesn't work: decodeFileDescriptor will return null, so no image;
-//						AssetManager assetManager = context.getAssets();
-//						AssetFileDescriptor afd = assetManager.openFd("baby.jpg");
-//						FileDescriptor fd = afd.getFileDescriptor();
-//						Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd);
-//						photo.setImageBitmap(bitmap);
-						
-						// This executes but gives a FileNotFoundEXception warning (the image will be missing)
-//						Uri uri =  Uri.parse("file:///android_asset/baby.jpg");
-//						photo.setImageURI(uri);
-						
-						// This works
-						// Using large images (like the original "rosy.jpg") will cause 
-						// "java.lang.OutOfMemoryError at android.graphics.BitmapFactory.nativeDecodeAsset (Native Method)"
-//						photo.setImageResource(R.drawable.baby);
-						
-//						Bitmap bitmap = ImageLoader.compressPicture(R.drawable.rosy, appResources, screenWidth);
-//						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-//						FileInputStream fis = context.openFileInput("rosy.jpg");
-//						Picture picture = Picture.createFromStream(fis);
-//						PictureDrawable drawable = new PictureDrawable(picture);
-//						photo.setImageResource(R.drawable.rosy_compressed);
-//						photo.setImageDrawable(drawable);
-					}
-					catch (Throwable e){
-						notes.setText(event.getText());
-					}
 					break;
 			}
+			if (photoFile != null){
+				photoView.setImageURI(uri);
+			}
+			
+			// This works, but the image isn't scaled up to fill available space
+			// even though the image width (800) is wider than my screen (768)!!
+			// In fact, it looks as if it might have reduced the size by exactly half
+			//				uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
+			//				photo.setMaxHeight(1072);
+			//				photo.setMaxWidth(1600);
+			//				photo.setImageURI(uri);
+
+			// This doesn't work: decodeFileDescriptor will return null, so no image;
+			//						AssetManager assetManager = context.getAssets();
+			//						AssetFileDescriptor afd = assetManager.openFd("baby.jpg");
+			//						FileDescriptor fd = afd.getFileDescriptor();
+			//						Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd);
+			//						photo.setImageBitmap(bitmap);
+
+			// This executes but gives a FileNotFoundEXception warning (the image will be missing)
+			//						Uri uri =  Uri.parse("file:///android_asset/baby.jpg");
+			//						photo.setImageURI(uri);
+
+			// This works
+			// Using large images (like the original "rosy.jpg") will cause 
+			// "java.lang.OutOfMemoryError at android.graphics.BitmapFactory.nativeDecodeAsset (Native Method)"
+			//						photo.setImageResource(R.drawable.baby);
+
+			//						Bitmap bitmap = ImageLoader.compressPicture(R.drawable.rosy, appResources, screenWidth);
+			//						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+			//						FileInputStream fis = context.openFileInput("rosy.jpg");
+			//						Picture picture = Picture.createFromStream(fis);
+			//						PictureDrawable drawable = new PictureDrawable(picture);
+			//						photo.setImageResource(R.drawable.rosy_compressed);
+			//						photo.setImageDrawable(drawable);
 			return view;
 		}
 		

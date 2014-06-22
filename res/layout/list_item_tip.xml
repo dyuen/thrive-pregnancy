@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
 Layout of a single TIP Event in the timeline list
+The top level attribute is required in the Timeline and Mycare list adapters
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tag="TIP" 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" 
+    android:orientation="vertical"
     >    
 	<RelativeLayout
     	android:paddingTop="20dp"
