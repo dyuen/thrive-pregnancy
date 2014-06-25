@@ -67,7 +67,7 @@ public class TimelineArrayAdapter extends ArrayAdapter {
 				}				
 				TextView purpose = (TextView)view.findViewById(R.id.list_item_appt_purpose);
 				TextView dateTime = (TextView)view.findViewById(R.id.list_item_appt_time);
-				purpose.setText(event.getDoctor());
+				purpose.setText(event.getPurpose());
 				dateTime.setText(event.getDate().toString());
 
 				break;

@@ -176,7 +176,7 @@ public class TimelineFragment extends Fragment {
 					TextView dateTime = (TextView)view.findViewById(R.id.list_item_appt_time);
 					photoView = (ImageView)view.findViewById(R.id.list_item_tip_photo);
 					
-					purpose.setText(event.getDoctor());
+					purpose.setText(event.getPurpose());
 					dateTime.setText(event.getDate().toString());
 					break;
 					
