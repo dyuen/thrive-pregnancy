@@ -130,42 +130,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
     
-    public List<Event> getTimelineList(){
-    	this.getHelper();
-    	List<Event> events = new ArrayList<Event>();
-    	try {
-    		Dao<Event, Integer> eventDao = getHelper().getDao(Event.class);
-    		QueryBuilder<Event, Integer> builder = eventDao.queryBuilder();
-    		Where<Event, Integer> where = builder.where();
-    		where.eq("type", Event.Type.APPOINTMENT).or();
-    		where.eq("type", Event.Type.TIP).or();
-    		where.eq("type", Event.Type.DIARY_ENTRY);
-    		builder.orderBy("date", true);
-    		PreparedQuery<Event> preparedQuery = builder.prepare();
-    		events = eventDao.query(preparedQuery);
-    		
-    		Event e = new Event();
-    		e.setType(Event.Type.DIARY_ENTRY);
-    		e.setDate(new Date());
-    		e.setPhotoFile("rosy.jpg");
-    		e.setText("Hard coded test entry!");
-    		events.add(2, e);
-
-    		e = new Event();
-    		e.setType(Event.Type.APPOINTMENT);
-    		e.setDate(new Date());
-    		e.setPurpose("Hard coded appointment");
-    		e.setText("...appointment notes");
-    		e.setAddress("My doctor's address");
-    		events.add(20, e);
-    		
-    	}
-    	catch (SQLException e){
-    		Log.e(DEBUG_TAG, "Can't read events table", e);
-    	}
-    	return events;
-    }
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to the My Timeline,
      * My Care or I Need page.

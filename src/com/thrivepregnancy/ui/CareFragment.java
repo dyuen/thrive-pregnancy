@@ -5,10 +5,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
+import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 
@@ -16,6 +19,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,7 +47,7 @@ public class CareFragment extends Fragment {
 	private View 				fragmentView;
 	private CareFragment 		fragment;
 	private EventDataHelper 	dataHelper = null;
-	private ViewPooler 			viewPooler;
+	private MainActivity		activity;
 
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -63,7 +67,7 @@ public class CareFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-		MainActivity activity = (MainActivity)getActivity();
+		activity = (MainActivity)getActivity();
 	    if (dataHelper == null) {
 	    	dataHelper = new EventDataHelper(activity.getHelper());
 	    }
@@ -73,7 +77,7 @@ public class CareFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		// Create and set the adapter with this list
-		CareListAdapter adapter = new CareListAdapter(fragmentView, dataHelper, (MainActivity)getActivity());
+		CareListAdapter adapter = new CareListAdapter(fragmentView);
 		ListView listView = (ListView)getActivity().findViewById(R.id.lstCare);
 		listView.setAdapter(adapter);
 	}
@@ -119,13 +123,13 @@ public class CareFragment extends Fragment {
 
     private class CareListAdapter extends BaseAdapter{
 		private List<Event> 			events;
-		private final EventDataHelper 	dataHelper;
+//		private final EventDataHelper 	dataHelper;
 		private int						listIndex;
 		private boolean					editingProviderContact;
 		private View					providerView;
 		private SharedPreferences 		preferences;
 		private CareListAdapter			adapter;
-		private MainActivity 			activity;
+//		private MainActivity 			activity;
 		
 		private long dueDate;
 		private String providerName;
@@ -134,10 +138,10 @@ public class CareFragment extends Fragment {
 	    
 		private ArrayList<ElementBacker> elementBackers;
 		
-	    public CareListAdapter(View fragmentView, EventDataHelper dataHelper, MainActivity activity) {	    	
+	    public CareListAdapter(View fragmentView) {	    	
 	    	adapter = this;
-			this.dataHelper = dataHelper;
-			this.activity = activity;
+//			this.dataHelper = dataHelper;
+//			this.activity = activity;
 			editingProviderContact = false;
 			events = null;
 			
@@ -184,95 +188,31 @@ public class CareFragment extends Fragment {
 			if(view == null || !view.getTag().equals(backer.tag)) {
 				view = LayoutInflater.from(activity).inflate(backer.resourceId, parent, false);
 			}
-			this.populateView(backer.resourceId, view);
-			return view;
-		}
-		
-		private void populateView(int resourceId, View view){
 			Event 		event;
-			ImageView 	photoView = null;
-			Uri 		uri = null;
-			String 		photoFile = null;
 
-			switch (resourceId) {
+			switch (backer.resourceId) {
 			case R.layout.list_item_provider:
 		    	populateProviderView(view);
-		    	((ImageButton)view.findViewById(R.id.list_item_contact_edit)).setOnClickListener(editProviderListener);
 	    		break;
 
 			case R.layout.list_item_appointment_care:
-				event = events.get(listIndex);
-				((TextView)view.findViewById(R.id.list_item_appt_purpose)).setText(event.getPurpose());
-				((TextView)view.findViewById(R.id.list_item_appt_time)).setText(event.getDate().toString());
-		    	((ImageButton)view.findViewById(R.id.list_item_appt_edit)).setOnClickListener(editAppointmentListener);
-		    	((ImageButton)view.findViewById(R.id.list_item_appt_delete)).setOnClickListener(deleteAppointmentListener);
-				photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
-				photoFile = event.getPhotoFile();
+				populateAppointmentView(view, events.get(listIndex));
 				break;
 
 			case R.layout.list_item_question:
-				event = events.get(listIndex);
-				((TextView)view.findViewById(R.id.list_item_question_text)).setText(event.getText());
-		    	((ImageButton)view.findViewById(R.id.list_item_question_delete)).setOnClickListener(deleteQuestionListener);
+				populateQuestionView(view, events.get(listIndex));
 				break;
 
 			case R.layout.list_item_test_result:
-				event = events.get(listIndex);
-				((TextView)view.findViewById(R.id.list_item_test_result_description)).setText(event.getText());
-				((TextView)view.findViewById(R.id.list_item_test_result_date)).setText(event.getDate().toString());
-				photoView = (ImageView)view.findViewById(R.id.list_item_test_result_photo);
-				photoFile = event.getPhotoFile();
+				populateTestResultView(view, events.get(listIndex));
 				break;
 
 			case R.layout.list_item_add_new:
 				break;
-
-			default:
-				// No dynamic content in list_item_appointments_header, list_item_questions_header, list_item_test_results_header
-
 			}
-			if (photoFile != null && photoFile.length() > 0){
-				uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
-				photoView.setImageURI(uri);
-			}
+			return view;
 		}
-		//***************************************** From BaseAdapter
-		// Get the type of View that will be created by getView(int, View, ViewGroup) for the specified item. (0...
-		@Override
-		public int getItemViewType (int position){
-//			Log.d(MainActivity.DEBUG_TAG, "------Care getViewType position " + position);
-			return elementBackers.get(position).type;
-		}
-		
-		//Returns the number of types of Views that will be created by getView(int, View, ViewGroup)
-		@Override
-		public int getViewTypeCount (){
-			return 8;
-		}
-		//Indicates whether the item ids are stable across changes to the underlying data.
-		@Override public boolean hasStableIds (){
-			return true;
-		}
-		//***************************************** From adapter
-		// How many items are in the data set represented by this Adapter
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			int count = (int) dataHelper.getCareEventCount();
-			return count + 7;
-		}
-		// Get the data item associated with the specified position in the data set.
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-		//*****************************************
+
 		private void populateProviderView(View view){
 			// Display the values stored in preferences
 	    	String userName = preferences.getString(StartupActivity.PREFERENCE_NAME, "");
@@ -298,56 +238,116 @@ public class CareFragment extends Fragment {
 		    	((TextView)view.findViewById(R.id.provider_oncall_phone)).setText(oncallPhone);				
 		    	((ImageButton)view.findViewById(R.id.list_item_contact_edit)).setImageResource(R.drawable.pencil_icon);
 			}
+	    	ImageButton editOrSaveButton = (ImageButton)view.findViewById(R.id.list_item_contact_edit);
+	    	editOrSaveButton.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view){
+					if (editingProviderContact){
+						// Update the "cached" values and store them in preferences
+						SharedPreferences.Editor editor = preferences.edit();
+				    	
+				    	String strDueDate = ((EditText)fragmentView.findViewById(R.id.delivery_date_edit)).getText().toString();
+				    	dueDate = parseDate(dueDateFormat, strDueDate);
+				    	providerName = ((EditText)fragmentView.findViewById(R.id.provider_name_edit)).getText().toString();
+				    	providerLocation = ((EditText)fragmentView.findViewById(R.id.provider_location_edit)).getText().toString();
+				    	oncallPhone = ((EditText)fragmentView.findViewById(R.id.provider_oncall_phone_edit)).getText().toString();				
+				    	
+				    	editor.putLong(StartupActivity.PREFERENCE_DUE_DATE, dueDate);
+				    	editor.putString(StartupActivity.PREFERENCE_PROVIDER_NAME, providerName);
+				    	editor.putString(StartupActivity.PREFERENCE_PROVIDER_LOCATION, providerLocation);
+				    	editor.putString(StartupActivity.PREFERENCE_ONCALL_NUMBER, oncallPhone);
+				    	editor.commit();
+					}
+					// Toggle the editing state and notify 
+					editingProviderContact = !editingProviderContact;
+					adapter.notifyDataSetChanged();
+				}
+			});
 		}
 		
-		/**
-		 * Called when the Edit/Save (pencil/checkmark) button on the care provider is clicked
-		 */
-		public OnClickListener editProviderListener = new OnClickListener(){
-			@Override
-			public void onClick(View view){
-				if (editingProviderContact){
-					// Update the "cached" values and store them in preferences
-					SharedPreferences.Editor editor = preferences.edit();
-			    	
-			    	String strDueDate = ((EditText)fragmentView.findViewById(R.id.delivery_date_edit)).getText().toString();
-			    	dueDate = parseDate(dueDateFormat, strDueDate);
-			    	providerName = ((EditText)fragmentView.findViewById(R.id.provider_name_edit)).getText().toString();
-			    	providerLocation = ((EditText)fragmentView.findViewById(R.id.provider_location_edit)).getText().toString();
-			    	oncallPhone = ((EditText)fragmentView.findViewById(R.id.provider_oncall_phone_edit)).getText().toString();				
-			    	
-			    	editor.putLong(StartupActivity.PREFERENCE_DUE_DATE, dueDate);
-			    	editor.putString(StartupActivity.PREFERENCE_PROVIDER_NAME, providerName);
-			    	editor.putString(StartupActivity.PREFERENCE_PROVIDER_LOCATION, providerLocation);
-			    	editor.putString(StartupActivity.PREFERENCE_ONCALL_NUMBER, oncallPhone);
-			    	editor.commit();
-				}
-				// Toggle the editing state and notify 
-				editingProviderContact = !editingProviderContact;
-				adapter.notifyDataSetChanged();
+		private void populateAppointmentView(View view, Event event){
+			((TextView)view.findViewById(R.id.list_item_appt_purpose)).setText(event.getPurpose());
+			((TextView)view.findViewById(R.id.list_item_appt_time)).setText(event.getDate().toString());
+			ImageButton editAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
+			final Integer eventId = event.getId();
+			editAppointment.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view){
+					Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);	        	
+					intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, eventId);	        	
+					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+				}				
+			});			
+//	    	((ImageButton)view.findViewById(R.id.list_item_appt_delete)).setOnClickListener(deleteAppointmentListener);			
+	    	setupPhotoView(event.getPhotoFile(), (ImageView)view.findViewById(R.id.list_item_appt_photo));
+		}
+		
+		private void populateQuestionView(View view, final Event event){
+			((TextView)view.findViewById(R.id.list_item_question_text)).setText(event.getText());
+	    	ImageButton deleteQuestion = (ImageButton)view.findViewById(R.id.list_item_question_delete);
+	    	deleteQuestion.setOnClickListener(new OnClickListener(){
+				@Override
+				// TODO Confirmation
+				public void onClick(View view){
+					Dao<Event, Integer> dao = activity.getHelper().getEventDao();
+					try {
+						dao.delete(event);
+					}
+					catch (SQLException e){
+						Log.e(MainActivity.DEBUG_TAG, "Can't delete question", e);
+					}
+				}				
+			});			
+		}
+		
+		private void populateTestResultView(View view, Event event){
+			((TextView)view.findViewById(R.id.list_item_test_result_description)).setText(event.getText());
+			((TextView)view.findViewById(R.id.list_item_test_result_date)).setText(event.getDate().toString());
+	    	setupPhotoView(event.getPhotoFile(), (ImageView)view.findViewById(R.id.list_item_test_result_photo));
+		}
+		
+		private void setupPhotoView(String photoFile, ImageView photoView){
+			if (photoFile != null && photoFile.length() > 0){
+				Uri uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
+				photoView.setImageURI(uri);
 			}
-		};
-		public OnClickListener editAppointmentListener = new OnClickListener(){
-			@Override
-			public void onClick(View view){
+		}
 
-			}
-		};
-		public OnClickListener deleteAppointmentListener = new OnClickListener(){
-			@Override
-			public void onClick(View view){
-
-			}
-		};
-		public OnClickListener deleteQuestionListener = new OnClickListener(){
-			@Override
-			public void onClick(View view){
-
-			}
-		};
-
+		//***************************************** From BaseAdapter
+		// Get the type of View that will be created by getView(int, View, ViewGroup) for the specified item. (0...
+		@Override
+		public int getItemViewType (int position){
+			return elementBackers.get(position).type;
+		}		
+		//Returns the number of types of Views that will be created by getView(int, View, ViewGroup)
+		@Override
+		public int getViewTypeCount (){
+			return 8;
+		}
+		//Indicates whether the item ids are stable across changes to the underlying data.
+		@Override public boolean hasStableIds (){
+			return true;
+		}
+		//***************************************** From adapter
+		// How many items are in the data set represented by this Adapter
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			int count = (int) dataHelper.getCareEventCount();
+			return count + 7;
+		}
+		// Get the data item associated with the specified position in the data set.
+		@Override
+		public Object getItem(int position) {
+			return null;
+		}
+		@Override
+		public long getItemId(int position) {
+			return 0;
+		}
 	}
-	
+
 	private long parseDate(SimpleDateFormat format, String date){
 		try {
 			return format.parse(date).getTime();
@@ -355,49 +355,6 @@ public class CareFragment extends Fragment {
 		catch (ParseException e){
 			Log.e(MainActivity.DEBUG_TAG, "Error parsing date string", e);
 			return 0;
-		}
-	}
-
-	/**
-	 * A manager of View pools
-	 */
-	public class ViewPooler {
-		// MApped by view resource is
-		private HashMap<Integer, ArrayList<View>>	pools;
-		private Context context;
-		public ViewPooler(Context context){
-			this.context = context;
-			pools = new HashMap<Integer, ArrayList<View>>();
-		}
-
-		public void save(int resourceId, View view){
-			ArrayList<View> pool = pools.get(resourceId);
-			if (pool == null){
-				pool = new ArrayList<View>();
-				pools.put(resourceId,  pool);
-			}
-			pool.add(view);
-		}
-
-		public View retrieve(int resourceId, ViewGroup parent){
-			View view = null;
-			ArrayList<View> pool = pools.get(resourceId);
-			if (pool == null){
-				pool = new ArrayList<View>();
-				pools.put(resourceId,  pool);
-			}
-			if (pool.size() == 0){
-				try {
-					view = LayoutInflater.from(context).inflate(resourceId, parent, false);
-				}
-				catch (Exception e){
-					Log.e(MainActivity.DEBUG_TAG, "Can't instantiate instance of " + resourceId, e);
-				}
-			}
-			else {
-				view = pool.remove(0);
-			}
-			return view;
 		}
 	}
 }

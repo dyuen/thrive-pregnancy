@@ -1,9 +1,12 @@
 package com.thrivepregnancy.ui;
 
+import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
 
+import java.sql.SQLException;
 import java.util.List;
 
+import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 
@@ -18,6 +21,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
@@ -33,24 +37,24 @@ import android.widget.TextView;
 public class TimelineFragment extends Fragment {
 
 	private View 				fragmentView;
-//	private Resources 			appResources;
 	private TimelineFragment 	fragment;
 	private MainActivity 		activity;
 	private ImageButton 		apptButton;
 	private ImageButton 		entryButton;
-//	private EventDataHelper 	dataHelper = null;
-
+	private TimelineListAdapter adapter;
+	private List<Event> 		events;
+	private DatabaseHelper	databaseHelper;
+	private EventDataHelper	eventDataHelper;
+	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
 	 */
 	public TimelineFragment(){
 		fragment = this;
-//		Log.d(MainActivity.DEBUG_TAG, "---new TimelineFragment instance");
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//		Log.d(MainActivity.DEBUG_TAG, "---onCreateView");
 	    // Inflate the layout for this fragment
 		fragmentView = inflater.inflate(R.layout.fragment_timeline, container, false);
 		return fragmentView;
@@ -60,18 +64,16 @@ public class TimelineFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		activity = (MainActivity)getActivity();
+		databaseHelper = activity.getHelper();
+		eventDataHelper = new EventDataHelper(databaseHelper);
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-//		Log.d(MainActivity.DEBUG_TAG, "---onResume");
-		// Get the list of all timeline Events
-		List<Event> events = activity.getTimelineList();
 		
 		// Determine screen width and current orientation
         WindowManager windowManager = (WindowManager)activity.getSystemService(Context.WINDOW_SERVICE);
-//        appResources = activity.getResources();
 		Display display = windowManager.getDefaultDisplay();
 		int orientation = display.getOrientation();
 		DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -79,7 +81,7 @@ public class TimelineFragment extends Fragment {
 		int screenWidth = displaymetrics.widthPixels;
 		
 		// Create and set the adapter with this list
-		TimelineListAdapter adapter = new TimelineListAdapter(getView().getContext(), events, screenWidth, orientation);		
+		adapter = new TimelineListAdapter(getView().getContext(), screenWidth, orientation);		
 		ListView listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
 		listView.setAdapter(adapter);
 		
@@ -101,7 +103,7 @@ public class TimelineFragment extends Fragment {
 				public void onClick(View v) {
 					Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
 					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
-					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_DIARY_ENTRY);
 				}
 			});		
 		}
@@ -117,17 +119,18 @@ public class TimelineFragment extends Fragment {
 			return;
 		}
 		else {
-			Log.d(MainActivity.DEBUG_TAG, "resultCode=" + resultCode);
+			events = eventDataHelper.getTimelineEvents();
+			adapter.notifyDataSetChanged();
 		}
 	}
 
 	private class TimelineListAdapter extends BaseAdapter{
-		private final Context context;
-		private final List<Event> events;
+		private final Context 	context;
+		private List<Event> 	events;
 		
-		public TimelineListAdapter(Context context, List<Event> events, int screenWidth, int orientation) {
+		public TimelineListAdapter(Context context, int screenWidth, int orientation) {
 			this.context = context;
-			this.events = events;
+			events = eventDataHelper.getTimelineEvents();
 		}
 
 		@Override
@@ -136,9 +139,7 @@ public class TimelineFragment extends Fragment {
 			ImageView 	photoView = null;
 			Uri 		uri = null;
 			
-//			Event event = events.get(position);
 			final Event event = events.get(position);
-//>>>>>>> 864b1bbdc8aa9e69440d0f43a6796dc077eee694
 			String photoFile = event.getPhotoFile();
 			if (photoFile != null && photoFile.length() > 0){
 				uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
@@ -177,19 +178,34 @@ public class TimelineFragment extends Fragment {
 					TextView notes = (TextView)view.findViewById(R.id.list_item_entry_notes);
 					date = (TextView)view.findViewById(R.id.list_item_entry_date);
 					photoView = (ImageView)view.findViewById(R.id.list_item_entry_photo);
-					
-					//sev code for testing appointment edit
+
 					ImageButton editButton = (ImageButton)view.findViewById(R.id.list_item_entry_edit);
-					editButton.setOnClickListener(new View.OnClickListener() {			
+					editButton.setOnClickListener(new OnClickListener() {			
 						@Override
 						public void onClick(View v) {
 							Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
 							intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
 							intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());	
-							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_DIARY_ENTRY);
 						}
 					});
-					//end sev code
+					
+					ImageButton deleteButton = (ImageButton)view.findViewById(R.id.list_item_entry_delete);
+					deleteButton.setOnClickListener(new OnClickListener() {	
+						// TODO: Confirmation popup dialog
+						@Override
+						public void onClick(View v) {
+							try {
+								Dao<Event, Integer> eventDao = activity.getHelper().getDao(Event.class);
+								eventDao.delete(event);
+								events = eventDataHelper.getTimelineEvents();
+								adapter.notifyDataSetChanged();
+							}
+							catch (SQLException e){
+								Log.e(MainActivity.DEBUG_TAG, "Can't delete event", e);
+							}
+						}
+					});
 					
 					notes.setText(event.getText());
 					date.setText(event.getDate().toString());
@@ -232,11 +248,57 @@ public class TimelineFragment extends Fragment {
 			//						photo.setImageDrawable(drawable);
 			return view;
 		}
+/*		
+		OnClickListener editButtonclickListener = new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
+				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
+				intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());	
+				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+			}
+		};
+*/		
+		//***************************************** From BaseAdapter
+		// Get the type of View that will be created by getView(int, View, ViewGroup) for the specified item. (0...
 		@Override
 		public int getItemViewType (int position){
 			Event event = events.get(position);
-			return determineItemLayout(event);
+			switch (event.getType()){
+			case TIP: 			return 0;
+			case DIARY_ENTRY:	return 1;
+			case APPOINTMENT:	return 2;
+			default:			return -1;
+			}
 		}
+		
+		//Returns the number of types of Views that will be created by getView(int, View, ViewGroup)
+		@Override
+		public int getViewTypeCount (){
+			return 3;
+		}
+		//Indicates whether the item ids are stable across changes to the underlying data.
+		@Override public boolean hasStableIds (){
+			return true;
+		}
+		//***************************************** From adapter
+		// How many items are in the data set represented by this Adapter
+		@Override
+		public int getCount() {
+			return events.size();
+		}
+		// Get the data item associated with the specified position in the data set.
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		//*****************************************
 		
 		private int determineItemLayout(Event event){
 			if (event.getType().equals(Event.Type.APPOINTMENT)){
@@ -245,23 +307,6 @@ public class TimelineFragment extends Fragment {
 			else {
 				return R.layout.list_item_entry;
 			}			
-		}
-
-		@Override
-		public int getCount() {
-			return events.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
 		}
 	}
 }
