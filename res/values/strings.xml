@@ -10,6 +10,7 @@
 
 <!--'Overall'-->
     <string name="save">Save</string>
+    <string name="add_photo">Add Photo</string>
     
 <!--'User preferences'--> 
     <string name="PREFERENCES">preferences</string>
@@ -50,6 +51,9 @@
     <string name="Diary_Notes">Notes</string>
     <string name="Diary_Date">Date</string>
     <string name="Diary_Warning">Please enter notes and date</string>
+    <string name="Diary_Photo">Diary Photo</string>
+    <string name="Diary_Create">Take a diary picture</string>
+    <string name="Diary_Delete">Delete a diary picture</string>
 <!--'Appointments'-->
 
     <string name="Appointment_Title">My Appointments</string>

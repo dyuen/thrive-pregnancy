@@ -141,7 +141,7 @@ public class TimelineFragment extends Fragment {
 			ImageView 	photoView = null;
 			Uri 		uri = null;
 			
-			Event event = events.get(position);
+			final Event event = events.get(position);
 			String photoFile = event.getPhotoFile();
 			if (photoFile != null && photoFile.length() > 0){
 				uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
@@ -189,7 +189,20 @@ public class TimelineFragment extends Fragment {
 					TextView notes = (TextView)view.findViewById(R.id.list_item_entry_notes);
 					date = (TextView)view.findViewById(R.id.list_item_entry_date);
 					photoView = (ImageView)view.findViewById(R.id.list_item_entry_photo);
-
+					
+					//sev code for testing appointment edit
+					ImageButton editButton = (ImageButton)view.findViewById(R.id.list_item_entry_edit);
+					editButton.setOnClickListener(new View.OnClickListener() {			
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
+							intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
+							intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());	
+							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+						}
+					});
+					//end sev code
+					
 					notes.setText(event.getText());
 					date.setText(event.getDate().toString());
 					break;

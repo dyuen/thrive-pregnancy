@@ -29,4 +29,45 @@
         android:layout_below="@id/diary_notes"
         android:textAppearance="?android:attr/textAppearanceMedium" 
         />
+	<ImageButton
+        android:id="@+id/diary_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diary_notes"
+        android:scaleType="centerInside"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/grey_circle_icon"
+        android:contentDescription="@string/Diary_Delete"
+        />
+	<ImageView
+        android:id="@+id/diary_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diary_delete"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/Diary_Photo"
+        />
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="horizontal"
+	    android:layout_below="@id/diary_notes"
+	    android:gravity="center_horizontal">
+	   
+		<ImageButton
+	        android:id="@+id/diary_create"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:scaleType="centerInside"
+	        android:src="@drawable/grey_camera_icon"
+	        android:contentDescription="@string/Diary_Delete"
+	        />
+		<TextView
+	        android:id="@+id/diary_create_text"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/add_photo"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+        />
+	</LinearLayout>
 </RelativeLayout>
