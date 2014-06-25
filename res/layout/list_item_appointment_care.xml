@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Layout of a single APPOINTMENT Event in the timeline list
+The top level tag attribute is required in the Timeline and Mycare list adapters
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tag="APPOINTMENT" 
+    android:paddingTop="20dp"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        >
+        <!-- Delete button -->
+        <ImageButton
+            android:id="@+id/list_item_appt_delete"
+            style="@style/listViewItemIconStyle"
+            android:src="@drawable/grey_circle_icon"
+            android:contentDescription="@string/note"
+            android:layout_alignParentRight="true"
+            android:adjustViewBounds="true"
+            />
+        <!--  Edit button -->
+        <ImageButton
+            android:id="@+id/list_item_appt_edit"
+            style="@style/listViewItemIconStyle"
+            android:src="@drawable/pencil_icon"
+            android:contentDescription="@string/appt"
+            android:layout_toLeftOf="@id/list_item_appt_delete"
+            android:adjustViewBounds="true"
+            />
+        <!-- Appointment date/time -->
+        <TextView
+            android:id="@+id/list_item_appt_time"
+            android:layout_toLeftOf="@id/list_item_appt_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium" 
+            />
+    </RelativeLayout>
+    <!-- Appointment purpose -->
+    <TextView
+        android:id="@+id/list_item_appt_purpose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        />      
+    <!-- Photo -->  
+    <ImageView
+        android:id="@+id/list_item_appt_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"			
+        />
+</LinearLayout>
+

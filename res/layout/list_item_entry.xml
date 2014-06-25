@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
 Layout of a single DIARY_ENTRY Event in the timeline list
-The top level attribute is required in the Timeline and Mycare list adapters
+The top level tag attribute is required in the Timeline list adapter
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:tag="DIARY_ENTRY" 
@@ -65,7 +65,7 @@ The top level attribute is required in the Timeline and Mycare list adapters
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium" 
             />
-        <!-- Photo android:src="@drawable/baby" -->  
+        <!-- Photo -->  
         <ImageView
             android:id="@+id/list_item_entry_photo"
             android:layout_width="match_parent"

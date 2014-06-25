@@ -5,16 +5,14 @@ import com.thrivepregnancy.R;
 import java.util.List;
 
 import com.thrivepregnancy.data.Event;
+import com.thrivepregnancy.data.EventDataHelper;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -23,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -36,22 +33,24 @@ import android.widget.TextView;
 public class TimelineFragment extends Fragment {
 
 	private View 				fragmentView;
-	private Resources 			appResources;
+//	private Resources 			appResources;
 	private TimelineFragment 	fragment;
 	private MainActivity 		activity;
-	private ImageButton 				apptButton;
-	private ImageButton 				entryButton;
+	private ImageButton 		apptButton;
+	private ImageButton 		entryButton;
+//	private EventDataHelper 	dataHelper = null;
+
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
 	 */
 	public TimelineFragment(){
 		fragment = this;
-		Log.d(MainActivity.DEBUG_TAG, "---new TimelineFragment instance");
+//		Log.d(MainActivity.DEBUG_TAG, "---new TimelineFragment instance");
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Log.d(MainActivity.DEBUG_TAG, "---onCreateView");
+//		Log.d(MainActivity.DEBUG_TAG, "---onCreateView");
 	    // Inflate the layout for this fragment
 		fragmentView = inflater.inflate(R.layout.fragment_timeline, container, false);
 		return fragmentView;
@@ -66,13 +65,13 @@ public class TimelineFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.d(MainActivity.DEBUG_TAG, "---onResume");
+//		Log.d(MainActivity.DEBUG_TAG, "---onResume");
 		// Get the list of all timeline Events
 		List<Event> events = activity.getTimelineList();
 		
 		// Determine screen width and current orientation
         WindowManager windowManager = (WindowManager)activity.getSystemService(Context.WINDOW_SERVICE);
-        appResources = activity.getResources();
+//        appResources = activity.getResources();
 		Display display = windowManager.getDefaultDisplay();
 		int orientation = display.getOrientation();
 		DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -125,14 +124,10 @@ public class TimelineFragment extends Fragment {
 	private class TimelineListAdapter extends BaseAdapter{
 		private final Context context;
 		private final List<Event> events;
-		private final int orientation;
-		private final int screenWidth;
 		
 		public TimelineListAdapter(Context context, List<Event> events, int screenWidth, int orientation) {
 			this.context = context;
 			this.events = events;
-			this.orientation = orientation;
-			this.screenWidth = screenWidth;
 		}
 
 		@Override
@@ -141,6 +136,7 @@ public class TimelineFragment extends Fragment {
 			ImageView 	photoView = null;
 			Uri 		uri = null;
 			
+//			Log.d(MainActivity.DEBUG_TAG, "------Timeline getView position " + position);
 			Event event = events.get(position);
 			String photoFile = event.getPhotoFile();
 			if (photoFile != null && photoFile.length() > 0){
@@ -152,7 +148,7 @@ public class TimelineFragment extends Fragment {
 				case TIP:
 					if(view == null || !view.getTag().equals(Event.Type.TIP.name())) {
 						if (view != null){
-							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = TIP");
+//							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = TIP");
 						}
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_tip, parent, false);
 					}						
@@ -167,9 +163,9 @@ public class TimelineFragment extends Fragment {
 				case APPOINTMENT:
 					if(view == null || !view.getTag().equals(Event.Type.APPOINTMENT.name())) {
 						if (view != null){
-							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = APPOINTMENT");
+//							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = APPOINTMENT");
 						}
-						view = LayoutInflater.from(context).inflate(R.layout.list_item_appointment, parent, false);
+						view = LayoutInflater.from(context).inflate(R.layout.list_item_appointment_timeline, parent, false);
 					}						
 					TextView purpose = (TextView)view.findViewById(R.id.list_item_appt_purpose);
 					TextView dateTime = (TextView)view.findViewById(R.id.list_item_appt_time);
@@ -182,7 +178,7 @@ public class TimelineFragment extends Fragment {
 				case DIARY_ENTRY:
 					if(view == null  || !view.getTag().equals(Event.Type.DIARY_ENTRY.name())) {
 						if (view != null){
-							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = DIARY_ENTRY");
+//							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = DIARY_ENTRY");
 						}
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_entry, parent, false);
 					}						
@@ -231,7 +227,7 @@ public class TimelineFragment extends Fragment {
 			//						photo.setImageDrawable(drawable);
 			return view;
 		}
-		
+		@Override
 		public int getItemViewType (int position){
 			Event event = events.get(position);
 			return determineItemLayout(event);
@@ -239,7 +235,7 @@ public class TimelineFragment extends Fragment {
 		
 		private int determineItemLayout(Event event){
 			if (event.getType().equals(Event.Type.APPOINTMENT)){
-				return R.layout.list_item_appointment;
+				return R.layout.list_item_appointment_timeline;
 			}
 			else {
 				return R.layout.list_item_entry;
@@ -248,7 +244,6 @@ public class TimelineFragment extends Fragment {
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return events.size();
 		}
 

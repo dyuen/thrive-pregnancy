@@ -20,6 +20,25 @@ public class EventDataHelper{
 		needDao = databaseHelper.getNeedDao();			
 	}
 	
+	/** returns count list of all Appointment, Test Result , and Question objects */
+	public long getCareEventCount() {
+		List<Event> events = null;
+		
+		try {
+			QueryBuilder<Event, Integer> queryBuilder = eventDao.queryBuilder();
+    		
+			Where<Event, Integer> where = queryBuilder.where();
+    		where.eq("type", Event.Type.APPOINTMENT).or();
+    		where.eq("type", Event.Type.TEST_RESULT).or();
+    		where.eq("type", Event.Type.QUESTION);
+    		
+    		queryBuilder.prepare();
+    		return queryBuilder.countOf();
+		} catch (SQLException e) {
+			Log.e(EventDataHelper.class.getName(), "Unable to get care event count", e);
+			return 0;
+		}
+ 	}
 	/** returns date-ordered list of all Tip, Diary Entry, and Appointment objects */
 	public List<Event> getTimelineEvents() {
 		List<Event> events = null;

@@ -13,6 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import 	android.view.MotionEvent;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,14 +33,25 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
 	 */
 	public static final String PREFERENCES = "preferences";
 	/**
-	 * Key to the user's name in the application Preferences
+	 * User name Preferences key
 	 */
 	public static final String PREFERENCE_NAME = "name";
 	/**
-	 * Key to the user's expected due date in the application Preferences
-	 * The date is saved as a long
-	 */
+	 * Due date Preferences key. The date is saved as a long
+	 */	
 	public static final String PREFERENCE_DUE_DATE = "date";
+	/**
+	 * Provider name Preferences key
+	 */
+	public static final String PREFERENCE_PROVIDER_NAME = "provider";
+	/**
+	 * Provider location Preferences key
+	 */
+	public static final String PREFERENCE_PROVIDER_LOCATION = "location";
+	/**
+	 * Provider 24 hour on call number  Preferences key
+	 */
+	public static final String PREFERENCE_ONCALL_NUMBER = "number";
 	
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy");
 
@@ -62,50 +75,13 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
         	this.finish();
     	}
     	
-    	TextView dateView = (TextView)findViewById(R.id.startup_date);
+    	EditText dateView = (EditText)findViewById(R.id.startup_date);
         dateView.setOnClickListener(new OnClickListener() {        
             public void onClick(View v) {
               	DateDialogFragment fragment = DateDialogFragment.newInstance("1", dateListener);
                	fragment.show(fragmentManager, "1");
             }
         });
-    	
-    	/*
-    	 * Code below was an attempt to use an EditText for the date field, for visual 
-    	 * consistency with the name field. Not reliable, because Android can swallow 
-    	 * focus or click event to bring up keyboard
-    	 * 
-        EditText dateView = (EditText)findViewById(R.id.startup_date);
-        EditText nameView = (EditText)findViewById(R.id.startup_date);
-       
-        // When date field receives focus or clicked, show a date picker dialog
-        dateView.setOnFocusChangeListener(new OnFocusChangeListener() {        
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus && !fragmentShown){
-                	fragmentShown = true;
-                    DateDialogFragment fragment = DateDialogFragment.newInstance("1", dateListener);
-                    fragment.show(fragmentManager, "1");
-                }
-            }
-        });        
-        dateView.setOnClickListener(new OnClickListener() {        
-            public void onClick(View v) {
-            	if (!fragmentShown){
-            		fragmentShown = true;
-                	DateDialogFragment fragment = DateDialogFragment.newInstance("1", dateListener);
-                	fragment.show(fragmentManager, "1");
-            	}
-            }
-        });
-        // When name field receives focus, reset the flag
-        dateView.setOnFocusChangeListener(new OnFocusChangeListener() {        
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                	fragmentShown = false;
-                }
-            }
-        }); 
-        */       
     }
     
     /**

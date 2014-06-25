@@ -9,11 +9,11 @@ Layout of the My Care page
     android:orientation = "vertical"
     android:background="@android:color/transparent"
     tools:context=".MainActivity" >
-        <TextView
-	        android:id="@+id/txtInfo"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-        	android:text="My Care"
-        	android:textSize="@dimen/lvHeadingTextSize"
-	        />
+	<ListView
+	    android:id="@+id/lstCare"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:divider="@null"
+	    android:descendantFocusability="beforeDescendants"
+	    />
 </LinearLayout>

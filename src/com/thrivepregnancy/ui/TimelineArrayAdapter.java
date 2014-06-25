@@ -63,7 +63,7 @@ public class TimelineArrayAdapter extends ArrayAdapter {
 		
 			case APPOINTMENT:
 				if(view == null) {
-					view = LayoutInflater.from(context).inflate(R.layout.list_item_appointment, parent, false);
+					view = LayoutInflater.from(context).inflate(R.layout.list_item_appointment_timeline, parent, false);
 				}				
 				TextView purpose = (TextView)view.findViewById(R.id.list_item_appt_purpose);
 				TextView dateTime = (TextView)view.findViewById(R.id.list_item_appt_time);

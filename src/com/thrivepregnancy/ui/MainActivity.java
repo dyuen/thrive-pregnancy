@@ -41,7 +41,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
 	public static final int REQUEST_CODE_APPOINTMENT = 2;
 	public static final int REQUEST_CODE_TEST_RESULT = 3;
 	
-    private MainPagerAdapter 	mAppSectionsPagerAdapter;
+    private MainPagerAdapter 	mainPageAdapter;
     /**
      * The {@link ViewPager} implements the page swipe animation
      */
@@ -50,12 +50,12 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		Log.d(DEBUG_TAG, "onCreate");
+//		Log.d(DEBUG_TAG, "onCreate");
         setContentView(R.layout.activity_main);
 
         // Create the adapter that will return a fragment for each of the pages
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mAppSectionsPagerAdapter = new MainPagerAdapter(fragmentManager, this);
+        mainPageAdapter = new MainPagerAdapter(fragmentManager, this);
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         // Set up the ViewPager, attaching the adapter and setting up a listener for when the
         // user swipes between pages.
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mAppSectionsPagerAdapter);
+        mViewPager.setAdapter(mainPageAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -80,13 +80,13 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
         });
 
         // For each of the page fragments, add a tab to the action bar.
-        for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
+        for (int i = 0; i < mainPageAdapter.getCount(); i++) {
             // Create a tab with text corresponding to the page title defined by the adapter.
             // Also specify this Activity object, which implements the TabListener interface, as the
             // listener for when this tab is selected.
             actionBar.addTab(
                     actionBar.newTab()
-                            .setText(mAppSectionsPagerAdapter.getPageTitle(i))
+                            .setText(mainPageAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
     }
@@ -106,6 +106,7 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
     }
     
     public List<Event> getTimelineList(){
+    	this.getHelper();
     	List<Event> events = new ArrayList<Event>();
     	try {
     		Dao<Event, Integer> eventDao = getHelper().getDao(Event.class);

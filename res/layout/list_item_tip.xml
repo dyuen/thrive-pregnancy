@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
 Layout of a single TIP Event in the timeline list
-The top level attribute is required in the Timeline and Mycare list adapters
+The top level tag attribute is required in the Timeline list adapter
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:tag="TIP" 

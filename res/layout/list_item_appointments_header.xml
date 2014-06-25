@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Layout of the Appointments header in the timeline list
+The top level tag attribute is required in the Care list adapter
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tag="APPOINTMENTS_HEADER"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="40dp"
+    >
+
+    <ImageView
+        android:id="@+id/icon"
+        android:src="@drawable/timeline_appt_icon"
+        style="@style/listViewHeaderItemButtonStyle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:adjustViewBounds="true"
+        />
+    <TextView
+        android:layout_toRightOf="@id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:text="@string/Appointment_Title"
+    />
+</RelativeLayout>
+

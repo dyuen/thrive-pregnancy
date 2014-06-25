@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Layout of the PROVIDER list item in the care list
+The top level tag attribute is required in the Mycare list adapters
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tag="PROVIDER" 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="40dp"
+    >
+    <!-- Icon in left column -->
+    <ImageView
+        android:id="@+id/icon"
+        android:src="@drawable/test_results_icon"
+        style="@style/listViewHeaderItemButtonStyle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:adjustViewBounds="true"
+        />
+    <LinearLayout
+        android:layout_toRightOf="@id/icon"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        > 
+        <!-- Top line with user name and edit/save buttons -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" 
+                />
+            <!-- This switches between the pencil and checkmark icons -->
+            <ImageButton
+                android:id="@+id/list_item_contact_edit"
+                android:layout_alignParentRight="true"
+                style="@style/listViewItemIconStyle"
+                android:src="@drawable/pencil_icon"
+                android:adjustViewBounds="true"
+                />
+        </RelativeLayout>
+        <!-- Provider details in "display" mode along with pencil icon--> 
+        <LinearLayout
+            android:id="@+id/provider_contact"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical"
+        	> 
+        	<TextView
+            	android:id="@+id/delivery_date"
+            	android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:textAppearance="?android:attr/textAppearanceMedium" 
+            	/>
+        	<TextView
+            	android:id="@+id/provider_name"
+            	android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:textAppearance="?android:attr/textAppearanceMedium" 
+            	/>
+        	<TextView
+            	android:id="@+id/provider_location"
+            	android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:textAppearance="?android:attr/textAppearanceMedium" 
+            	/>
+        	<TextView
+            	android:id="@+id/provider_oncall_phone"
+            	android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:textAppearance="?android:attr/textAppearanceMedium" 
+            	/>
+        	</LinearLayout>
+        <!-- Provider details in "edit" mode along with chekmark icon-->
+        <LinearLayout
+            android:id="@+id/provider_contact_edit"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical"
+        	>
+        	<!-- TODO Hint strings --> 
+        	<EditText
+            	android:id="@+id/delivery_date_edit"
+            	android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:textAppearance="?android:attr/textAppearanceMedium"
+            	/>            
+        	<EditText
+            	android:id="@+id/provider_name_edit"
+            	android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:textAppearance="?android:attr/textAppearanceMedium" 
+            	android:hint="(doctor's name hint)" 
+            	/>            
+        	<EditText
+            	android:id="@+id/provider_location_edit"
+            	android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:textAppearance="?android:attr/textAppearanceMedium" 
+            	android:hint="(location hint)" 
+            	/>            
+        	<EditText
+            	android:id="@+id/provider_oncall_phone_edit"
+            	android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:textAppearance="?android:attr/textAppearanceMedium" 
+            	android:hint="(24 hour)" 
+            	/>            
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
+

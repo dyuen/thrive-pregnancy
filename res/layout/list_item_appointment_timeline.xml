@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
 Layout of a single APPOINTMENT Event in the timeline list
-The top level attribute is required in the Timeline and Mycare list adapters
+The top level tag attribute is required in the Timeline and Mycare list adapters
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:tag="APPOINTMENT" 
@@ -65,5 +65,12 @@ The top level attribute is required in the Timeline and Mycare list adapters
 	        android:layout_height="wrap_content"
 	        android:textAppearance="?android:attr/textAppearanceMedium" 
 	        />   	
-     </LinearLayout>
+        <!-- Photo -->  
+        <ImageView
+            android:id="@+id/list_item_appt_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"			
+            />
+    </LinearLayout>
 </RelativeLayout>
