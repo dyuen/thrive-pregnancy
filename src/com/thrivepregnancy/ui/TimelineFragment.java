@@ -117,7 +117,7 @@ public class TimelineFragment extends Fragment {
 			return;
 		}
 		else {
-			
+			Log.d(MainActivity.DEBUG_TAG, "resultCode=" + resultCode);
 		}
 	}
 
@@ -136,8 +136,9 @@ public class TimelineFragment extends Fragment {
 			ImageView 	photoView = null;
 			Uri 		uri = null;
 			
-//			Log.d(MainActivity.DEBUG_TAG, "------Timeline getView position " + position);
-			Event event = events.get(position);
+//			Event event = events.get(position);
+			final Event event = events.get(position);
+//>>>>>>> 864b1bbdc8aa9e69440d0f43a6796dc077eee694
 			String photoFile = event.getPhotoFile();
 			if (photoFile != null && photoFile.length() > 0){
 				uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
@@ -147,9 +148,6 @@ public class TimelineFragment extends Fragment {
 			
 				case TIP:
 					if(view == null || !view.getTag().equals(Event.Type.TIP.name())) {
-						if (view != null){
-//							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = TIP");
-						}
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_tip, parent, false);
 					}						
 					TextView text = (TextView)view.findViewById(R.id.list_item_tip_text);
@@ -162,9 +160,6 @@ public class TimelineFragment extends Fragment {
 			
 				case APPOINTMENT:
 					if(view == null || !view.getTag().equals(Event.Type.APPOINTMENT.name())) {
-						if (view != null){
-//							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = APPOINTMENT");
-						}
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_appointment_timeline, parent, false);
 					}						
 					TextView purpose = (TextView)view.findViewById(R.id.list_item_appt_purpose);
@@ -177,15 +172,25 @@ public class TimelineFragment extends Fragment {
 					
 				case DIARY_ENTRY:
 					if(view == null  || !view.getTag().equals(Event.Type.DIARY_ENTRY.name())) {
-						if (view != null){
-//							Log.d(MainActivity.DEBUG_TAG, "Replacing view; old type = " + view.getTag() + "new type = DIARY_ENTRY");
-						}
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_entry, parent, false);
 					}						
 					TextView notes = (TextView)view.findViewById(R.id.list_item_entry_notes);
 					date = (TextView)view.findViewById(R.id.list_item_entry_date);
 					photoView = (ImageView)view.findViewById(R.id.list_item_entry_photo);
-
+					
+					//sev code for testing appointment edit
+					ImageButton editButton = (ImageButton)view.findViewById(R.id.list_item_entry_edit);
+					editButton.setOnClickListener(new View.OnClickListener() {			
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
+							intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
+							intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());	
+							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+						}
+					});
+					//end sev code
+					
 					notes.setText(event.getText());
 					date.setText(event.getDate().toString());
 					break;

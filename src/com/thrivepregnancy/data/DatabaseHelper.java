@@ -1,10 +1,11 @@
 package com.thrivepregnancy.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.widget.TextView;
+
 import au.com.bytecode.opencsv.CSVReader;
 
 import java.io.IOException;
@@ -48,8 +49,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	private Calendar m_duedate;
 	private String m_name;
 	
-	private static final String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-	
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		m_context = context;
@@ -58,9 +57,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	
 	/** loads name and due date from user preferences */
 	public void ReadUserPreferences () {
-		m_name = "Sev";
+		SharedPreferences preferences = m_context.getSharedPreferences(m_context.getResources().getString(R.string.PREFERENCES), 0);
+		
+		m_name = preferences.getString(m_context.getResources().getString(R.string.PREFERENCE_NAME), null);
+		long dateInMillis = preferences.getLong(m_context.getResources().getString(R.string.PREFERENCE_DUE_DATE), -1);
+		
 		m_duedate= Calendar.getInstance();
-        m_duedate.set(2014,Calendar.DECEMBER,15);
+		m_duedate.setTimeInMillis(dateInMillis);
 	}
 	
 	/** Returns tip date by due date and week */

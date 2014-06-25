@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <EditText
+        android:id="@+id/diary_date"
+        android:hint="@string/Diary_Date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        android:focusable="false"
+        android:inputType="date" /> 
+	<EditText
+        android:id="@+id/diary_notes"
+        android:hint="@string/Diary_Notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diary_date"
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        
+        android:inputType="text" />
+		<requestFocus />
+	<TextView
+        android:id="@+id/diary_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diary_notes"
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        android:textColor="@color/red"
+        />
+	<ImageButton
+        android:id="@+id/diary_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diary_notes"
+        android:scaleType="centerInside"
+        android:layout_alignParentRight="true"
+        android:background="@color/white"
+        android:src="@drawable/grey_circle_icon"
+        android:contentDescription="@string/Diary_Delete"
+        />
+	<ImageView
+        android:id="@+id/diary_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diary_delete"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/Diary_Photo"
+        />
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:layout_below="@id/diary_notes"
+	    android:gravity="center">
+	   
+		<ImageButton
+	        android:id="@+id/diary_create"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:scaleType="centerInside"
+	        android:background="@color/white"
+	        android:src="@drawable/grey_camera_icon"
+	        android:contentDescription="@string/Diary_Delete"
+	        />
+		<TextView
+	        android:id="@+id/diary_create_text"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/add_photo"
+	        android:textAppearance="?android:attr/textAppearanceLarge" 
+        />
+	</LinearLayout>
+</RelativeLayout>

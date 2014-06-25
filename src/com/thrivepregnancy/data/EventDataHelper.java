@@ -17,7 +17,7 @@ public class EventDataHelper{
 	
 	public EventDataHelper(DatabaseHelper databaseHelper) {
 		eventDao = databaseHelper.getEventDao();
-		needDao = databaseHelper.getNeedDao();			
+		needDao = databaseHelper.getNeedDao();	
 	}
 	
 	/** returns count list of all Appointment, Test Result , and Question objects */
@@ -134,5 +134,13 @@ public class EventDataHelper{
 		}
         
 		return needs;
+	}
+
+	public Dao<Need, Integer> getNeedDao() {
+		return needDao;
+	}
+
+	public void setNeedDao(Dao<Need, Integer> needDao) {
+		this.needDao = needDao;
 	}
 }

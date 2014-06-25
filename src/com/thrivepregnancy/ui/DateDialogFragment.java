@@ -39,7 +39,7 @@ public class DateDialogFragment extends DialogFragment{
 		datePicker = (DatePicker)parentActivity.getLayoutInflater().inflate(R.layout.date_picker, null);
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
-		builder.setTitle("Title");		
+		builder.setTitle("Select a date");		
 		builder.setView(datePicker);
 		// Pass the selected date back to the activity only when Save is clicked
 		builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {			

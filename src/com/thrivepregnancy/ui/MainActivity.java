@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.thrivepregnancy.R;
+import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 
 import android.app.ActionBar;
@@ -29,8 +31,9 @@ import android.view.WindowManager;
 /**
  * Contains the My Timeline, My Care and I Need screens ("pages")
  */
-public class MainActivity extends BaseActivity implements ActionBar.TabListener {
-
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+	private DatabaseHelper 	databaseHelper = null;
+	
 	public static final String DEBUG_TAG = "THRIVE";
 	
 	public static final String	REQUEST_MODE = "mode";
@@ -90,7 +93,29 @@ public class MainActivity extends BaseActivity implements ActionBar.TabListener 
                             .setTabListener(this));
         }
     }
+    
+    /**
+	 * @return a DatabaseHelper
+	 */
+	protected DatabaseHelper getHelper() {
+	    if (databaseHelper == null) {
+	        databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+	    }
+	    return databaseHelper;
+	}
 
+	/**
+	 * Releases the database helper
+	 */
+	@Override
+	protected void onDestroy() {
+	    super.onDestroy();
+	    if (databaseHelper != null) {
+	        OpenHelperManager.releaseHelper();
+	        databaseHelper = null;
+	    }
+	}
+	
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }

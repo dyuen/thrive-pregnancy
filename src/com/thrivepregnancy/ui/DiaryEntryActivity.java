@@ -1,38 +1,50 @@
 package com.thrivepregnancy.ui;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.thrivepregnancy.R;
+import com.thrivepregnancy.data.Event;
 
 /**
- * ACtivity for creating or editing a DIARY_ENTRY event
+ * Activity for creating or editing a DIARY_ENTRY event
  */
 public class DiaryEntryActivity extends BaseActivity {
-
-	private String mode;
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TextView dummyView = new TextView(this);
-        dummyView.setText("Placeholder for Diary Entry Create/Edit");
-        setContentView(dummyView);
-
-        // Mode will be one of MainActivity.REQUEST_MODE_NEW or MainActivity.REQUEST_MODE_EDIT
-        // If mode is edit, then REQUEST_PRIMARY_KEY will contain the primary key of the Event
-        Intent intent = getIntent();
-        mode = intent.getStringExtra(MainActivity.REQUEST_MODE);
-        
-        // When finished, create an Intent, adding extra:
-        // - MainActivity.MainActivity.REQUEST_MODE with the mode
-        // - MainActivity.RESULT_KEY_DIARY_ENTRY containing the primary key
-        // Then call setResult(code, Intent) and finish();
-        // For now let's just use Activity.RESULT_OK for the return code
-        // Just doing it here for temporary testing
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+    	
+    	LayoutInflater inflater = getLayoutInflater();
+    	
+    	RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.activity_diaryentry, null);
+    	
+    	setContentView(layout);
+    	
+    	StartUp(Event.Type.DIARY_ENTRY);
+    	
+    	SetViews();
+    	
+    	FillViews(layout);
+    }
+    
+    /**
+     * References views from layout
+     */
+    private void SetViews() {
+    	set_dateView((EditText)findViewById(R.id.diary_date));
+    	set_noteView((EditText)findViewById(R.id.diary_notes));
+    	set_warnView((TextView)findViewById(R.id.diary_warning));
+    	set_warning(getString(R.string.Diary_Warning));
+    	
+    	set_buttonDelete((ImageButton)findViewById(R.id.diary_delete));
+    	set_buttonCreate((ImageButton)findViewById(R.id.diary_create));
+    	
+    	set_photoText((TextView)findViewById(R.id.diary_create_text));
+    	set_photoView((ImageView)findViewById(R.id.diary_image));
     }
 }
