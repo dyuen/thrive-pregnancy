@@ -69,6 +69,13 @@ public class TimelineFragment extends Fragment {
 	}
 	
 	@Override
+	public void onActivityCreated(Bundle savedInstanceState){
+		super.onActivityCreated( savedInstanceState);
+	}
+
+
+	
+	@Override
 	public void onResume() {
 		super.onResume();
 		
@@ -85,28 +92,24 @@ public class TimelineFragment extends Fragment {
 		ListView listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
 		listView.setAdapter(adapter);
 		
-		if (apptButton == null){
-			apptButton = (ImageButton)fragmentView.findViewById(R.id.btnAppt);
-			apptButton.setOnClickListener(new View.OnClickListener() {			
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
-					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
-					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
-				}
-			});
-		}
-		if (entryButton == null){
-			entryButton = (ImageButton)fragmentView.findViewById(R.id.btnNote);
-			entryButton.setOnClickListener(new View.OnClickListener() {			
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
-					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
-					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_DIARY_ENTRY);
-				}
-			});		
-		}
+		apptButton = (ImageButton)fragmentView.findViewById(R.id.btnAppt);
+		apptButton.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
+				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+			}
+		});
+		entryButton = (ImageButton)fragmentView.findViewById(R.id.btnNote);
+		entryButton.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
+				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
+				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_DIARY_ENTRY);
+			}
+		});		
 	}
 
 	/**

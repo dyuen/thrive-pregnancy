@@ -1,9 +1,7 @@
 package com.thrivepregnancy.ui;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -11,13 +9,9 @@ import java.text.SimpleDateFormat;
 
 import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
-import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,7 +42,7 @@ public class CareFragment extends Fragment {
 	private CareFragment 		fragment;
 	private EventDataHelper 	dataHelper = null;
 	private MainActivity		activity;
-
+	private CareListAdapter 	adapter;
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
 	 */
@@ -63,7 +57,7 @@ public class CareFragment extends Fragment {
 		fragmentView = inflater.inflate(R.layout.fragment_care, container, false);
 		return fragmentView;
 	}
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
@@ -77,15 +71,36 @@ public class CareFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		// Create and set the adapter with this list
-		CareListAdapter adapter = new CareListAdapter(fragmentView);
+		adapter = new CareListAdapter(fragmentView);
 		ListView listView = (ListView)getActivity().findViewById(R.id.lstCare);
 		listView.setAdapter(adapter);
 	}
-	private class ElementBacker{
-    	final int		resourceId;
-    	final String	tag;
-    	Event			event;
-    	int				type;
+	
+	// These correspond to the tag attribute of the element's root layout 
+    private static final String TAG_PROVIDER 			= "PROVIDER";
+    private static final String TAG_APPOINTMENTS_HEADER	= "APPOINTMENTS_HEADER";
+    private static final String TAG_APPOINTMENT 		= "APPOINTMENT";
+    private static final String TAG_QUESTIONS_HEADER	= "QUESTIONS_HEADER";
+    private static final String TAG_QUESTION 			= "QUESTION";
+    private static final String TAG_TEST_RESULTS_HEADER	= "TEST_RESULTS_HEADER";
+    private static final String TAG_TEST_RESULT 		= "TEST_RESULT";
+    private static final String TAG_ADD_NEW				= "ADD_NEW";
+
+    // Corresponding integers required by the adapter getItemViewType() method
+    private static final int TYPE_PROVIDER 				= 0;
+    private static final int TYPE_APPOINTMENTS_HEADER	= 1;
+    private static final int TYPE_APPOINTMENT 			= 2;
+    private static final int TYPE_QUESTIONS_HEADER		= 3;
+    private static final int TYPE_QUESTION 				= 4;
+    private static final int TYPE_TEST_RESULTS_HEADER	= 5;
+    private static final int TYPE_TEST_RESULT 			= 6;
+    private static final int TYPE_ADD_NEW				= 7;
+	
+    private class ElementBacker{
+    	final String	tag;		// See TAG_.. above
+    	int				type;		// See TYPE_.. above
+    	final int		resourceId; // Resource id of the layout to render the element
+    	Event			event;	    // (for TAG_APPOINTMENT, TAG_QUESTION, TAG_TEST_RESULT only)
     	ElementBacker(final String tag, final int resourceId, int type){
     		this.resourceId = resourceId;
     		this.tag = tag;
@@ -97,39 +112,34 @@ public class CareFragment extends Fragment {
     	}
     }
     
-    private static final String TAG_PROVIDER 			= "PROVIDER";
-    private static final String TAG_APPOINTMENTS_HEADER	= "APPOINTMENTS_HEADER";
-    private static final String TAG_APPOINTMENT 		= "APPOINTMENT";
-    private static final String TAG_QUESTIONS_HEADER	= "QUESTIONS_HEADER";
-    private static final String TAG_QUESTION 			= "QUESTION";
-    private static final String TAG_TEST_RESULTS_HEADER	= "TEST_RESULTS_HEADER";
-    private static final String TAG_TEST_RESULT 		= "TEST_RESULT";
-    private static final String TAG_ADD_NEW				= "ADD_NEW";
-
-    private static final int TYPE_PROVIDER 				= 0;
-    private static final int TYPE_APPOINTMENTS_HEADER	= 1;
-    private static final int TYPE_APPOINTMENT 			= 2;
-    private static final int TYPE_QUESTIONS_HEADER		= 3;
-    private static final int TYPE_QUESTION 				= 4;
-    private static final int TYPE_TEST_RESULTS_HEADER	= 5;
-    private static final int TYPE_TEST_RESULT 			= 6;
-    private static final int TYPE_ADD_NEW				= 7;
-
+    // Re-useable "fixed" list element backers 
     private ElementBacker backerPROVIDER = new ElementBacker(TAG_PROVIDER, R.layout.list_item_provider, TYPE_PROVIDER);            
     private ElementBacker backerAPPOINTMENTS_HEADER = new ElementBacker(TAG_APPOINTMENTS_HEADER, R.layout.list_item_appointments_header, TYPE_APPOINTMENTS_HEADER);
     private ElementBacker backerQUESTIONS_HEADER = new ElementBacker(TAG_QUESTIONS_HEADER, R.layout.list_item_questions_header, TYPE_QUESTIONS_HEADER);
     private ElementBacker backerTEST_RESULTS_HEADER = new ElementBacker(TAG_TEST_RESULTS_HEADER, R.layout.list_item_test_results_header, TYPE_TEST_RESULTS_HEADER);
     private ElementBacker backerADD_NEW = new ElementBacker(TAG_ADD_NEW, R.layout.list_item_add_new, TYPE_ADD_NEW);
 
+	/**
+	 * Handles the result from Appointment
+	 */
+	@Override
+	public void onActivityResult(int requestCodeIgnored, int resultCode, Intent intent){
+		if (intent == null){
+			// Return from called activity by pressing back button
+			return;
+		}
+		else {
+			adapter.createBackingList();
+			adapter.notifyDataSetChanged();
+		}
+	}
     private class CareListAdapter extends BaseAdapter{
 		private List<Event> 			events;
-//		private final EventDataHelper 	dataHelper;
 		private int						listIndex;
 		private boolean					editingProviderContact;
 		private View					providerView;
 		private SharedPreferences 		preferences;
 		private CareListAdapter			adapter;
-//		private MainActivity 			activity;
 		
 		private long dueDate;
 		private String providerName;
@@ -140,8 +150,6 @@ public class CareFragment extends Fragment {
 		
 	    public CareListAdapter(View fragmentView) {	    	
 	    	adapter = this;
-//			this.dataHelper = dataHelper;
-//			this.activity = activity;
 			editingProviderContact = false;
 			events = null;
 			
@@ -152,10 +160,11 @@ public class CareFragment extends Fragment {
 	    	providerLocation = preferences.getString(StartupActivity.PREFERENCE_PROVIDER_LOCATION, "");
 	    	oncallPhone = preferences.getString(StartupActivity.PREFERENCE_ONCALL_NUMBER, "");
 			
-	    	elementBackers = determineListContent();
+	    	// Create and fill list of element backers, one per element in the list
+	    	elementBackers = createBackingList();	    	
 	    }
 	    
-	    private ArrayList<ElementBacker> determineListContent(){
+	    public ArrayList<ElementBacker> createBackingList(){
 	    	elementBackers = new ArrayList<ElementBacker>();	    	
 	        elementBackers.add(backerPROVIDER);
 	        
@@ -178,7 +187,7 @@ public class CareFragment extends Fragment {
 	        for (Event event: events){
 	        	elementBackers.add(new ElementBacker(TAG_TEST_RESULT, R.layout.list_item_test_result, TYPE_TEST_RESULT, event));
 	        }
-	        elementBackers.add(backerADD_NEW);	    	
+	        elementBackers.add(backerADD_NEW);
 	        return elementBackers;
 	    }
 
@@ -279,7 +288,6 @@ public class CareFragment extends Fragment {
 					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
 				}				
 			});			
-//	    	((ImageButton)view.findViewById(R.id.list_item_appt_delete)).setOnClickListener(deleteAppointmentListener);			
 	    	setupPhotoView(event.getPhotoFile(), (ImageView)view.findViewById(R.id.list_item_appt_photo));
 		}
 		
