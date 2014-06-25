@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -66,9 +67,11 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
 	private Event.Type m_eventType;
 	
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
+	private static final String IMAGE_PATH = "imagePath";
+	private static final String DELETED = "deleted";
 	
 	 /**
-     * Startup stuff
+     * Setup global variables at startup
      */
 	protected void StartUp(Event.Type type) {
         // Mode will be one of MainActivity.REQUEST_MODE_NEW or MainActivity.REQUEST_MODE_EDIT
@@ -85,6 +88,42 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
         CreateEvent();
 	}
 	
+	/**
+	 * 
+     * Saves Application State
+     */
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	    savedInstanceState.putString(IMAGE_PATH, m_currentPhotoPath);
+	    super.onSaveInstanceState(savedInstanceState);
+	}
+	
+	/**
+	 * 
+     * Restores Application State
+     */
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+	    // Always call the superclass so it can restore the view hierarchy
+	    super.onRestoreInstanceState(savedInstanceState);
+	    
+	    // Restore state members from saved instance
+	    m_currentPhotoPath = savedInstanceState.getString(IMAGE_PATH);
+	    
+	    if (m_currentPhotoPath != null) {
+	    	Log.d("onRestoreInstanceState", m_currentPhotoPath);
+	    	
+	    	if(m_currentPhotoPath.equalsIgnoreCase(DELETED)) {
+	    		m_event.setPhotoFile(null);
+	    	} else {
+	    		m_event.setPhotoFile(m_currentPhotoPath);
+	    	}
+	    	
+	    	if (SetPhoto()) {
+            	setContentView(m_layout);
+            }
+	    }
+	}
+
     /**
      * Creates Event object either from existing record or new
      */
@@ -104,9 +143,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
         	m_event = new Event();
         	m_event.setDate(m_date.getTime());
         	m_event.setType(m_eventType);
-        	
-        	if (m_currentPhotoPath != null && (m_currentPhotoPath.length() > 0)) m_event.setPhotoFile(m_currentPhotoPath);
-        }
+        } 
     }
     
     /**
@@ -138,6 +175,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
  		m_buttonDelete.setOnClickListener(new OnClickListener() {        
             public void onClick(View v) {
             	m_event.setPhotoFile(null);
+            	m_currentPhotoPath = DELETED;
             	
             	if (SetPhoto()) {
                 	setContentView(m_layout);

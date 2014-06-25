@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:textAppearance="?android:attr/textAppearanceLarge" 
         android:focusable="false"
         android:inputType="date" /> 
 	<EditText
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/diary_date"
-        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:textAppearance="?android:attr/textAppearanceLarge" 
         
         android:inputType="text" />
 		<requestFocus />
@@ -27,7 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/diary_notes"
-        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        android:textColor="@color/red"
         />
 	<ImageButton
         android:id="@+id/diary_delete"
@@ -36,6 +37,7 @@
         android:layout_below="@id/diary_notes"
         android:scaleType="centerInside"
         android:layout_alignParentRight="true"
+        android:background="@color/white"
         android:src="@drawable/grey_circle_icon"
         android:contentDescription="@string/Diary_Delete"
         />
@@ -45,20 +47,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/diary_delete"
         android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:contentDescription="@string/Diary_Photo"
         />
 	<LinearLayout
 	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
+	    android:layout_height="wrap_content"
 	    android:orientation="horizontal"
 	    android:layout_below="@id/diary_notes"
-	    android:gravity="center_horizontal">
+	    android:gravity="center">
 	   
 		<ImageButton
 	        android:id="@+id/diary_create"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:scaleType="centerInside"
+	        android:background="@color/white"
 	        android:src="@drawable/grey_camera_icon"
 	        android:contentDescription="@string/Diary_Delete"
 	        />
@@ -67,7 +71,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="@string/add_photo"
-	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        android:textAppearance="?android:attr/textAppearanceLarge" 
         />
 	</LinearLayout>
 </RelativeLayout>
