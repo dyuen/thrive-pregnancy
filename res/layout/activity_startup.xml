@@ -49,7 +49,6 @@ Statup Activity layout
         android:focusable="false"
         android:inputType="date"
         android:textAppearance="?android:attr/textAppearanceMedium" 
-        android:focusable="false" 
         />
     <TextView
         android:id="@+id/startup_warning"
