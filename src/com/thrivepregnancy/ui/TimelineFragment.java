@@ -85,8 +85,7 @@ public class TimelineFragment extends Fragment {
 		ListView listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
 		listView.setAdapter(adapter);
 		
-		//Sev - this check causes apptButton and entryButton to stop responding after scrolling back and forth between other sections
-		//if (apptButton == null){
+		if (apptButton == null){
 			apptButton = (ImageButton)fragmentView.findViewById(R.id.btnAppt);
 			apptButton.setOnClickListener(new View.OnClickListener() {			
 				@Override
@@ -96,8 +95,8 @@ public class TimelineFragment extends Fragment {
 					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
 				}
 			});
-		//}
-		//if (entryButton == null){
+		}
+		if (entryButton == null){
 			entryButton = (ImageButton)fragmentView.findViewById(R.id.btnNote);
 			entryButton.setOnClickListener(new View.OnClickListener() {			
 				@Override
@@ -107,7 +106,7 @@ public class TimelineFragment extends Fragment {
 					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_DIARY_ENTRY);
 				}
 			});		
-		//}
+		}
 	}
 
 	/**
@@ -168,7 +167,7 @@ public class TimelineFragment extends Fragment {
 					TextView dateTime = (TextView)view.findViewById(R.id.list_item_appt_time);
 					photoView = (ImageView)view.findViewById(R.id.list_item_tip_photo);
 					
-					purpose.setText(event.getDoctor());
+					purpose.setText(event.getPurpose());
 					dateTime.setText(event.getDate().toString());
 					break;
 					
