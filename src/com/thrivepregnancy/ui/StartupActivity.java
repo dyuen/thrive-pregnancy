@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -53,12 +54,13 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
 	 */
 	public static final String PREFERENCE_ONCALL_NUMBER = "number";
 	
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy");
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
 
 	private String 				name = null;
 	private FragmentManager		fragmentManager;
 	private Calendar 			calendar;
 	private OnDateSetListener 	dateListener;
+	private final static Integer MIN_NAME_LENGTH = 3;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,7 +115,7 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
 	        	// that a "full" name is entered, check its length
 	        	EditText nameView = (EditText)findViewById(R.id.startup_name);       
 	        	name = nameView.getText().toString();	        	
-	        	if (name != null && (name.length() > 5) && calendar != null){
+	        	if (name != null && (name.length() >= MIN_NAME_LENGTH) && calendar != null){
 	        		// Save name and date in preferences
 	        		saveValues();
 	        		// Proceed to the main screen

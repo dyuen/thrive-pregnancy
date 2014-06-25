@@ -35,8 +35,8 @@
 <!--'Personal Info'-->
 
     <string name="PersonalInfo_Title">Personal Info</string>
-    <string name="PersonalInfo_Mother_Name">My Name:</string>
-    <string name="PersonalInfo_Due_Date">Estimated Due Date:</string>
+    <string name="PersonalInfo_Mother_Name">Name</string>
+    <string name="PersonalInfo_Due_Date">Estimated Due Date</string>
     <string name="PersonalInfo_Primary_Doctor">My Doctors Name:</string>
     <string name="PersonalInfo_Hospital">My Hospital:</string>
     <string name="PersonalInfo_DrPhone">24-Hour Doctor on Call:</string>

@@ -28,7 +28,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -63,7 +63,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
 	
 	private String m_currentPhotoPath;
 	
-	private RelativeLayout m_layout;
+	private LinearLayout m_layout;
 	private Event.Type m_eventType;
 	
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -82,7 +82,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
         m_eventDao = getHelper().getEventDao();
         
         m_date = Calendar.getInstance();
-        m_dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.CANADA);
+        m_dateFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
         m_dateListener = this;
         
         CreateEvent();
@@ -149,7 +149,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
     /**
      * Fills views object from events
      */
-    protected void FillViews(RelativeLayout layout) {
+    protected void FillViews(LinearLayout layout) {
     	m_layout = layout;
     	
     	m_dateView.setOnClickListener(new OnClickListener() {        
