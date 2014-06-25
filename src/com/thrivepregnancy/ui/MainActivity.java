@@ -143,6 +143,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     		PreparedQuery<Event> preparedQuery = builder.prepare();
     		events = eventDao.query(preparedQuery);
     		
+    		/*
     		Event e = new Event();
     		e.setType(Event.Type.DIARY_ENTRY);
     		e.setDate(new Date());
@@ -153,10 +154,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     		e = new Event();
     		e.setType(Event.Type.APPOINTMENT);
     		e.setDate(new Date());
-    		e.setPurpose("Hard coded appointment");
+    		e.setDoctor("Hard coded appointment");
     		e.setText("...appointment notes");
     		e.setAddress("My doctor's address");
     		events.add(20, e);
+    		*/
     		
     	}
     	catch (SQLException e){

@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.thrivepregnancy.R;
@@ -21,7 +21,7 @@ public class DiaryEntryActivity extends BaseActivity {
     	
     	LayoutInflater inflater = getLayoutInflater();
     	
-    	RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.activity_diaryentry, null);
+    	LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.activity_diaryentry, null);
     	
     	setContentView(layout);
     	

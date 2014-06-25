@@ -71,7 +71,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         Calendar date = (Calendar)m_duedate.clone();;
     	
-        for (int i=40; i>week; i--) {
+        for (int i=41; i>week; i--) {
         	date.add(Calendar.DATE, -7);
         }
         

@@ -53,7 +53,7 @@ public class Event {
 	 * For appointment only
 	 */
 	@DatabaseField
-	private String		purpose;
+	private String		doctor;
 	
 	/**
 	 * For appointment only
@@ -117,12 +117,12 @@ public class Event {
 		this.text = text;
 	}
 
-	public String getPurpose() {
-		return purpose;
+	public String getDoctor() {
+		return doctor;
 	}
 
-	public void setPurpose(String purpose) {
-		this.purpose = purpose;
+	public void setDoctor(String doctor) {
+		this.doctor = doctor;
 	}
 
 	public String getAddress() {
