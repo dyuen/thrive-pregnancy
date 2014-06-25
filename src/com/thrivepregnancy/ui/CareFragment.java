@@ -301,6 +301,8 @@ public class CareFragment extends Fragment {
 					Dao<Event, Integer> dao = activity.getHelper().getEventDao();
 					try {
 						dao.delete(event);
+						adapter.createBackingList();
+						adapter.notifyDataSetChanged();
 					}
 					catch (SQLException e){
 						Log.e(MainActivity.DEBUG_TAG, "Can't delete question", e);
