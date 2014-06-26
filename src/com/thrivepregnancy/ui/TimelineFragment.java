@@ -4,6 +4,7 @@ import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import com.thrivepregnancy.data.DatabaseHelper;
@@ -45,6 +46,7 @@ public class TimelineFragment extends Fragment {
 	private List<Event> 		events;
 	private DatabaseHelper	databaseHelper;
 	private EventDataHelper	eventDataHelper;
+	private boolean			firstDisplay;
 	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -66,14 +68,13 @@ public class TimelineFragment extends Fragment {
 		activity = (MainActivity)getActivity();
 		databaseHelper = activity.getHelper();
 		eventDataHelper = new EventDataHelper(databaseHelper);
+		firstDisplay = true;
 	}
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState){
 		super.onActivityCreated( savedInstanceState);
 	}
-
-
 	
 	@Override
 	public void onResume() {
@@ -91,6 +92,10 @@ public class TimelineFragment extends Fragment {
 		adapter = new TimelineListAdapter(getView().getContext(), screenWidth, orientation);		
 		ListView listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
 		listView.setAdapter(adapter);
+		if (firstDisplay){
+			firstDisplay = false;
+			adapter.scrollToThisWeek(listView);
+		}
 		
 		apptButton = (ImageButton)fragmentView.findViewById(R.id.btnAppt);
 		apptButton.setOnClickListener(new View.OnClickListener() {			
@@ -109,7 +114,7 @@ public class TimelineFragment extends Fragment {
 				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
 				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_DIARY_ENTRY);
 			}
-		});		
+		});
 	}
 
 	/**
@@ -251,17 +256,19 @@ public class TimelineFragment extends Fragment {
 			//						photo.setImageDrawable(drawable);
 			return view;
 		}
-/*		
-		OnClickListener editButtonclickListener = new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
-				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
-				intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());	
-				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+		
+		public void scrollToThisWeek(ListView listView){
+			int position = 0;
+			Date now = new Date();
+			for (Event event: events){
+				if (event.getType().equals(Event.Type.TIP)){
+					if (now.after(event.getDate())){
+						listView.smoothScrollToPosition(position);
+					}
+				}
+				position++;
 			}
-		};
-*/		
+		}
 		//***************************************** From BaseAdapter
 		// Get the type of View that will be created by getView(int, View, ViewGroup) for the specified item. (0...
 		@Override
