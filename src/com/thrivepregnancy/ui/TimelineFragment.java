@@ -3,6 +3,7 @@ package com.thrivepregnancy.ui;
 import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -13,6 +14,8 @@ import com.thrivepregnancy.data.EventDataHelper;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -186,13 +189,20 @@ public class TimelineFragment extends Fragment {
 					break;
 					
 				case DIARY_ENTRY:
+					
 					if(view == null  || !view.getTag().equals(Event.Type.DIARY_ENTRY.name())) {
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_entry, parent, false);
 					}						
 					TextView notes = (TextView)view.findViewById(R.id.list_item_entry_notes);
 					date = (TextView)view.findViewById(R.id.list_item_entry_date);
 					photoView = (ImageView)view.findViewById(R.id.list_item_entry_photo);
-
+					//sev diary entry photo
+					File filePhoto = new File(event.getPhotoFile());
+					if (filePhoto.exists()) {
+						Bitmap photoBit = BitmapFactory.decodeFile(filePhoto.getAbsolutePath());
+						photoView.setImageBitmap(photoBit);
+					}
+					
 					ImageButton editButton = (ImageButton)view.findViewById(R.id.list_item_entry_edit);
 					editButton.setOnClickListener(new OnClickListener() {			
 						@Override
@@ -225,6 +235,7 @@ public class TimelineFragment extends Fragment {
 					date.setText(event.getDate().toString());
 					break;
 			}
+			
 			if (photoFile != null){
 				//photoView.setImageURI(uri);
 			}
