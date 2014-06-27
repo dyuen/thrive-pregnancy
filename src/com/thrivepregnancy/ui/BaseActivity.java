@@ -254,7 +254,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CANADA).format(new Date());
         String imageFileName = m_eventType.toString() + "_" + timeStamp + ".jpg";
 
-        File image = new File(this.getExternalFilesDir(null), imageFileName);
+        File image = new File(this.getFilesDir(), imageFileName);
 
         m_currentPhotoPath = image.getAbsolutePath();
         

@@ -3,6 +3,8 @@ package com.thrivepregnancy.ui;
 import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -14,9 +16,12 @@ import com.thrivepregnancy.data.EventDataHelper;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -146,11 +151,24 @@ public class TimelineFragment extends Fragment {
 			TextView 	date;
 			ImageView 	photoView = null;
 			Uri 		uri = null;
+			Bitmap bitmap = null;
 			
 			final Event event = events.get(position);
 			String photoFile = event.getPhotoFile();
 			if (photoFile != null && photoFile.length() > 0){
-				uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
+				if (event.getType().equals(Event.Type.TIP)){
+					uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
+				}
+				else {
+					
+					File file = new File(photoFile);
+					/*
+					 * uri = Uri.parse("File:/" + file.getAbsolutePath());
+					
+					FileProvider.getUriForFile(activity, "com.thrivepregnancy.fileprovider", file);
+					*/
+					bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
+				}
 			}
 			
 			switch (event.getType()){
@@ -221,6 +239,9 @@ public class TimelineFragment extends Fragment {
 			}
 			if (photoFile != null){
 				photoView.setImageURI(uri);
+			}
+			else if (bitmap != null){
+				photoView.setImageBitmap(bitmap);
 			}
 			
 			// This works, but the image isn't scaled up to fill available space

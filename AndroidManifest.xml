@@ -18,11 +18,12 @@
         android:label="@string/app_name" 
      	android:theme="@style/AppTheme"     	
      	>
+     	<!-- Custom content provider to access image file in /assets -->
      	<provider
      	    android:authorities="com.thrivepregnancy.assetcontentprovider"
      	    android:exported="false"
      	    android:name="com.thrivepregnancy.data.AssetContentProvider"/>        
-        <activity
+      	<activity
             android:name=".ui.StartupActivity"
             android:label="@string/app_name" >
             <intent-filter>

@@ -1,5 +1,10 @@
 package com.thrivepregnancy.data;
 
+/**
+ * A ContentProvider for files in the /assets directory. Although programmatic access
+ * works for direct reads and writes works fine,  calling ImageView.setImageURI on the 
+ * same uri does not allow the view to read the file 
+ */
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -50,7 +55,7 @@ public class AssetContentProvider extends ContentProvider {
     public AssetFileDescriptor openAssetFile(Uri uri, String mode) throws FileNotFoundException {
         String path = uri.getPath().substring(1);
         try {
-            AssetFileDescriptor afd = mAssetManager.openFd("baby.jpg");
+            AssetFileDescriptor afd = mAssetManager.openFd(path);
             return afd;
         } 
         catch (IOException e) {
