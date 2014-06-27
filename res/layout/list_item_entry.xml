@@ -58,7 +58,7 @@ The top level tag attribute is required in the Timeline list adapter
                 android:textAppearance="?android:attr/textAppearanceMedium" 
                 />
         </RelativeLayout>
-        <!-- Appointment purpose -->
+        <!-- Notes -->
         <TextView
             android:id="@+id/list_item_entry_notes"
             android:layout_width="match_parent"
@@ -72,5 +72,28 @@ The top level tag attribute is required in the Timeline list adapter
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"			
             />
-    </LinearLayout>
+        <!--  Audio playback -->
+        <RelativeLayout
+            android:id="@+id/list_item_entry_audio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            >
+        	<TextView
+        	    android:id="@+id/list_item_entry_audio_heading"
+            	android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:text="@string/Diary_Audio_Heading"
+            	android:textAppearance="?android:attr/textAppearanceMedium" 
+            	/>
+            <ImageButton
+            	android:id="@+id/list_item_entry_audio_button"
+            	style="@style/listViewItemIconStyle"
+            	android:src="@drawable/red_microphone_icon"
+            	android:contentDescription="@string/appt"
+            	android:layout_below="@id/list_item_entry_audio_heading"
+           	 	android:adjustViewBounds="true"
+            	/>           
+            </RelativeLayout>
+     </LinearLayout>
 </RelativeLayout>

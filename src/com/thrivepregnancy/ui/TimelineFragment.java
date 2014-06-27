@@ -5,19 +5,31 @@ import com.thrivepregnancy.R;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnErrorListener;
+import android.media.MediaPlayer.OnPreparedListener;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,8 +52,12 @@ import android.widget.TextView;
 /**
  * Implements the "My Timeline" fragment in the {@link MainActivity} page
  */
-public class TimelineFragment extends Fragment {
+public class TimelineFragment extends Fragment implements OnCompletionListener, OnErrorListener, OnPreparedListener{
 
+	private static SimpleDateFormat diaryEntryFormat = new SimpleDateFormat("MMMMMMMMM d");
+	private static SimpleDateFormat monthFormat = new SimpleDateFormat("MMMMMMMMM");
+	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa");
+	
 	private View 				fragmentView;
 	private TimelineFragment 	fragment;
 	private MainActivity 		activity;
@@ -49,9 +65,12 @@ public class TimelineFragment extends Fragment {
 	private ImageButton 		entryButton;
 	private TimelineListAdapter adapter;
 	private List<Event> 		events;
-	private DatabaseHelper	databaseHelper;
-	private EventDataHelper	eventDataHelper;
-	private boolean			firstDisplay;
+	private DatabaseHelper		databaseHelper;
+	private EventDataHelper		eventDataHelper;
+	private boolean				firstDisplay;
+	private	MediaPlayer 		mediaPlayer;
+	private ListView 			listView;
+	private int					firstTipWeek;
 	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -74,6 +93,8 @@ public class TimelineFragment extends Fragment {
 		databaseHelper = activity.getHelper();
 		eventDataHelper = new EventDataHelper(databaseHelper);
 		firstDisplay = true;
+    	SharedPreferences preferences = activity.getSharedPreferences(StartupActivity.PREFERENCES, Activity.MODE_PRIVATE);
+    	firstTipWeek = preferences.getInt(StartupActivity.PREFERENCE_FIRST_WEEK, 0);
 	}
 	
 	@Override
@@ -94,8 +115,16 @@ public class TimelineFragment extends Fragment {
 		int screenWidth = displaymetrics.widthPixels;
 		
 		// Create and set the adapter with this list
-		adapter = new TimelineListAdapter(getView().getContext(), screenWidth, orientation);		
-		ListView listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
+		List<Event> events = eventDataHelper.getTimelineEvents();
+		HashMap<Event, String> weekMap = new HashMap<Event, String>();
+		int	tipCount = 0;
+		String week = activity.getString(R.string.week) + " ";
+		for (Event event: events){
+			String weekText = week + String.valueOf(firstTipWeek + tipCount++);
+			weekMap.put(event, weekText);
+		}
+		adapter = new TimelineListAdapter(getView().getContext(), events, weekMap, screenWidth, orientation);		
+		listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
 		listView.setAdapter(adapter);
 		if (firstDisplay){
 			firstDisplay = false;
@@ -134,24 +163,26 @@ public class TimelineFragment extends Fragment {
 		else {
 			events = eventDataHelper.getTimelineEvents();
 			adapter.notifyDataSetChanged();
+			adapter.scrollToThisWeek(listView);
 		}
 	}
 
 	private class TimelineListAdapter extends BaseAdapter{
 		private final Context 	context;
 		private List<Event> 	events;
+		HashMap<Event, String> 	weekMap;
 		
-		public TimelineListAdapter(Context context, int screenWidth, int orientation) {
+		public TimelineListAdapter(Context context, List<Event>	events, HashMap<Event, String> weekMap, int screenWidth, int orientation) {
 			this.context = context;
-			events = eventDataHelper.getTimelineEvents();
+			this.events = events;
+			this.weekMap = weekMap;
 		}
 
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
-			TextView 	date;
 			ImageView 	photoView = null;
 			Uri 		uri = null;
-			Bitmap bitmap = null;
+			Bitmap 		bitmap = null;
 			
 			final Event event = events.get(position);
 			String photoFile = event.getPhotoFile();
@@ -172,11 +203,28 @@ public class TimelineFragment extends Fragment {
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_tip, parent, false);
 					}						
 					TextView text = (TextView)view.findViewById(R.id.list_item_tip_text);
-					date = (TextView)view.findViewById(R.id.list_item_tip_date);
+					TextView week = (TextView)view.findViewById(R.id.list_item_tip_week);
+					TextView range = (TextView)view.findViewById(R.id.list_item_tip_range);
 					photoView = (ImageView)view.findViewById(R.id.list_item_tip_photo);
 					
 					text.setText(event.getText());
-					date.setText("(TBR) " + event.getDate().toString());
+					
+					Calendar calendar = Calendar.getInstance();					
+					calendar.setTime(event.getDate());
+					
+					String startDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+					String startMonth = monthFormat.format(calendar.getTime()); 
+					calendar.add(Calendar.DAY_OF_MONTH, 6);
+					String endDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+					String endMonth = monthFormat.format(calendar.getTime()); 
+					
+					week.setText(weekMap.get(event));
+					if (startMonth.equals(endMonth)){
+						range.setText(startMonth + " " + startDay + "-" + endDay);
+					}
+					else {
+						range.setText(startMonth + " " + startDay + " - " + endMonth + " " + endDay);
+					}
 					break;
 			
 				case APPOINTMENT:
@@ -185,10 +233,10 @@ public class TimelineFragment extends Fragment {
 					}						
 					TextView purpose = (TextView)view.findViewById(R.id.list_item_appt_purpose);
 					TextView dateTime = (TextView)view.findViewById(R.id.list_item_appt_time);
-					photoView = (ImageView)view.findViewById(R.id.list_item_tip_photo);
+					photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
 					
 					purpose.setText(event.getPurpose());
-					dateTime.setText(event.getDate().toString());
+					dateTime.setText(appointmentDateFormat.format(event.getDate()));
 					
 					ImageButton editButtonA = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
 					editButtonA.setOnClickListener(new OnClickListener() {			
@@ -208,15 +256,8 @@ public class TimelineFragment extends Fragment {
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_entry, parent, false);
 					}						
 					TextView notes = (TextView)view.findViewById(R.id.list_item_entry_notes);
-					date = (TextView)view.findViewById(R.id.list_item_entry_date);
+					TextView date = (TextView)view.findViewById(R.id.list_item_entry_date);
 					photoView = (ImageView)view.findViewById(R.id.list_item_entry_photo);
-					//sev diary entry photo
-					File filePhoto = new File(event.getPhotoFile());
-					if (filePhoto.exists()) {
-						Bitmap photoBit = BitmapFactory.decodeFile(filePhoto.getAbsolutePath());
-						photoView.setImageBitmap(photoBit);
-					}
-					
 					ImageButton editButton = (ImageButton)view.findViewById(R.id.list_item_entry_edit);
 					editButton.setOnClickListener(new OnClickListener() {			
 						@Override
@@ -243,10 +284,23 @@ public class TimelineFragment extends Fragment {
 								Log.e(MainActivity.DEBUG_TAG, "Can't delete event", e);
 							}
 						}
-					});
+					});					
+					
+					final String audioFile = event.getAudioFile();
+					if (audioFile != null && audioFile.length() > 0){
+						View audioView = (View)view.findViewById(R.id.list_item_entry_audio);
+						audioView.setVisibility(View.VISIBLE);
+						ImageButton playButton = (ImageButton)view.findViewById(R.id.list_item_entry_audio_button);
+						playButton.setOnClickListener(new View.OnClickListener() {							
+							@Override
+							public void onClick(View v) {
+								playAudio(audioFile);
+							}
+						});
+					}
 					
 					notes.setText(event.getText());
-					date.setText(event.getDate().toString());
+					date.setText(diaryEntryFormat.format(event.getDate()));
 					break;
 			}
 			
@@ -256,39 +310,24 @@ public class TimelineFragment extends Fragment {
 			else if (bitmap != null){
 				photoView.setImageBitmap(bitmap);
 			}
-			
-			// This works, but the image isn't scaled up to fill available space
-			// even though the image width (800) is wider than my screen (768)!!
-			// In fact, it looks as if it might have reduced the size by exactly half
-			//				uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
-			//				photo.setMaxHeight(1072);
-			//				photo.setMaxWidth(1600);
-			//				photo.setImageURI(uri);
-
-			// This doesn't work: decodeFileDescriptor will return null, so no image;
-			//						AssetManager assetManager = context.getAssets();
-			//						AssetFileDescriptor afd = assetManager.openFd("baby.jpg");
-			//						FileDescriptor fd = afd.getFileDescriptor();
-			//						Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd);
-			//						photo.setImageBitmap(bitmap);
-
-			// This executes but gives a FileNotFoundEXception warning (the image will be missing)
-			//						Uri uri =  Uri.parse("file:///android_asset/baby.jpg");
-			//						photo.setImageURI(uri);
-
-			// This works
-			// Using large images (like the original "rosy.jpg") will cause 
-			// "java.lang.OutOfMemoryError at android.graphics.BitmapFactory.nativeDecodeAsset (Native Method)"
-			//						photo.setImageResource(R.drawable.baby);
-
-			//						Bitmap bitmap = ImageLoader.compressPicture(R.drawable.rosy, appResources, screenWidth);
-			//						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-			//						FileInputStream fis = context.openFileInput("rosy.jpg");
-			//						Picture picture = Picture.createFromStream(fis);
-			//						PictureDrawable drawable = new PictureDrawable(picture);
-			//						photo.setImageResource(R.drawable.rosy_compressed);
-			//						photo.setImageDrawable(drawable);
 			return view;
+		}
+		
+		private void playAudio(String audioFilePath){
+    		mediaPlayer = new MediaPlayer ();
+    		try {
+    			URL url;
+    			mediaPlayer.setDataSource(audioFilePath);
+//    			mediaPlayer.setDataSource(urlString);
+    			mediaPlayer.setOnCompletionListener(fragment);
+    			mediaPlayer.setOnErrorListener(fragment);
+    			mediaPlayer.setOnPreparedListener(fragment);
+    			mediaPlayer.prepareAsync();
+    		}
+    		catch (IOException e){
+    			Log.e(MainActivity.DEBUG_TAG, "Error preparing audio playback", e);
+    		}
+			
 		}
 		
 		public void scrollToThisWeek(ListView listView){
@@ -296,13 +335,32 @@ public class TimelineFragment extends Fragment {
 			Date now = new Date();
 			for (Event event: events){
 				if (event.getType().equals(Event.Type.TIP)){
-					if (now.after(event.getDate())){
-						listView.smoothScrollToPosition(position);
+					if (now.before(event.getDate())){						
+						listView.post(new Scroller(position, listView));
+						break;
 					}
 				}
 				position++;
 			}
 		}
+		
+		/**
+		 * Executes scrolling to current week on the UI thread. 
+		 */
+		private class Scroller implements Runnable{
+			private int position;
+			private ListView listView;
+			Scroller(int position, ListView listView){
+				this.position = position;
+				this.listView = listView;
+			}
+			public void run() {
+				// Using setSelection rather than smoothScrollToPosition.
+				// Latter cannot cope with elements being variable sizes
+				listView.setSelection(position);
+	        }
+		};
+		
 		//***************************************** From BaseAdapter
 		// Get the type of View that will be created by getView(int, View, ViewGroup) for the specified item. (0...
 		@Override
@@ -352,5 +410,30 @@ public class TimelineFragment extends Fragment {
 				return R.layout.list_item_entry;
 			}			
 		}
+	}
+	/**
+	 * Listener methods for the MediaPlayer
+	 */
+	public void onCompletion(MediaPlayer mp){
+		mediaPlayer.release();
+	}
+	public boolean onError (MediaPlayer mp, int what, int extra){
+		/*
+		-1004 MEDIA_ERROR_IO Added in API level 17
+		-1007 MEDIA_ERROR_MALFORMED Added in API level 17
+  		  200 MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK
+  		  100 MEDIA_ERROR_SERVER_DIED
+ 		 -110 MEDIA_ERROR_TIMED_OUT Added in API level 17
+    	    1 MEDIA_ERROR_UNKNOWN
+		-1010 MEDIA_ERROR_UNSUPPORTED Added in API level 17
+		*/
+		Log.e(MainActivity.DEBUG_TAG, "MediaPlayer error = " + what + " : " + extra);
+		// Report errors back to PlayerActivity
+		mp.release();		
+		return true;		
+	}
+	
+	public void onPrepared(MediaPlayer mp){
+		mp.start();
 	}
 }

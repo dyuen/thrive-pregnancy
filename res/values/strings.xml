@@ -7,10 +7,12 @@
     <string name="appt">Record Appointment</string>
     <string name="needit">Need It</string>
     <string name="gotit">Got It</string>
-
+    <string name="week">Week</string>
+    
 <!--'Overall'-->
     <string name="save">Save</string>
     <string name="add_photo">Add Photo</string>
+    <string name="add_new">Add New...</string>
     
 <!--'User preferences'--> 
     <string name="PREFERENCES">preferences</string>
@@ -54,6 +56,9 @@
     <string name="Diary_Photo">Diary Photo</string>
     <string name="Diary_Create">Take a diary picture</string>
     <string name="Diary_Delete">Delete a diary picture</string>
+    <string name="Diary_Record">Record Voice_Note</string>
+    <string name="Diary_Record_Instructions">Start speaking, and press the audio button again when you are finished</string>
+    <string name="Diary_Audio_Heading">Voice Note</string>
     
 <!--'Appointments'-->
 	<string name="Appointment_Title">My Appointments</string>

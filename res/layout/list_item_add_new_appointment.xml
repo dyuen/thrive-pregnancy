@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
-Layout of the "Add new" line in Care list Appointments, Questions, or Test Results
+Layout of the "Add new" line in Care list Appointments
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:tag="ADD_NEW"
+    android:tag="ADD_NEW_APPOINTMENT"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -17,7 +17,7 @@ Layout of the "Add new" line in Care list Appointments, Questions, or Test Resul
     	android:adjustViewBounds="true"
 	    />
     <TextView
-        android:text="Add new... REPLACE"
+        android:text="@string/add_new"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:textAppearance="?android:attr/textAppearanceMedium" 

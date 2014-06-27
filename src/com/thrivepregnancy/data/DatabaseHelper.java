@@ -1,5 +1,6 @@
 package com.thrivepregnancy.data;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
@@ -23,6 +24,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
 import com.thrivepregnancy.R;
 import com.thrivepregnancy.ui.MainActivity;
+import com.thrivepregnancy.ui.StartupActivity;
 
 /**
  * Database helper which creates and upgrades the database and provides the DAOs for the app.
@@ -107,11 +109,19 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	private void createEvents(List<String[]> eventList) {
 		String[] eventString;
 		Event event;
-		
+		boolean firstTip = true;
 		try {
 			for (int i=0; i<eventList.size(); i++) {
 				eventString = eventList.get(i);
 				event = new Event();
+				
+				if (firstTip){
+					firstTip = false;
+			    	SharedPreferences preferences = m_context.getSharedPreferences(StartupActivity.PREFERENCES, Activity.MODE_PRIVATE);
+					SharedPreferences.Editor editor = preferences.edit();
+			    	editor.putInt(StartupActivity.PREFERENCE_FIRST_WEEK, Integer.valueOf(eventString[0]));
+			    	editor.commit();
+				}
 				
 				event.setType(Event.Type.TIP);
 				event.setDate(ReturnDate(Integer.parseInt(eventString[0])));

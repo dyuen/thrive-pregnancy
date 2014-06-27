@@ -2,19 +2,24 @@ package com.thrivepregnancy.ui;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.io.File;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
+import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,7 +45,8 @@ public class CareFragment extends Fragment {
 
 	private View 				fragmentView;
 	private CareFragment 		fragment;
-	private EventDataHelper 	dataHelper = null;
+	private EventDataHelper 	dataHelper;
+	private Dao<Event, Integer>	eventDao;
 	private MainActivity		activity;
 	private CareListAdapter 	adapter;
 	/**
@@ -62,9 +68,9 @@ public class CareFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 		activity = (MainActivity)getActivity();
-	    if (dataHelper == null) {
-	    	dataHelper = new EventDataHelper(activity.getHelper());
-	    }
+		DatabaseHelper databaseHelper = activity.getHelper();
+		eventDao = databaseHelper.getEventDao();
+	    dataHelper = new EventDataHelper(databaseHelper);
 	}
 
 	@Override
@@ -84,23 +90,28 @@ public class CareFragment extends Fragment {
     private static final String TAG_QUESTION 			= "QUESTION";
     private static final String TAG_TEST_RESULTS_HEADER	= "TEST_RESULTS_HEADER";
     private static final String TAG_TEST_RESULT 		= "TEST_RESULT";
-    private static final String TAG_ADD_NEW				= "ADD_NEW";
+    private static final String TAG_ADD_NEW_APPOINTMENT	= "ADD_NEW_APPOINTMENT";
+    private static final String TAG_ADD_NEW_QUESTION	= "ADD_NEW_QUESTION";
+    private static final String TAG_ADD_NEW_TEST_RESULT	= "ADD_NEW_TEST_RESULT";
 
     // Corresponding integers required by the adapter getItemViewType() method
-    private static final int TYPE_PROVIDER 				= 0;
-    private static final int TYPE_APPOINTMENTS_HEADER	= 1;
-    private static final int TYPE_APPOINTMENT 			= 2;
-    private static final int TYPE_QUESTIONS_HEADER		= 3;
-    private static final int TYPE_QUESTION 				= 4;
-    private static final int TYPE_TEST_RESULTS_HEADER	= 5;
-    private static final int TYPE_TEST_RESULT 			= 6;
-    private static final int TYPE_ADD_NEW				= 7;
+    private static final int TYPE_PROVIDER 					= 0;
+    private static final int TYPE_APPOINTMENTS_HEADER		= 1;
+    private static final int TYPE_APPOINTMENT 				= 2;
+    private static final int TYPE_QUESTIONS_HEADER			= 3;
+    private static final int TYPE_QUESTION 					= 4;
+    private static final int TYPE_TEST_RESULTS_HEADER		= 5;
+    private static final int TYPE_TEST_RESULT 				= 6;
+    private static final int TYPE_ADD_NEW_APPOINTMENT		= 7;
+    private static final int TYPE_ADD_NEW_QUESTION			= 8;
+    private static final int TYPE_ADD_NEW_TEST_RESULT		= 9;
 	
     private class ElementBacker{
     	final String	tag;		// See TAG_.. above
     	int				type;		// See TYPE_.. above
     	final int		resourceId; // Resource id of the layout to render the element
     	Event			event;	    // (for TAG_APPOINTMENT, TAG_QUESTION, TAG_TEST_RESULT only)
+    	String			addNewText; // (for TAG_NEW only)
     	ElementBacker(final String tag, final int resourceId, int type){
     		this.resourceId = resourceId;
     		this.tag = tag;
@@ -110,17 +121,23 @@ public class CareFragment extends Fragment {
     		this(tag, resourceId, type);
     		this.event = event;
     	}
+    	ElementBacker(final String tag, final int resourceId, int type, int stringResourceId){
+    		this(tag, resourceId, type);
+    		this.event = event;
+    	}
     }
     
     // Re-useable "fixed" list element backers 
-    private ElementBacker backerPROVIDER = new ElementBacker(TAG_PROVIDER, R.layout.list_item_provider, TYPE_PROVIDER);            
-    private ElementBacker backerAPPOINTMENTS_HEADER = new ElementBacker(TAG_APPOINTMENTS_HEADER, R.layout.list_item_appointments_header, TYPE_APPOINTMENTS_HEADER);
-    private ElementBacker backerQUESTIONS_HEADER = new ElementBacker(TAG_QUESTIONS_HEADER, R.layout.list_item_questions_header, TYPE_QUESTIONS_HEADER);
-    private ElementBacker backerTEST_RESULTS_HEADER = new ElementBacker(TAG_TEST_RESULTS_HEADER, R.layout.list_item_test_results_header, TYPE_TEST_RESULTS_HEADER);
-    private ElementBacker backerADD_NEW = new ElementBacker(TAG_ADD_NEW, R.layout.list_item_add_new, TYPE_ADD_NEW);
+    private ElementBacker backerPROVIDER 			= new ElementBacker(TAG_PROVIDER, 				R.layout.list_item_provider, 			TYPE_PROVIDER);            
+    private ElementBacker backerAPPOINTMENTS_HEADER = new ElementBacker(TAG_APPOINTMENTS_HEADER, 	R.layout.list_item_appointments_header, TYPE_APPOINTMENTS_HEADER);
+    private ElementBacker backerQUESTIONS_HEADER 	= new ElementBacker(TAG_QUESTIONS_HEADER, 		R.layout.list_item_questions_header, 	TYPE_QUESTIONS_HEADER);
+    private ElementBacker backerTEST_RESULTS_HEADER = new ElementBacker(TAG_TEST_RESULTS_HEADER, 	R.layout.list_item_test_results_header, TYPE_TEST_RESULTS_HEADER);
+    private ElementBacker backerADD_NEW_APPOINTMENT = new ElementBacker(TAG_ADD_NEW_APPOINTMENT, 	R.layout.list_item_add_new_appointment, TYPE_ADD_NEW_APPOINTMENT);
+    private ElementBacker backerADD_NEW_QUESTION 	= new ElementBacker(TAG_ADD_NEW_QUESTION, 		R.layout.list_item_add_new_question, 	TYPE_ADD_NEW_QUESTION);
+    private ElementBacker backerADD_NEW_TEST_RESULT = new ElementBacker(TAG_ADD_NEW_TEST_RESULT, 	R.layout.list_item_add_new_test_result, TYPE_ADD_NEW_TEST_RESULT);
 
 	/**
-	 * Handles the result from Appointment
+	 * Handles the result from Appointment or Test Result
 	 */
 	@Override
 	public void onActivityResult(int requestCodeIgnored, int resultCode, Intent intent){
@@ -134,8 +151,12 @@ public class CareFragment extends Fragment {
 		}
 	}
     private class CareListAdapter extends BaseAdapter{
-		private List<Event> 			events;
-		private int						listIndex;
+		private List<Event> 			appointmentEvents;
+		private List<Event> 			questionEvents;
+		private List<Event> 			testResultEvents;
+		private int						appointmentListIndex;
+		private int						questionListIndex;
+		private int						testResultListIndex;
 		private boolean					editingProviderContact;
 		private View					providerView;
 		private SharedPreferences 		preferences;
@@ -151,7 +172,6 @@ public class CareFragment extends Fragment {
 	    public CareListAdapter(View fragmentView) {	    	
 	    	adapter = this;
 			editingProviderContact = false;
-			events = null;
 			
 			// "Cache" the provider contact info locally
 			preferences = activity.getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
@@ -161,7 +181,7 @@ public class CareFragment extends Fragment {
 	    	oncallPhone = preferences.getString(StartupActivity.PREFERENCE_ONCALL_NUMBER, "");
 			
 	    	// Create and fill list of element backers, one per element in the list
-	    	elementBackers = createBackingList();	    	
+	    	elementBackers = createBackingList();
 	    }
 	    
 	    public ArrayList<ElementBacker> createBackingList(){
@@ -169,35 +189,54 @@ public class CareFragment extends Fragment {
 	        elementBackers.add(backerPROVIDER);
 	        
 	        elementBackers.add(backerAPPOINTMENTS_HEADER);
-	        List<Event> events = dataHelper.getAppointments();
-	        for (Event event: events){
-	        	elementBackers.add(new ElementBacker(TAG_APPOINTMENT, R.layout.list_item_appointment_timeline, TYPE_APPOINTMENT, event));
+	        appointmentEvents = dataHelper.getAppointments();
+	        for (Event event: appointmentEvents){
+	        	elementBackers.add(new ElementBacker(TAG_APPOINTMENT, R.layout.list_item_appointment_care, TYPE_APPOINTMENT, event));
 	        }
-	        elementBackers.add(backerADD_NEW);
+	        elementBackers.add(backerADD_NEW_APPOINTMENT);
 	        
 	        elementBackers.add(backerQUESTIONS_HEADER);
-	        events = dataHelper.getQuestions();
-	        for (Event event: events){
+	        questionEvents = dataHelper.getQuestions();
+	        for (Event event: questionEvents){
 	        	elementBackers.add(new ElementBacker(TAG_QUESTION, R.layout.list_item_question, TYPE_QUESTION, event));
 	        }
-	        elementBackers.add(backerADD_NEW);
+	        elementBackers.add(backerADD_NEW_QUESTION);
 
 	        elementBackers.add(backerTEST_RESULTS_HEADER);
-	        events = dataHelper.getTestResults();
-	        for (Event event: events){
+	        testResultEvents = dataHelper.getTestResults();
+	        for (Event event: testResultEvents){
 	        	elementBackers.add(new ElementBacker(TAG_TEST_RESULT, R.layout.list_item_test_result, TYPE_TEST_RESULT, event));
 	        }
-	        elementBackers.add(backerADD_NEW);
-	        return elementBackers;
+	        elementBackers.add(backerADD_NEW_TEST_RESULT);
+			
+	        resetIndices();
+			return elementBackers;
+	    }
+	    
+	    private void resetIndices(){
+	        appointmentListIndex = 0;
+			questionListIndex = 0;
+			testResultListIndex = 0;	    	
 	    }
 
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
+			ImageView 	photoView = null;
+			Bitmap 		bitmap = null;
+			
 			ElementBacker backer = elementBackers.get(position);
 			if(view == null || !view.getTag().equals(backer.tag)) {
 				view = LayoutInflater.from(activity).inflate(backer.resourceId, parent, false);
 			}
-			Event 		event;
+		
+			Event event = backer.event;
+			if (event != null){		
+				String photoFile = backer.event.getPhotoFile();
+				if (photoFile != null && photoFile.length() > 0){
+					File file = new File(photoFile);
+					bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
+				}
+			}
 
 			switch (backer.resourceId) {
 			case R.layout.list_item_provider:
@@ -205,22 +244,94 @@ public class CareFragment extends Fragment {
 	    		break;
 
 			case R.layout.list_item_appointment_care:
-				populateAppointmentView(view, events.get(listIndex));
+				photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
+				populateAppointmentView(view, backer.event);
 				break;
 
 			case R.layout.list_item_question:
-				populateQuestionView(view, events.get(listIndex));
+				populateQuestionView(view, backer.event);
 				break;
 
 			case R.layout.list_item_test_result:
-				populateTestResultView(view, events.get(listIndex));
+				photoView = (ImageView)view.findViewById(R.id.list_item_test_result_photo);
+				populateTestResultView(view, backer.event);
 				break;
 
-			case R.layout.list_item_add_new:
+			case R.layout.list_item_add_new_appointment:
+				((ImageButton)view.findViewById(R.id.list_item_add_new)).setOnClickListener(addNewAppointmentListener);
 				break;
+				
+			case R.layout.list_item_add_new_question:
+				CreateNewQuestionOnClickLister listener = new CreateNewQuestionOnClickLister(view);
+				((ImageButton)view.findViewById(R.id.list_item_add_new)).setOnClickListener(listener);
+				((ImageButton)view.findViewById(R.id.new_question_save)).setOnClickListener(listener);
+				break;
+				
+			case R.layout.list_item_add_new_test_result:
+				((ImageButton)view.findViewById(R.id.list_item_add_new)).setOnClickListener(addNewTestResultListener);
+				break;
+				
+			default:
+				Log.e(MainActivity.DEBUG_TAG, "No!");
+			}
+			if (bitmap != null){
+				photoView.setImageBitmap(bitmap);
 			}
 			return view;
 		}
+		
+		// For both the pencil and the checkmark
+		private class CreateNewQuestionOnClickLister implements OnClickListener{
+			View parentView;
+			CreateNewQuestionOnClickLister(View parentView){
+				this.parentView = parentView;
+			}
+			@Override
+			public void onClick(View view){
+				View requestSection = parentView.findViewById(R.id.new_question_request);
+				View entrySection = parentView.findViewById(R.id.new_question_entry);
+				if (requestSection.getVisibility() == View.VISIBLE){
+					requestSection.setVisibility(View.GONE);
+					entrySection.setVisibility(View.VISIBLE);
+				}
+				else {
+					requestSection.setVisibility(View.VISIBLE);
+					entrySection.setVisibility(View.GONE);
+					String text = ((TextView)entrySection.findViewById(R.id.new_question_text)).getText().toString();
+					// Create the Question event
+					Event question = new Event();
+					question.setType(Event.Type.QUESTION);
+					question.setDate(new Date());
+					question.setText(text);
+					try {
+						eventDao.create(question);
+					}
+					catch (SQLException e){
+						Log.e(MainActivity.DEBUG_TAG, "Can't create question Event",  e);
+					}
+					adapter.createBackingList();
+					adapter.notifyDataSetChanged();
+				}
+			}			
+		}
+		
+		OnClickListener addNewAppointmentListener = new OnClickListener(){
+			@Override
+			public void onClick(View view){
+				Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
+				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);				
+			}
+		};
+
+		OnClickListener addNewTestResultListener = new OnClickListener(){
+			@Override
+			public void onClick(View view){
+				Intent intent = new Intent(activity.getApplicationContext(), TestResultActivity.class);
+				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
+				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_TEST_RESULT);				
+			}
+		};
 
 		private void populateProviderView(View view){
 			// Display the values stored in preferences
@@ -333,7 +444,7 @@ public class CareFragment extends Fragment {
 		//Returns the number of types of Views that will be created by getView(int, View, ViewGroup)
 		@Override
 		public int getViewTypeCount (){
-			return 8;
+			return 10;
 		}
 		//Indicates whether the item ids are stable across changes to the underlying data.
 		@Override public boolean hasStableIds (){

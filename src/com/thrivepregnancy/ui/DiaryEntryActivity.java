@@ -1,7 +1,15 @@
 package com.thrivepregnancy.ui;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -15,6 +23,11 @@ import com.thrivepregnancy.data.Event;
  * Activity for creating or editing a DIARY_ENTRY event
  */
 public class DiaryEntryActivity extends BaseActivity {
+	
+	private TextView 		m_AudioInstructions;
+	private MediaRecorder 	m_Recorder;
+	private String 			m_AudioFilePath;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +43,48 @@ public class DiaryEntryActivity extends BaseActivity {
     	SetViews();
     	
     	FillViews(layout);
+    	
+    	setUpAudio();
+    	
     }
+    
+    private void setUpAudio(){
+    	m_AudioInstructions = (TextView)findViewById(R.id.diary_create_audio_instructions);
+
+    	ImageButton m_audioButton = (ImageButton)findViewById(R.id.diary_create_audio_button);
+    	m_audioButton.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				if (m_AudioInstructions.getVisibility() == View.GONE){
+					// Show instructions
+					m_AudioInstructions.setVisibility(View.VISIBLE);					
+					// Start sound recording
+					m_Recorder = new MediaRecorder();
+					m_Recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+					m_Recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+			        String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".mpg";
+			        File file = new File(getExternalFilesDir(null), fileName);
+			        m_AudioFilePath = file.getAbsolutePath();
+			        m_Recorder.setOutputFile(m_AudioFilePath);
+			        m_Recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+			        try {
+			        	m_Recorder.prepare();
+			        	m_Recorder.start();
+			        }
+			        catch (IOException e){
+			        	
+			        }
+				}
+				else {
+					// Hide instructions
+					m_AudioInstructions.setVisibility(View.GONE);
+					m_Recorder.stop();
+					m_Recorder.release();
+				   	m_event.setAudioFile(m_AudioFilePath);
+				}
+			}
+		});
+     }
     
     /**
      * References views from layout

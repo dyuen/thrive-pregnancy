@@ -53,6 +53,10 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
 	 * Provider 24 hour on call number  Preferences key
 	 */
 	public static final String PREFERENCE_ONCALL_NUMBER = "number";
+	/**
+	 * Week number of first tip
+	 */
+	public static final String PREFERENCE_FIRST_WEEK = "first";
 	
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
 

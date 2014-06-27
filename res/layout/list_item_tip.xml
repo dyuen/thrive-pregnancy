@@ -27,13 +27,22 @@ The top level tag attribute is required in the Timeline list adapter
         	/>
     	<!-- Week number and date range -->
     	<TextView
-        	android:id="@+id/list_item_tip_date"
+        	android:id="@+id/list_item_tip_week"
         	android:layout_toRightOf="@id/list_item_tip_timeline"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
         	android:textAppearance="?android:attr/textAppearanceMedium" 
         	/>
-    </RelativeLayout>
+    	<!-- Week number and date range -->
+    	<TextView
+        	android:id="@+id/list_item_tip_range"
+        	android:layout_toRightOf="@id/list_item_tip_week"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_marginLeft="10dp"
+        	android:textAppearance="?android:attr/textAppearanceSmall" 
+        	/>
+    	</RelativeLayout>
     <RelativeLayout
     	android:paddingTop="20dp"
     	android:layout_width="match_parent"

@@ -48,7 +48,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	
 	private String m_mode;
 	private Dao<Event, Integer> m_eventDao;
-	private Event m_event;
+	protected Event m_event;
 	
 	private SimpleDateFormat m_dateFormat;
 	private SimpleDateFormat m_timeFormat;
