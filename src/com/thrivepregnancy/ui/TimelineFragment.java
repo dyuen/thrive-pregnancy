@@ -172,6 +172,17 @@ public class TimelineFragment extends Fragment {
 					
 					purpose.setText(event.getPurpose());
 					dateTime.setText(event.getDate().toString());
+					
+					ImageButton editButtonA = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
+					editButtonA.setOnClickListener(new OnClickListener() {			
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+							intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
+							intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());	
+							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+						}
+					});
 					break;
 					
 				case DIARY_ENTRY:
@@ -215,7 +226,7 @@ public class TimelineFragment extends Fragment {
 					break;
 			}
 			if (photoFile != null){
-				photoView.setImageURI(uri);
+				//photoView.setImageURI(uri);
 			}
 			
 			// This works, but the image isn't scaled up to fill available space

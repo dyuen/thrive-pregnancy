@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import android.app.Activity;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -40,22 +42,33 @@ import com.thrivepregnancy.data.Event;
  * A convenience superclass for Activity classes which may require
  * the ORMLITE DatabaseHelper object
  */
-public class BaseActivity extends FragmentActivity implements OnDateSetListener {
+public class BaseActivity extends FragmentActivity implements OnDateSetListener, OnTimeSetListener {
 
 	private DatabaseHelper 	databaseHelper = null;
 	
 	private String m_mode;
 	private Dao<Event, Integer> m_eventDao;
 	private Event m_event;
+	
 	private SimpleDateFormat m_dateFormat;
+	private SimpleDateFormat m_timeFormat;
+	private SimpleDateFormat m_combinedFormat;
+	
 	private Integer m_result = 0;
 	private OnDateSetListener m_dateListener;
+	private OnTimeSetListener m_timeListener;
 	private Calendar m_date;
 	
 	private TextView m_warnView;
 	private String m_warning;
+	
 	private EditText m_dateView;
 	private EditText m_noteView;
+	private EditText m_purposeView;
+	private EditText m_timeView;
+	private EditText m_addressView;
+	private EditText m_doctorView;
+	
 	private ImageView m_photoView;
 	private ImageButton m_buttonDelete;
 	private ImageButton m_buttonCreate;
@@ -82,8 +95,13 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
         m_eventDao = getHelper().getEventDao();
         
         m_date = Calendar.getInstance();
+        
         m_dateFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
+        m_timeFormat = new SimpleDateFormat("hh:mm a", Locale.CANADA);
+        m_combinedFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy hh:mm a", Locale.CANADA);
+        
         m_dateListener = this;
+        m_timeListener = this;
         
         CreateEvent();
 	}
@@ -152,36 +170,73 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
     protected void FillViews(LinearLayout layout) {
     	m_layout = layout;
     	
-    	m_dateView.setOnClickListener(new OnClickListener() {        
-            public void onClick(View v) {
-              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", m_dateListener);
-               	fragment.show(getSupportFragmentManager(), "1");
-            }
-        });
+    	if (m_dateView != null) {
+	    	m_dateView.setOnClickListener(new OnClickListener() {        
+	            public void onClick(View v) {
+	              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", m_dateListener);
+	               	fragment.show(getSupportFragmentManager(), "1");
+	            }
+	        });
+	    	
+	    	String strDate;
+	    	
+	    	strDate = m_dateFormat.format(m_event.getDate());
+	    	
+	        m_dateView.setText(strDate);
+    	}
     	
-    	String strDate;
+    	if (m_timeView != null) {
+    		m_timeView.setOnClickListener(new OnClickListener() {        
+	            public void onClick(View v) {
+	              	TimeDialogFragment fragment = TimeDialogFragment.newInstance("1", m_timeListener);
+	               	fragment.show(getSupportFragmentManager(), "1");
+	            }
+	        });
+	    	
+	    	String strDate;
+	    	
+	    	strDate = m_timeFormat.format(m_event.getDate());
+	    	
+	        m_timeView.setText(strDate);
+		}
+
+    	if (m_noteView != null) {
+    		if (m_event.getText() != null && (m_event.getText().length() > 0)) m_noteView.setText(m_event.getText());
+    	}
     	
-    	strDate = m_dateFormat.format(m_event.getDate());
     	
-        m_dateView.setText(strDate);
-        if (m_event.getText() != null && (m_event.getText().length() > 0)) m_noteView.setText(m_event.getText());
+    	if (m_purposeView != null) {
+    		if (m_event.getPurpose() != null && (m_event.getPurpose().length() > 0)) m_purposeView.setText(m_event.getPurpose());
+    	}
+    	
+		if (m_addressView != null) {
+			if (m_event.getAddress() != null && (m_event.getAddress().length() > 0)) m_addressView.setText(m_event.getAddress());		
+		}
+		
+		if (m_doctorView != null) {
+			if (m_event.getDoctor() != null && (m_event.getDoctor().length() > 0)) m_doctorView.setText(m_event.getDoctor());
+		}
+		
+        if (m_buttonCreate != null) {
+	        m_buttonCreate.setOnClickListener(new OnClickListener() {        
+	            public void onClick(View v) {
+	            	DispatchTakePictureIntent();
+	            }
+	        });
+        }
         
-        m_buttonCreate.setOnClickListener(new OnClickListener() {        
-            public void onClick(View v) {
-            	DispatchTakePictureIntent();
-            }
-        });
-        
- 		m_buttonDelete.setOnClickListener(new OnClickListener() {        
-            public void onClick(View v) {
-            	m_event.setPhotoFile(null);
-            	m_currentPhotoPath = DELETED;
-            	
-            	if (SetPhoto()) {
-                	setContentView(m_layout);
-                }
-            }
-        });
+        if (m_buttonDelete != null) {
+	 		m_buttonDelete.setOnClickListener(new OnClickListener() {        
+	            public void onClick(View v) {
+	            	m_event.setPhotoFile(null);
+	            	m_currentPhotoPath = DELETED;
+	            	
+	            	if (SetPhoto()) {
+	                	setContentView(m_layout);
+	                }
+	            }
+	        });
+        }
         
         if (SetPhoto()) {
         	setContentView(m_layout);
@@ -318,6 +373,23 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
         m_dateView.setText(m_dateFormat.format(m_date.getTime()));
     }
     
+	/**
+     * Called when the time has been set 
+     */
+	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+		// Save the new time in the calendar
+		if (m_date == null){
+			m_date = Calendar.getInstance();
+			m_date.clear();        
+		}
+		
+		m_date.set(Calendar.HOUR_OF_DAY, hourOfDay);		
+		m_date.set(Calendar.MINUTE, minute);
+        
+		// Update the display
+        m_timeView.setText(m_timeFormat.format(m_date.getTime()));
+    }
+	
     /**
      * Called when the Save menu item is pressed
      */
@@ -328,7 +400,11 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
 	        	String notes = m_noteView.getText().toString();	
 	        	
 				try {
-					m_date.setTime(m_dateFormat.parse(m_dateView.getText().toString()));
+					if (m_timeView != null) {
+						m_date.setTime(m_combinedFormat.parse(m_dateView.getText().toString() + " " + m_timeView.getText().toString()));
+					} else {
+						m_date.setTime(m_dateFormat.parse(m_dateView.getText().toString()));
+					}
 				} catch (ParseException e) {
 					m_date = null;
 					Log.e(BaseActivity.class.getName(), "Unable to parse date", e);
@@ -338,6 +414,13 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
 	        		// Save notes and date
 	        		m_event.setDate(m_date.getTime());
 	        		m_event.setText(notes);
+	        		
+	        		if (m_purposeView != null && (m_purposeView.getText().toString().length() != 0)) 
+	        			m_event.setPurpose(m_purposeView.getText().toString());
+	        		if (m_doctorView != null && (m_doctorView.getText().toString().length() != 0)) 
+	        			m_event.setDoctor(m_doctorView.getText().toString());
+	        		if (m_addressView != null && (m_addressView.getText().toString().length() != 0)) 
+	        			m_event.setAddress(m_addressView.getText().toString());
 	        		
 	        		if (SaveEvent()) m_result = Activity.RESULT_OK;
 	        		closeActivity();
@@ -400,63 +483,97 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener 
 		return m_warnView;
 	}
 
-	public void set_warnView(TextView m_warnView) {
-		this.m_warnView = m_warnView;
+	public void set_warnView(TextView warnView) {
+		this.m_warnView = warnView;
 	}
 
 	public String get_warning() {
 		return m_warning;
 	}
 
-	public void set_warning(String m_warning) {
-		this.m_warning = m_warning;
+	public void set_warning(String warning) {
+		this.m_warning = warning;
 	}
 
 	public EditText get_dateView() {
 		return m_dateView;
 	}
 
-	public void set_dateView(EditText m_dateView) {
-		this.m_dateView = m_dateView;
+	public void set_dateView(EditText dateView) {
+		this.m_dateView = dateView;
 	}
 
 	public EditText get_noteView() {
 		return m_noteView;
 	}
 
-	public void set_noteView(EditText m_noteView) {
-		this.m_noteView = m_noteView;
+	public void set_noteView(EditText noteView) {
+		this.m_noteView = noteView;
+	}
+	
+	public EditText get_purposeView() {
+		return m_purposeView;
 	}
 
+	public void set_purposeView(EditText purposeView) {
+		this.m_purposeView = purposeView;
+	}
+	
+	public EditText get_timeView() {
+		return m_timeView;
+	}
+
+	public void set_timeView(EditText timeView) {
+		this.m_timeView = timeView;
+	}
+	
+	public EditText get_addressView() {
+		return m_addressView;
+	}
+
+	public void set_addressView(EditText addressView) {
+		this.m_addressView = addressView;
+	}
+	
+	public EditText get_doctorView() {
+		return m_doctorView;
+	}
+
+	public void set_doctorView(EditText doctorView) {
+		this.m_doctorView = doctorView;
+	}
+	
 	public ImageView get_photoView() {
 		return m_photoView;
 	}
 
-	public void set_photoView(ImageView m_photoView) {
-		this.m_photoView = m_photoView;
+	public void set_photoView(ImageView photoView) {
+		this.m_photoView = photoView;
 	}
 
 	public ImageButton get_buttonDelete() {
 		return m_buttonDelete;
 	}
 
-	public void set_buttonDelete(ImageButton m_buttonDelete) {
-		this.m_buttonDelete = m_buttonDelete;
+	public void set_buttonDelete(ImageButton buttonDelete) {
+		this.m_buttonDelete = buttonDelete;
 	}
 
 	public ImageButton get_buttonCreate() {
 		return m_buttonCreate;
 	}
 
-	public void set_buttonCreate(ImageButton m_buttonCreate) {
-		this.m_buttonCreate = m_buttonCreate;
+	public void set_buttonCreate(ImageButton buttonCreate) {
+		this.m_buttonCreate = buttonCreate;
 	}
 
 	public TextView get_photoText() {
 		return m_photoText;
 	}
 
-	public void set_photoText(TextView m_photoText) {
-		this.m_photoText = m_photoText;
+	public void set_photoText(TextView photoText) {
+		this.m_photoText = photoText;
 	}
+	
+	
 }

@@ -10,8 +10,8 @@
     android:layout_marginBottom="@dimen/activity_vertical_margin" >
     
     <EditText
-        android:id="@+id/diary_date"
-        android:hint="@string/Diary_Date"
+        android:id="@+id/test_date"
+        android:hint="@string/Test_Date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -19,8 +19,8 @@
         android:focusable="false"
         android:inputType="date" /> 
 	<EditText
-        android:id="@+id/diary_notes"
-        android:hint="@string/Diary_Notes"
+        android:id="@+id/test_notes"
+        android:hint="@string/Test_Notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -28,7 +28,7 @@
         android:inputType="text" />
 		<requestFocus />
 	<TextView
-        android:id="@+id/diary_warning"
+        android:id="@+id/test_warning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -36,23 +36,23 @@
         android:textColor="@color/red"
         />
 	<ImageButton
-        android:id="@+id/diary_delete"
+        android:id="@+id/test_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:scaleType="centerInside"
         android:background="@color/white"
         android:src="@drawable/grey_circle_icon"
-        android:contentDescription="@string/Diary_Delete"
+        android:contentDescription="@string/Test_Delete"
         />
 	<ImageView
-        android:id="@+id/diary_image"
+        android:id="@+id/test_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/Diary_Photo"
+        android:contentDescription="@string/Test_Photo"
         />
 	<LinearLayout
 	    android:layout_width="match_parent"
@@ -61,16 +61,16 @@
 	    android:gravity="center">
 	   
 		<ImageButton
-	        android:id="@+id/diary_create"
+	        android:id="@+id/test_create"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:scaleType="centerInside"
 	        android:background="@color/white"
 	        android:src="@drawable/grey_camera_icon"
-	        android:contentDescription="@string/Diary_Create"
+	        android:contentDescription="@string/Test_Create"
 	        />
 		<TextView
-	        android:id="@+id/diary_create_text"
+	        android:id="@+id/test_create_text"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_marginLeft="10dp"
