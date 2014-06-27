@@ -237,7 +237,6 @@ public class CareFragment extends Fragment {
 					bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
 				}
 			}
-
 			switch (backer.resourceId) {
 			case R.layout.list_item_provider:
 		    	populateProviderView(view);
@@ -385,7 +384,7 @@ public class CareFragment extends Fragment {
 			});
 		}
 		
-		private void populateAppointmentView(View view, Event event){
+		private void populateAppointmentView(View view, final Event event){
 			((TextView)view.findViewById(R.id.list_item_appt_purpose)).setText(event.getPurpose());
 			((TextView)view.findViewById(R.id.list_item_appt_time)).setText(event.getDate().toString());
 			ImageButton editAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
@@ -397,6 +396,20 @@ public class CareFragment extends Fragment {
 					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);	        	
 					intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, eventId);	        	
 					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+				}				
+			});			
+			ImageButton deleteAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_delete);
+			deleteAppointment.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view){
+					try {
+						eventDao.delete(event);
+						adapter.createBackingList();
+						adapter.notifyDataSetChanged();
+					}
+					catch (SQLException e){
+						Log.e(MainActivity.DEBUG_TAG, "Can't delete appointment", e);
+					}
 				}				
 			});			
 	    	setupPhotoView(event.getPhotoFile(), (ImageView)view.findViewById(R.id.list_item_appt_photo));
@@ -422,7 +435,7 @@ public class CareFragment extends Fragment {
 			});			
 		}
 		
-		private void populateTestResultView(View view, Event event){
+		private void populateTestResultView(View view, final Event event){
 			((TextView)view.findViewById(R.id.list_item_test_result_description)).setText(event.getText());
 			((TextView)view.findViewById(R.id.list_item_test_result_date)).setText(event.getDate().toString());
 	    	setupPhotoView(event.getPhotoFile(), (ImageView)view.findViewById(R.id.list_item_test_result_photo));
