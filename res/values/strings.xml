@@ -54,22 +54,31 @@
     <string name="Diary_Photo">Diary Photo</string>
     <string name="Diary_Create">Take a diary picture</string>
     <string name="Diary_Delete">Delete a diary picture</string>
+    
 <!--'Appointments'-->
-
-    <string name="Appointment_Title">My Appointments</string>
-    <string name="Appointment_Doctor">Appointment For:</string>
-    <string name="Appointment_Date">Date:</string>
-    <string name="Appointment_Time">Time:</string>
-    <string name="Appointment_Location">Address:</string>
-    <string name="Appointment_Note">Notes:</string>
-    <string name="Appointment_Help">You can add a photo, such as of an appointment card or map.</string>
+	<string name="Appointment_Title">My Appointments</string>
+	
+    <string name="Appt_Purpose">Appointment For</string>
+    <string name="Appt_Doctor">Doctor</string>
+    <string name="Appt_Date">Date</string>
+    <string name="Appt_Time">Time</string>
+    <string name="Appt_Address">Address</string>
+    <string name="Appt_Notes">Notes</string>
+    <string name="Appt_Photo">Appointment Photo</string>
+    <string name="Appt_Create">Take an appointment picture</string>
+    <string name="Appt_Delete">Delete an appointment picture</string>
+    <string name="Appt_Help">You can add a photo, such as of an appointment card or map.</string>
+    <string name="Appt_Warning">Please enter notes and date</string>
 
 <!--'Test Results'-->
-
-    <string name="TestResults_Title">My Test Results</string>
-    <string name="TestResults_Photo_Date">Date:</string>
-    <string name="TestResults_Note">Notes:</string>
-
+	<string name="TestResults_Title">My Test Results</string>
+	
+    <string name="Test_Date">Date</string>
+    <string name="Test_Notes">Notes</string>
+    <string name="Test_Photo">Test Photo</string>
+    <string name="Test_Create">Take a test picture</string>
+    <string name="Test_Delete">Delete a test picture</string>
+	<string name="Test_Warning">Please enter notes and date</string>
 <!--'Tab: I Need'-->
 
     <string name="INeed_Checklist_Title">Checklist</string>

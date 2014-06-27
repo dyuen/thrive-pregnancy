@@ -159,14 +159,8 @@ public class TimelineFragment extends Fragment {
 				if (event.getType().equals(Event.Type.TIP)){
 					uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
 				}
-				else {
-					
+				else {					
 					File file = new File(photoFile);
-					/*
-					 * uri = Uri.parse("File:/" + file.getAbsolutePath());
-					
-					FileProvider.getUriForFile(activity, "com.thrivepregnancy.fileprovider", file);
-					*/
 					bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
 				}
 			}
@@ -195,16 +189,34 @@ public class TimelineFragment extends Fragment {
 					
 					purpose.setText(event.getPurpose());
 					dateTime.setText(event.getDate().toString());
+					
+					ImageButton editButtonA = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
+					editButtonA.setOnClickListener(new OnClickListener() {			
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+							intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
+							intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());	
+							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
+						}
+					});
 					break;
 					
 				case DIARY_ENTRY:
+					
 					if(view == null  || !view.getTag().equals(Event.Type.DIARY_ENTRY.name())) {
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_entry, parent, false);
 					}						
 					TextView notes = (TextView)view.findViewById(R.id.list_item_entry_notes);
 					date = (TextView)view.findViewById(R.id.list_item_entry_date);
 					photoView = (ImageView)view.findViewById(R.id.list_item_entry_photo);
-
+					//sev diary entry photo
+					File filePhoto = new File(event.getPhotoFile());
+					if (filePhoto.exists()) {
+						Bitmap photoBit = BitmapFactory.decodeFile(filePhoto.getAbsolutePath());
+						photoView.setImageBitmap(photoBit);
+					}
+					
 					ImageButton editButton = (ImageButton)view.findViewById(R.id.list_item_entry_edit);
 					editButton.setOnClickListener(new OnClickListener() {			
 						@Override
@@ -237,7 +249,8 @@ public class TimelineFragment extends Fragment {
 					date.setText(event.getDate().toString());
 					break;
 			}
-			if (photoFile != null){
+			
+			if (uri != null){
 				photoView.setImageURI(uri);
 			}
 			else if (bitmap != null){

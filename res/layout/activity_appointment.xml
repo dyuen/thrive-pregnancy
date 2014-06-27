@@ -10,25 +10,58 @@
     android:layout_marginBottom="@dimen/activity_vertical_margin" >
     
     <EditText
-        android:id="@+id/diary_date"
-        android:hint="@string/Diary_Date"
+        android:id="@+id/appt_purpose"
+        android:hint="@string/Appt_Purpose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        android:inputType="text" /> 
+        <requestFocus />
+    <EditText
+        android:id="@+id/appt_date"
+        android:hint="@string/Appt_Date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceLarge" 
         android:focusable="false"
         android:inputType="date" /> 
-	<EditText
-        android:id="@+id/diary_notes"
-        android:hint="@string/Diary_Notes"
+     <EditText
+        android:id="@+id/appt_time"
+        android:hint="@string/Appt_Time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        android:focusable="false"
+        android:inputType="time" /> 
+    <EditText
+        android:id="@+id/appt_address"
+        android:hint="@string/Appt_Address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceLarge" 
         android:inputType="text" />
-		<requestFocus />
+	<EditText
+        android:id="@+id/appt_doctor"
+        android:hint="@string/Appt_Doctor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        android:inputType="text" />
+	<EditText
+        android:id="@+id/appt_notes"
+        android:hint="@string/Appt_Notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        android:inputType="text" />	
 	<TextView
-        android:id="@+id/diary_warning"
+        android:id="@+id/appt_warning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -36,23 +69,23 @@
         android:textColor="@color/red"
         />
 	<ImageButton
-        android:id="@+id/diary_delete"
+        android:id="@+id/appt_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:scaleType="centerInside"
         android:background="@color/white"
         android:src="@drawable/grey_circle_icon"
-        android:contentDescription="@string/Diary_Delete"
+        android:contentDescription="@string/Appt_Delete"
         />
 	<ImageView
-        android:id="@+id/diary_image"
+        android:id="@+id/appt_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/Diary_Photo"
+        android:contentDescription="@string/Appt_Photo"
         />
 	<LinearLayout
 	    android:layout_width="match_parent"
@@ -61,16 +94,16 @@
 	    android:gravity="center">
 	   
 		<ImageButton
-	        android:id="@+id/diary_create"
+	        android:id="@+id/appt_create"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:scaleType="centerInside"
 	        android:background="@color/white"
 	        android:src="@drawable/grey_camera_icon"
-	        android:contentDescription="@string/Diary_Create"
+	        android:contentDescription="@string/Appt_Delete"
 	        />
 		<TextView
-	        android:id="@+id/diary_create_text"
+	        android:id="@+id/appt_create_text"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_marginLeft="10dp"

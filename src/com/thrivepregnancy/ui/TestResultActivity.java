@@ -1,36 +1,50 @@
 package com.thrivepregnancy.ui;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-/**
- * ACtivity for creating or editing a TEST_RESULT event
- */
-public class TestResultActivity  extends BaseActivity {
+import com.thrivepregnancy.R;
+import com.thrivepregnancy.data.Event;
 
-	private String mode;
-	
+/**
+ * Activity for creating or editing a DIARY_ENTRY event
+ */
+public class TestResultActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TextView dummyView = new TextView(this);
-        dummyView.setText("Placeholder for Test Result Create/Edit");
-        setContentView(dummyView);
-
-        // Mode will be one of MainActivity.REQUEST_MODE_NEW or MainActivity.REQUEST_MODE_EDIT
-        // If mode is edit, then REQUEST_PRIMARY_KEY will contain the primary key of the Event
-        Intent intent = getIntent();
-        mode = intent.getStringExtra(MainActivity.REQUEST_MODE);
-        
-        // When finished, create an Intent, adding extra:
-        // - MainActivity.MainActivity.REQUEST_MODE with the mode
-        // - MainActivity.RESULT_KEY_DIARY_ENTRY containing the primary key
-        // Then call setResult(code, Intent) and finish();
-        // For now let's just use Activity.RESULT_OK for the return code
-        // Just doing it here for temporary testing
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+    	
+    	LayoutInflater inflater = getLayoutInflater();
+    	
+    	LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.activity_testresult, null);
+    	
+    	setContentView(layout);
+    	
+    	StartUp(Event.Type.TEST_RESULT);
+    	
+    	SetViews();
+    	
+    	FillViews(layout);
+    }
+    
+    /**
+     * References views from layout
+     */
+    private void SetViews() {
+    	set_dateView((EditText)findViewById(R.id.test_date));
+    	set_noteView((EditText)findViewById(R.id.test_notes));
+    	set_warnView((TextView)findViewById(R.id.test_warning));
+    	set_warning(getString(R.string.Test_Warning));
+    	
+    	set_buttonDelete((ImageButton)findViewById(R.id.test_delete));
+    	set_buttonCreate((ImageButton)findViewById(R.id.test_create));
+    	
+    	set_photoText((TextView)findViewById(R.id.test_create_text));
+    	set_photoView((ImageView)findViewById(R.id.test_image));
     }
 }
