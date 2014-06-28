@@ -168,7 +168,9 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			events = eventDataHelper.getTimelineEvents();
 			createWeekMap();
 			notifyDataSetChanged();
-			scrollToThisWeek(listView);
+			if (refreshType.equals(RefreshType.ON_NEW_OR_EDIT)){
+				scrollToThisWeek(listView);
+			}
 		}
 
 		// Scroll to the Tip event at beginning of current week
