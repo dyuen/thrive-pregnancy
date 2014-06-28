@@ -49,22 +49,43 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         		android:layout_toLeftOf="@id/list_item_appt_delete"
         		android:adjustViewBounds="true"
 	        	/>
-    	    <!-- Appointment date/time -->
+       		<!-- Purpose -->
         	<TextView
-	        	android:id="@+id/list_item_appt_time"
+	        	android:id="@+id/list_item_appt_purpose"
         		android:layout_toLeftOf="@id/list_item_appt_edit"
-	        	android:layout_width="wrap_content"
+	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
 	        	android:textAppearance="?android:attr/textAppearanceMedium" 
-	        	/>
+	        	/>   	
         </RelativeLayout>
-        <!-- Appointment purpose -->
+        <!-- Date/time -->
         <TextView
-	        android:id="@+id/list_item_appt_purpose"
-	        android:layout_width="match_parent"
+	        android:id="@+id/list_item_appt_time"
+	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:textAppearance="?android:attr/textAppearanceMedium" 
-	        />   	
+	        />
+        <!-- Address -->
+        <TextView
+	        android:id="@+id/list_item_appt_address"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        />
+        <!-- Doctor -->
+        <TextView
+	        android:id="@+id/list_item_appt_doctor"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        />
+        <!-- Notes -->
+        <TextView
+	        android:id="@+id/list_item_appt_notes"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAppearance="?android:attr/textAppearanceMedium" 
+	        />
         <!-- Photo -->  
         <ImageView
             android:id="@+id/list_item_appt_photo"

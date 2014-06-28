@@ -270,8 +270,6 @@ public class CareFragment extends Fragment {
 				((ImageButton)view.findViewById(R.id.list_item_add_new)).setOnClickListener(addNewTestResultListener);
 				break;
 				
-			default:
-				Log.e(MainActivity.DEBUG_TAG, "No!");
 			}
 			if (bitmap != null){
 				photoView.setImageBitmap(bitmap);
@@ -385,8 +383,13 @@ public class CareFragment extends Fragment {
 		}
 		
 		private void populateAppointmentView(View view, final Event event){
+
 			((TextView)view.findViewById(R.id.list_item_appt_purpose)).setText(event.getPurpose());
-			((TextView)view.findViewById(R.id.list_item_appt_time)).setText(event.getDate().toString());
+			((TextView)view.findViewById(R.id.list_item_appt_time)).setText(appointmentDateFormat.format(event.getDate()));
+			((TextView)view.findViewById(R.id.list_item_appt_address)).setText(event.getAddress());
+			((TextView)view.findViewById(R.id.list_item_appt_doctor)).setText(event.getDoctor());
+			((TextView)view.findViewById(R.id.list_item_appt_notes)).setText(event.getText());
+			
 			ImageButton editAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
 			final Integer eventId = event.getId();
 			editAppointment.setOnClickListener(new OnClickListener(){

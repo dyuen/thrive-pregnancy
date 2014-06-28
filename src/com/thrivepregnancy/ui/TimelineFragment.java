@@ -4,7 +4,6 @@ import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -22,7 +21,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -33,17 +31,12 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -58,16 +51,16 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	private static SimpleDateFormat monthFormat = new SimpleDateFormat("MMMMMMMMM");
 	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa");
 	
+	private static enum RefreshType {ON_NEW_OR_EDIT, ON_DELETE}
+	
 	private View 				fragmentView;
 	private TimelineFragment 	fragment;
 	private MainActivity 		activity;
 	private ImageButton 		apptButton;
 	private ImageButton 		entryButton;
 	private TimelineListAdapter adapter;
-	private List<Event> 		events;
 	private DatabaseHelper		databaseHelper;
 	private EventDataHelper		eventDataHelper;
-	private boolean				firstDisplay;
 	private	MediaPlayer 		mediaPlayer;
 	private ListView 			listView;
 	private int					firstTipWeek;
@@ -92,7 +85,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		activity = (MainActivity)getActivity();
 		databaseHelper = activity.getHelper();
 		eventDataHelper = new EventDataHelper(databaseHelper);
-		firstDisplay = true;
     	SharedPreferences preferences = activity.getSharedPreferences(StartupActivity.PREFERENCES, Activity.MODE_PRIVATE);
     	firstTipWeek = preferences.getInt(StartupActivity.PREFERENCE_FIRST_WEEK, 0);
 	}
@@ -105,31 +97,12 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.d(MainActivity.DEBUG_TAG, "---onResume");
 		
-		// Determine screen width and current orientation
-        WindowManager windowManager = (WindowManager)activity.getSystemService(Context.WINDOW_SERVICE);
-		Display display = windowManager.getDefaultDisplay();
-		int orientation = display.getOrientation();
-		DisplayMetrics displaymetrics = new DisplayMetrics();
-		display.getMetrics(displaymetrics);
-		int screenWidth = displaymetrics.widthPixels;
-		
-		// Create and set the adapter with this list
-		List<Event> events = eventDataHelper.getTimelineEvents();
-		HashMap<Event, String> weekMap = new HashMap<Event, String>();
-		int	tipCount = 0;
-		String week = activity.getString(R.string.week) + " ";
-		for (Event event: events){
-			String weekText = week + String.valueOf(firstTipWeek + tipCount++);
-			weekMap.put(event, weekText);
-		}
-		adapter = new TimelineListAdapter(getView().getContext(), events, weekMap, screenWidth, orientation);		
+		adapter = new TimelineListAdapter(getView().getContext());		
 		listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
 		listView.setAdapter(adapter);
-		if (firstDisplay){
-			firstDisplay = false;
-			adapter.scrollToThisWeek(listView);
-		}
+		adapter.scrollToThisWeek(listView);
 		
 		apptButton = (ImageButton)fragmentView.findViewById(R.id.btnAppt);
 		apptButton.setOnClickListener(new View.OnClickListener() {			
@@ -149,7 +122,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_DIARY_ENTRY);
 			}
 		});
-	}
+	}	
 
 	/**
 	 * Handles the result from Appointment, TestResult or DiaryEntry activity
@@ -161,23 +134,64 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			return;
 		}
 		else {
-			events = eventDataHelper.getTimelineEvents();
-			adapter.notifyDataSetChanged();
-			adapter.scrollToThisWeek(listView);
+			adapter.refresh(RefreshType.ON_NEW_OR_EDIT);
 		}
-	}
+	}	
 
 	private class TimelineListAdapter extends BaseAdapter{
 		private final Context 	context;
 		private List<Event> 	events;
 		HashMap<Event, String> 	weekMap;
 		
-		public TimelineListAdapter(Context context, List<Event>	events, HashMap<Event, String> weekMap, int screenWidth, int orientation) {
+		public TimelineListAdapter(Context context) {
 			this.context = context;
-			this.events = events;
-			this.weekMap = weekMap;
+			events = eventDataHelper.getTimelineEvents();
+			createWeekMap();
+		}
+		
+		// Maps Tip events to the to week number strings
+		private void createWeekMap(){
+			weekMap = new HashMap<Event, String>();
+			int	tipCount = 0;
+			String week = activity.getString(R.string.week) + " ";
+			for (Event event: events){
+				if (event.getType().equals(Event.Type.TIP)){				
+					String weekText = week + String.valueOf(firstTipWeek + tipCount++);
+					weekMap.put(event, weekText);
+				}
+			}			
+		}
+		
+		// Regenerate the event list and wek map, refresh the display
+		private void refresh(RefreshType refreshType){
+			Log.d(MainActivity.DEBUG_TAG, "---Refreshing "+ refreshType.name());
+			events = eventDataHelper.getTimelineEvents();
+			createWeekMap();
+			notifyDataSetChanged();
+			scrollToThisWeek(listView);
 		}
 
+		// Scroll to the Tip event at beginning of current week
+		public void scrollToThisWeek(ListView listView){
+			Log.d(MainActivity.DEBUG_TAG, "------Scrolling to this week");
+			int position = 0;
+			int nonTipEventsDuringWeek = 0;
+			Date now = new Date();
+			for (Event event: events){
+				if (now.before(event.getDate())){						
+					listView.post(new Scroller(position - nonTipEventsDuringWeek - 1, listView));
+					break;
+				}
+				if (event.getType().equals(Event.Type.TIP)){
+					nonTipEventsDuringWeek = 0;
+				}
+				else {
+					nonTipEventsDuringWeek++;
+				}
+				position++;
+			}
+		}
+		
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
 			ImageView 	photoView = null;
@@ -194,8 +208,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					File file = new File(photoFile);
 					bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
 				}
-			}
-			
+			}			
 			switch (event.getType()){
 			
 				case TIP:
@@ -231,12 +244,12 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					if(view == null || !view.getTag().equals(Event.Type.APPOINTMENT.name())) {
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_appointment_timeline, parent, false);
 					}						
-					TextView purpose = (TextView)view.findViewById(R.id.list_item_appt_purpose);
-					TextView dateTime = (TextView)view.findViewById(R.id.list_item_appt_time);
+					((TextView)view.findViewById(R.id.list_item_appt_purpose)).setText(event.getPurpose());
+					((TextView)view.findViewById(R.id.list_item_appt_time)).setText(appointmentDateFormat.format(event.getDate()));
+					((TextView)view.findViewById(R.id.list_item_appt_address)).setText(event.getAddress());
+					((TextView)view.findViewById(R.id.list_item_appt_doctor)).setText(event.getDoctor());
+					((TextView)view.findViewById(R.id.list_item_appt_notes)).setText(event.getText());
 					photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
-					
-					purpose.setText(event.getPurpose());
-					dateTime.setText(appointmentDateFormat.format(event.getDate()));
 					
 					ImageButton editButtonA = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
 					editButtonA.setOnClickListener(new OnClickListener() {			
@@ -248,6 +261,8 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
 						}
 					});
+					ImageButton deleteAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_delete);
+					deleteAppointment.setOnClickListener(new DeleteEventListener(event));
 					break;
 					
 				case DIARY_ENTRY:
@@ -269,23 +284,9 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 						}
 					});
 					
-					ImageButton deleteButton = (ImageButton)view.findViewById(R.id.list_item_entry_delete);
-					deleteButton.setOnClickListener(new OnClickListener() {	
-						// TODO: Confirmation popup dialog
-						@Override
-						public void onClick(View v) {
-							try {
-								Dao<Event, Integer> eventDao = activity.getHelper().getDao(Event.class);
-								eventDao.delete(event);
-								events = eventDataHelper.getTimelineEvents();
-								adapter.notifyDataSetChanged();
-							}
-							catch (SQLException e){
-								Log.e(MainActivity.DEBUG_TAG, "Can't delete event", e);
-							}
-						}
-					});					
-					
+					ImageButton deleteEntry = (ImageButton)view.findViewById(R.id.list_item_entry_delete);
+					deleteEntry.setOnClickListener(new DeleteEventListener(event));
+
 					final String audioFile = event.getAudioFile();
 					if (audioFile != null && audioFile.length() > 0){
 						View audioView = (View)view.findViewById(R.id.list_item_entry_audio);
@@ -313,12 +314,31 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			return view;
 		}
 		
+		// Listener for delete Diary Entry or delete Appointment buttons
+		private class DeleteEventListener implements OnClickListener{
+			final Event	event;
+			DeleteEventListener(final Event event){
+				this.event = event;
+			}
+			// TODO: Confirmation popup dialog
+			@Override
+			public void onClick(View v) {
+				try {
+					Dao<Event, Integer> eventDao = activity.getHelper().getDao(Event.class);
+					eventDao.delete(event);
+					adapter.refresh(RefreshType.ON_DELETE);
+				}
+				catch (SQLException e){
+					Log.e(MainActivity.DEBUG_TAG, "Can't delete event", e);
+				}
+			}			
+		}
+		
 		private void playAudio(String audioFilePath){
     		mediaPlayer = new MediaPlayer ();
     		try {
     			URL url;
     			mediaPlayer.setDataSource(audioFilePath);
-//    			mediaPlayer.setDataSource(urlString);
     			mediaPlayer.setOnCompletionListener(fragment);
     			mediaPlayer.setOnErrorListener(fragment);
     			mediaPlayer.setOnPreparedListener(fragment);
@@ -328,21 +348,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
     			Log.e(MainActivity.DEBUG_TAG, "Error preparing audio playback", e);
     		}
 			
-		}
-		
-		public void scrollToThisWeek(ListView listView){
-			int position = 0;
-			Date now = new Date();
-			for (Event event: events){
-				if (event.getType().equals(Event.Type.TIP)){
-					if (now.before(event.getDate())){						
-						listView.post(new Scroller(position, listView));
-						break;
-					}
-				}
-				position++;
-			}
-		}
+		}		
 		
 		/**
 		 * Executes scrolling to current week on the UI thread. 
