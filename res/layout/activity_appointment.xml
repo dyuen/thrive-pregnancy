@@ -3,19 +3,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
-    android:layout_marginBottom="@dimen/activity_vertical_margin" >
+    android:orientation="horizontal" 
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_gravity="center_horizontal" 
+    android:background="@color/light_light_grey">
+    
+    <LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
     
     <EditText
         android:id="@+id/appt_purpose"
         android:hint="@string/Appt_Purpose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge" 
+        style="@style/edit_input_style"
         android:inputType="text" /> 
         <requestFocus />
     <EditText
@@ -23,8 +30,7 @@
         android:hint="@string/Appt_Date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge" 
+        style="@style/edit_input_style"
         android:focusable="false"
         android:inputType="date" /> 
      <EditText
@@ -32,8 +38,7 @@
         android:hint="@string/Appt_Time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge" 
+        style="@style/edit_input_style"
         android:focusable="false"
         android:inputType="time" /> 
     <EditText
@@ -41,42 +46,38 @@
         android:hint="@string/Appt_Address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge" 
+        style="@style/edit_input_style"
         android:inputType="text" />
 	<EditText
         android:id="@+id/appt_doctor"
         android:hint="@string/Appt_Doctor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge" 
+        style="@style/edit_input_style" 
         android:inputType="text" />
 	<EditText
         android:id="@+id/appt_notes"
         android:hint="@string/Appt_Notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge" 
+        style="@style/edit_input_style" 
         android:inputType="text" />	
 	<TextView
         android:id="@+id/appt_warning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge" 
-        android:textColor="@color/red"
+        style="@style/edit_warning_style" 
+        android:padding="@dimen/activity_item_padding"
         />
 	<ImageButton
         android:id="@+id/appt_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:scaleType="centerInside"
-        android:background="@color/white"
-        android:src="@drawable/grey_circle_icon"
+        style="@style/edit_button_style" 
+        android:src="@drawable/ic_delete"
         android:contentDescription="@string/Appt_Delete"
+        android:padding="@dimen/activity_item_padding"
         />
 	<ImageView
         android:id="@+id/appt_image"
@@ -86,6 +87,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:contentDescription="@string/Appt_Photo"
+        android:padding="@dimen/activity_item_padding"
         />
 	<LinearLayout
 	    android:layout_width="match_parent"
@@ -97,18 +99,18 @@
 	        android:id="@+id/appt_create"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:scaleType="centerInside"
-	        android:background="@color/white"
-	        android:src="@drawable/grey_camera_icon"
+	        style="@style/edit_button_style" 
+	        android:src="@drawable/ic_camera"
 	        android:contentDescription="@string/Appt_Delete"
 	        />
 		<TextView
 	        android:id="@+id/appt_create_text"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="10dp"
+	        android:layout_marginLeft="@dimen/edit_item_spacing"
 	        android:text="@string/add_photo"
-	        android:textAppearance="?android:attr/textAppearanceLarge" 
+	        style="@style/edit_photo_style"
         />
+	</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

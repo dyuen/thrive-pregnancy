@@ -55,7 +55,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         super.onCreate(savedInstanceState);
 //		Log.d(DEBUG_TAG, "onCreate");
         setContentView(R.layout.activity_main);
-
+        
         // Create the adapter that will return a fragment for each of the pages
         FragmentManager fragmentManager = getSupportFragmentManager();
         mainPageAdapter = new MainPagerAdapter(fragmentManager, this);

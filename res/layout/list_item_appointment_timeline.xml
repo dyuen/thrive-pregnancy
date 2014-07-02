@@ -3,95 +3,157 @@
 Layout of a single APPOINTMENT Event in the timeline list
 The top level tag attribute is required in the Timeline and Mycare list adapters
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:tag="APPOINTMENT" 
-    android:paddingTop="20dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@drawable/timeline_background"
-    >    
-    <!-- Appointment icon on top of timeline-->
-   	<ImageView
-   	    android:id="@+id/list_item_appt_timeline"
-    	android:src="@drawable/timeline_appt_icon"
-    	style="@style/listViewHeaderItemButtonStyle"
-       	android:layout_alignParentTop="true"
-       	android:layout_alignParentLeft="true"
-       	android:adjustViewBounds="true"
-    	/>
-    <LinearLayout 
-    	android:layout_width="300dp"
-    	android:layout_height="wrap_content"
-    	android:orientation="vertical" 
-    	android:layout_toRightOf="@id/list_item_appt_timeline"    	
-        >
-    	<RelativeLayout 
-    		android:layout_width="match_parent"
-    		android:layout_height="wrap_content"
-    		android:orientation="horizontal" 
-        	>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+	    android:tag="APPOINTMENT" 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+    	android:shrinkColumns="0"
+    	android:stretchColumns="1"
+	    >
+	    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            
+		    <!-- Appointment icon on top of timeline-->
+		   	<ImageView
+		   	    android:id="@+id/list_item_appt_timeline"
+		    	android:src="@drawable/ic_appts"
+		    	android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+				android:paddingRight="@dimen/timeline_tipiconright_spacing"
+		       	android:adjustViewBounds="true"
+		       	android:contentDescription="@string/icon"
+		       	style="@style/edit_button_style"
+		    	/>
+			 	<!-- Purpose -->
+        	<TextView
+	        	android:id="@+id/list_item_appt_purpose"
+	        	android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:padding="@dimen/timeline_item_padding"
+	        	style="@style/timeline_appttitle_style" 
+	        	/>   
+	        		
+	       <!--  Edit button -->
+        	<ImageButton
+        	    android:id="@+id/list_item_appt_edit"
+	        	android:layout_width="wrap_content"
+	    		android:layout_height="wrap_content"
+        		android:src="@drawable/ic_pencil"
+        		android:contentDescription="@string/appt"
+        		android:adjustViewBounds="true"
+        		android:padding="@dimen/timeline_item_padding"
+        		style="@style/edit_button_style"
+	        	/>
         	<!-- Delete button -->
     	    <ImageButton
     	        android:id="@+id/list_item_appt_delete"
-	        	style="@style/listViewItemIconStyle"
-        		android:src="@drawable/grey_circle_icon"
+	        	android:layout_width="wrap_content"
+	    		android:layout_height="wrap_content"
+        		android:src="@drawable/ic_delete"
         		android:contentDescription="@string/note"
-        		android:layout_alignParentRight="true"
         		android:adjustViewBounds="true"
+        		android:padding="@dimen/timeline_item_padding"
+        		style="@style/edit_button_style"
 	        	/>
-    	    <!--  Edit button -->
-        	<ImageButton
-        	    android:id="@+id/list_item_appt_edit"
-	        	style="@style/listViewItemIconStyle"
-        		android:src="@drawable/pencil_icon"
-        		android:contentDescription="@string/appt"
-        		android:layout_toLeftOf="@id/list_item_appt_delete"
-        		android:adjustViewBounds="true"
-	        	/>
-       		<!-- Purpose -->
-        	<TextView
-	        	android:id="@+id/list_item_appt_purpose"
-        		android:layout_toLeftOf="@id/list_item_appt_edit"
-	        	android:layout_width="match_parent"
-	        	android:layout_height="wrap_content"
-	        	android:textAppearance="?android:attr/textAppearanceMedium" 
-	        	/>   	
-        </RelativeLayout>
-        <!-- Date/time -->
-        <TextView
-	        android:id="@+id/list_item_appt_time"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textAppearance="?android:attr/textAppearanceMedium" 
-	        />
-        <!-- Address -->
-        <TextView
-	        android:id="@+id/list_item_appt_address"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textAppearance="?android:attr/textAppearanceMedium" 
-	        />
-        <!-- Doctor -->
-        <TextView
-	        android:id="@+id/list_item_appt_doctor"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textAppearance="?android:attr/textAppearanceMedium" 
-	        />
-        <!-- Notes -->
-        <TextView
-	        android:id="@+id/list_item_appt_notes"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textAppearance="?android:attr/textAppearanceMedium" 
-	        />
-        <!-- Photo -->  
-        <ImageView
-            android:id="@+id/list_item_appt_photo"
+    	
+        </TableRow>
+        <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"			
-            />
-    </LinearLayout>
-</RelativeLayout>
+            android:gravity="center_vertical">
+        	<TextView
+	           	android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:background="@android:color/transparent"
+	        	/>
+	        <!-- Date/time -->
+	        <TextView
+		        android:id="@+id/list_item_appt_time"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_span="3"
+		        android:padding="@dimen/timeline_item_padding"
+		        style="@style/timeline_apptdetails_style"
+		        />
+	    </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+	        <TextView
+	           	android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:background="@android:color/transparent"
+	        	/>
+	        <!-- Address -->
+	        <TextView
+		        android:id="@+id/list_item_appt_address"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_span="3"
+		        android:padding="@dimen/timeline_item_padding"
+		        style="@style/timeline_apptdetails_style"
+		        />
+	    </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+	        <TextView
+	           	android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:background="@android:color/transparent"
+	        	/>
+	        <!-- Doctor -->
+	        <TextView
+		        android:id="@+id/list_item_appt_doctor"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_span="3"
+		        android:padding="@dimen/timeline_item_padding"
+		        style="@style/timeline_apptdetails_style"
+		        />
+	   	</TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+	        <TextView
+	           	android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:background="@android:color/transparent"
+	        	/>
+	        <!-- Notes -->
+	        <TextView
+		        android:id="@+id/list_item_appt_notes"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_span="3"
+		        android:padding="@dimen/timeline_item_padding"
+		        style="@style/timeline_apptnotes_style"
+		        />
+	    </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+	        <TextView
+	           	android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:background="@android:color/transparent"
+	        	/>
+	        <!-- Photo -->  
+	        <ImageView
+	            android:id="@+id/list_item_appt_photo"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_span="3"
+	            android:padding="@dimen/timeline_item_padding"
+	            android:adjustViewBounds="true"	
+	            android:contentDescription="@string/photo"		
+	            />
+	    </TableRow>
+</TableLayout>

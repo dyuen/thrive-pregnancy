@@ -13,19 +13,25 @@ Layout of the My Timeline page
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" 
+        android:background="@color/light_light_grey"
+        android:paddingBottom="@dimen/timeline_listitembottom_spacing"
         >        
         <ImageButton
 	        android:id="@+id/btnNote"
-	        style="@style/timelineTopButtons"
-        	android:src="@drawable/timeline_entry_icon"
+	        android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+	        style="@style/timeline_topbuttons_style"
+        	android:src="@drawable/ic_diary"
         	android:contentDescription="@string/note"
         	android:layout_alignParentRight="true"
         	android:adjustViewBounds="true"
 	        />
         <ImageButton
 	        android:id="@+id/btnAppt"
-	        style="@style/timelineTopButtons"
-        	android:src="@drawable/timeline_appt_icon"
+	        android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+	        style="@style/timeline_topbuttons_style"
+        	android:src="@drawable/ic_appts"
         	android:contentDescription="@string/appt"
         	android:layout_toLeftOf="@id/btnNote"
         	android:adjustViewBounds="true"
@@ -35,6 +41,8 @@ Layout of the My Timeline page
 	     android:id="@+id/lstTimeline"
 	     android:layout_width="match_parent"
 	     android:layout_height="match_parent"
-	     android:divider="@null"
+	     android:background="@color/white"
+	     android:divider="@color/light_light_grey"
+	     android:dividerHeight="@dimen/timeline_listitembottom_spacing"
 	     />
 </LinearLayout>

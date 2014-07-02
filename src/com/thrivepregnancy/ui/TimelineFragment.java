@@ -5,6 +5,7 @@ import com.thrivepregnancy.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -21,8 +22,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -72,6 +75,40 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		fragment = this;
 	}
 	
+	/**
+	 * Scales image to fix out of memory crash
+	 */
+	public static Bitmap decodeSampledBitmapFromPath(String path, int reqWidth, int reqHeight) {
+ 
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+ 
+        options.inSampleSize = calculateInSampleSize(options, reqWidth,
+                reqHeight);
+ 
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        Bitmap bmp = BitmapFactory.decodeFile(path, options);
+        return bmp;
+        }
+ 
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+ 
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+ 
+        if (height > reqHeight || width > reqWidth) {
+            if (width > height) {
+                inSampleSize = Math.round((float) height / (float) reqHeight);
+            } else {
+                inSampleSize = Math.round((float) width / (float) reqWidth);
+             }
+         }
+         return inSampleSize;
+      }
+    
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 	    // Inflate the layout for this fragment
@@ -195,20 +232,37 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
 			ImageView 	photoView = null;
-			Uri 		uri = null;
 			Bitmap 		bitmap = null;
 			
 			final Event event = events.get(position);
+			
 			String photoFile = event.getPhotoFile();
+			
+			Log.d("position:", Integer.toString(position));
+			Log.d("event.getId()",  Integer.toString(event.getId()));
+			
 			if (photoFile != null && photoFile.length() > 0){
+				Log.d("photoFile",  photoFile);
+				
 				if (event.getType().equals(Event.Type.TIP)){
-					uri = Uri.parse("content://com.thrivepregnancy.assetcontentprovider/" + photoFile);
+					AssetManager assetManager = getActivity().getAssets();
+		            
+					try {
+						InputStream inputS = assetManager.open(photoFile);
+						bitmap = BitmapFactory.decodeStream(inputS);
+					} catch (IOException e) {
+						Log.e(MainActivity.DEBUG_TAG, "Can't load image from assets", e);
+					}
 				}
 				else {					
 					File file = new File(photoFile);
-					bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
+
+					//bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
+					bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
+					
 				}
-			}			
+			}	
+			
 			switch (event.getType()){
 			
 				case TIP:
@@ -305,12 +359,13 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					break;
 			}
 			
-			if (uri != null){
-				photoView.setImageURI(uri);
-			}
-			else if (bitmap != null){
+			if (bitmap != null){
+				photoView.setVisibility(View.VISIBLE);
 				photoView.setImageBitmap(bitmap);
+			} else {
+				photoView.setVisibility(View.GONE);
 			}
+			
 			return view;
 		}
 		

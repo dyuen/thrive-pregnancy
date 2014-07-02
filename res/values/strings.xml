@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--'Overall'-->
     <string name="app_name">Thrive Pregnancy</string>
     <string name="icon">Icon</string>
     <string name="photo">Photo</string>
@@ -8,11 +9,9 @@
     <string name="needit">Need It</string>
     <string name="gotit">Got It</string>
     <string name="week">Week</string>
-    
-<!--'Overall'-->
     <string name="save">Save</string>
     <string name="add_photo">Add Photo</string>
-    <string name="add_new">Add New...</string>
+    <string name="add_new">Add new&#8230;</string>
     
 <!--'User preferences'--> 
     <string name="PREFERENCES">preferences</string>
@@ -31,18 +30,6 @@
     <string name="Timeline_Week">Week </string>
     <string name="Timeline_AddType_Diary">Add a Diary Entry</string>
     <string name="Timeline_AddType_Appointment">Add an Appointment</string>
-
-<!--'Tab: My Care'-->
-
-<!--'Personal Info'-->
-
-    <string name="PersonalInfo_Title">Personal Info</string>
-    <string name="PersonalInfo_Mother_Name">Name</string>
-    <string name="PersonalInfo_Due_Date">Estimated Due Date</string>
-    <string name="PersonalInfo_Primary_Doctor">My Doctors Name:</string>
-    <string name="PersonalInfo_Hospital">My Hospital:</string>
-    <string name="PersonalInfo_DrPhone">24-Hour Doctor on Call:</string>
-    <string name="PersonalInfo_DrPhone_Default">604-875-2161</string>
 
 <!--'Questions'-->
 
@@ -90,4 +77,19 @@
     <string name="INeed_Checklist_GotIt">Got it</string>
     <string name="INeed_Checklist_NeedIt">Need it</string>
     <string name="INeed_Resources_Title">Resource</string>
+
+<!--'Tab: My Care'-->
+		
+	<string name="MyCare_Question">Question here</string>
+
+<!--'Personal Info'-->
+
+    <string name="PersonalInfo_Title">Personal Info</string>
+    <string name="PersonalInfo_Mother_Name">Name</string>
+    <string name="PersonalInfo_Due_Date">Est. Due Date</string>
+    <string name="PersonalInfo_Primary_Doctor">Doctor</string>
+    <string name="PersonalInfo_Hospital">Hospital</string>
+    <string name="PersonalInfo_DrPhone">24-hour Doctor</string>
+    
+
 </resources>

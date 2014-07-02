@@ -7,13 +7,14 @@ Layout of the My Care page
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation = "vertical"
-    android:background="@android:color/transparent"
+    android:background="@color/light_light_grey"
     tools:context=".MainActivity" >
 	<ListView
 	    android:id="@+id/lstCare"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:divider="@null"
+	    android:divider="@color/light_light_grey"
+	    android:background="@color/white"
 	    android:descendantFocusability="beforeDescendants"
 	    />
 </LinearLayout>

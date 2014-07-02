@@ -41,6 +41,7 @@ import android.widget.TextView;
 public class CareFragment extends Fragment {
 	
 	private static SimpleDateFormat dueDateFormat = new SimpleDateFormat("MMM d");
+	private static SimpleDateFormat testDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d");
 	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa");
 
 	private View 				fragmentView;
@@ -184,6 +185,40 @@ public class CareFragment extends Fragment {
 	    	elementBackers = createBackingList();
 	    }
 	    
+	    /**
+		 * Scales image to fix out of memory crash
+		 */
+		public Bitmap decodeSampledBitmapFromPath(String path, int reqWidth, int reqHeight) {
+	 
+	        final BitmapFactory.Options options = new BitmapFactory.Options();
+	        options.inJustDecodeBounds = true;
+	        BitmapFactory.decodeFile(path, options);
+	 
+	        options.inSampleSize = calculateInSampleSize(options, reqWidth,
+	                reqHeight);
+	 
+	        // Decode bitmap with inSampleSize set
+	        options.inJustDecodeBounds = false;
+	        Bitmap bmp = BitmapFactory.decodeFile(path, options);
+	        return bmp;
+	        }
+	 
+	    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+	 
+	        final int height = options.outHeight;
+	        final int width = options.outWidth;
+	        int inSampleSize = 1;
+	 
+	        if (height > reqHeight || width > reqWidth) {
+	            if (width > height) {
+	                inSampleSize = Math.round((float) height / (float) reqHeight);
+	            } else {
+	                inSampleSize = Math.round((float) width / (float) reqWidth);
+	             }
+	         }
+	         return inSampleSize;
+	      }
+	    
 	    public ArrayList<ElementBacker> createBackingList(){
 	    	elementBackers = new ArrayList<ElementBacker>();	    	
 	        elementBackers.add(backerPROVIDER);
@@ -230,13 +265,16 @@ public class CareFragment extends Fragment {
 			}
 		
 			Event event = backer.event;
+			
 			if (event != null){		
-				String photoFile = backer.event.getPhotoFile();
+				String photoFile = event.getPhotoFile();
 				if (photoFile != null && photoFile.length() > 0){
 					File file = new File(photoFile);
-					bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
+					//bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
+					bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
 				}
 			}
+			
 			switch (backer.resourceId) {
 			case R.layout.list_item_provider:
 		    	populateProviderView(view);
@@ -270,10 +308,15 @@ public class CareFragment extends Fragment {
 				((ImageButton)view.findViewById(R.id.list_item_add_new)).setOnClickListener(addNewTestResultListener);
 				break;
 				
-			}
+			}		
+			
 			if (bitmap != null){
+				photoView.setVisibility(View.VISIBLE);
 				photoView.setImageBitmap(bitmap);
+			} else if (photoView != null) {
+				photoView.setVisibility(View.GONE);
 			}
+			
 			return view;
 		}
 		
@@ -344,16 +387,20 @@ public class CareFragment extends Fragment {
 		    	((EditText)view.findViewById(R.id.provider_name_edit)).setText(providerName);
 		    	((EditText)view.findViewById(R.id.provider_location_edit)).setText(providerLocation);
 		    	((EditText)view.findViewById(R.id.provider_oncall_phone_edit)).setText(oncallPhone);
-		    	((ImageButton)view.findViewById(R.id.list_item_contact_edit)).setImageResource(R.drawable.checkmark_icon);
+		    	((ImageButton)view.findViewById(R.id.list_item_contact_edit)).setImageResource(R.drawable.ic_checkmark);
 			}
 			else {
 				(view.findViewById(R.id.provider_contact_edit)).setVisibility(View.GONE);
 				(view.findViewById(R.id.provider_contact)).setVisibility(View.VISIBLE);
-		    	((TextView)view.findViewById(R.id.delivery_date)).setText(strDueDate);
-		    	((TextView)view.findViewById(R.id.provider_name)).setText(providerName);
-		    	((TextView)view.findViewById(R.id.provider_location)).setText(providerLocation);
-		    	((TextView)view.findViewById(R.id.provider_oncall_phone)).setText(oncallPhone);				
-		    	((ImageButton)view.findViewById(R.id.list_item_contact_edit)).setImageResource(R.drawable.pencil_icon);
+		    	((TextView)view.findViewById(R.id.delivery_date)).setText(
+		    			getResources().getString(R.string.PersonalInfo_Due_Date) + ": " + strDueDate);
+		    	((TextView)view.findViewById(R.id.provider_name)).setText(
+		    			getResources().getString(R.string.PersonalInfo_Primary_Doctor) + ": " + providerName);
+		    	((TextView)view.findViewById(R.id.provider_location)).setText(
+		    			getResources().getString(R.string.PersonalInfo_Hospital) + ": " + providerLocation);
+		    	((TextView)view.findViewById(R.id.provider_oncall_phone)).setText(
+		    			getResources().getString(R.string.PersonalInfo_DrPhone) + ": " + oncallPhone);				
+		    	((ImageButton)view.findViewById(R.id.list_item_contact_edit)).setImageResource(R.drawable.ic_pencil);
 			}
 	    	ImageButton editOrSaveButton = (ImageButton)view.findViewById(R.id.list_item_contact_edit);
 	    	editOrSaveButton.setOnClickListener(new OnClickListener(){
@@ -440,7 +487,34 @@ public class CareFragment extends Fragment {
 		
 		private void populateTestResultView(View view, final Event event){
 			((TextView)view.findViewById(R.id.list_item_test_result_description)).setText(event.getText());
-			((TextView)view.findViewById(R.id.list_item_test_result_date)).setText(event.getDate().toString());
+			((TextView)view.findViewById(R.id.list_item_test_result_date)).setText(testDateFormat.format(event.getDate()));
+			
+			ImageButton editTest = (ImageButton)view.findViewById(R.id.list_item_test_edit);
+			final Integer eventId = event.getId();
+			editTest.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view){
+					Intent intent = new Intent(activity.getApplicationContext(), TestResultActivity.class);
+					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);	        	
+					intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, eventId);	        	
+					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_TEST_RESULT);
+				}				
+			});			
+			ImageButton deleteTest = (ImageButton)view.findViewById(R.id.list_item_test_delete);
+			deleteTest.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view){
+					try {
+						eventDao.delete(event);
+						adapter.createBackingList();
+						adapter.notifyDataSetChanged();
+					}
+					catch (SQLException e){
+						Log.e(MainActivity.DEBUG_TAG, "Can't delete test result", e);
+					}
+				}				
+			});			
+			
 	    	setupPhotoView(event.getPhotoFile(), (ImageView)view.findViewById(R.id.list_item_test_result_photo));
 		}
 		

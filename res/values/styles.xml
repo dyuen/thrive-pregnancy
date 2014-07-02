@@ -1,83 +1,212 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 	
-    <style name="AppBaseTheme" parent="android:Theme.Light"></style>
+    <!-- Main Application Theme -->
+    
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light"></style>
 
     <style name="AppTheme" parent="AppBaseTheme">
-        <item name="android:windowBackground">@color/mainBackgroundColor</item>
-        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:actionBarStyle">@style/Theme.Actionbarstyle</item>
     </style>
+	
 
-    <style name="ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/topBackgroundColor</item>
-	    <item name="android:textColor">@color/actionTextColor</item>
+    <style name="action_text_style">
+	    <item name="android:textSize">@dimen/font_header_size</item>
+	    <item name="android:textColor">@color/white</item>
 	    <item name="android:textStyle">bold</item>
     </style>
 	
-	<style name="timelineTopButtons">
-        <item name="android:layout_width">@dimen/lvItemWidth</item>
-        <item name="android:layout_height">@dimen/lvItemHeight</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:scaleType">centerInside</item>
+    <!-- Tab Bar Style  -->
+    <style name="tabbar_text_style">
+	    <item name="android:textSize">@dimen/font_large_size</item>
+	    <item name="android:textColor">@color/black</item>
+	    <item name="android:textStyle">normal</item>
     </style>
     
-    <style name="listViewHeaderItem">
+    <!-- Menu Button Style -->
+    <style name="menu_button_style">
+        <item name="android:textSize">@dimen/font_header_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <!-- Splash Screen Title Style -->
+    <style name="splash_title_style">
+        <item name="android:textSize">@dimen/font_header_size</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/secondaryTextColor</item>
-        <item name="android:textSize">@dimen/lvHeadingTextSize</item>
-    </style>
-	
-    <style name="listViewDateItem">
-        <item name="android:textColor">@color/lvHeaderTextColor</item>
-        <item name="android:textSize">@dimen/lvSecondaryTextSize</item>
-        <item name="android:paddingLeft">@dimen/lvSecondaryPaddingLeft</item>
     </style>
     
-    <style name="listViewItem">
-        <item name="android:layout_height">@dimen/lvItemHeight</item>
-        <item name="android:clickable">true</item>
+    <!-- Welcome Screen Input Style -->
+    <style name="welcome_input_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
     </style>
     
-    <style name="listViewPrimaryDetail">
-        <item name="android:paddingTop">@dimen/lvPrimaryPaddingTop</item>
-        <item name="android:paddingBottom">@dimen/lvPrimaryPaddingBottom</item>
-        <item name="android:paddingLeft">@dimen/lvPrimaryPaddingLeft</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
-        <item name="android:textSize">@dimen/lvPrimaryTextSize</item>
-    </style>
-
-    <style name="listViewSecondaryDetail">
-        <item name="android:paddingTop">@dimen/lvSecondaryPaddingTop</item>
-        <item name="android:paddingBottom">@dimen/lvSecondaryPaddingBottom</item>
-        <item name="android:paddingLeft">@dimen/lvSecondaryPaddingLeft</item>
-        <item name="android:textColor">@color/secondaryTextColor</item>
-        <item name="android:textSize">@dimen/lvSecondaryTextSize</item>
-    </style>
-
-    <style name="listViewVerticalDivider">
-        <item name="android:layout_width">@dimen/lvDividerWidth</item>
-        <item name="android:layout_height">@dimen/lvDividerHeight</item>
+    <style name="welcome_warning_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">normal</item>
     </style>
     
-    <style name="listViewHorizontalDivider">
-        <item name="android:layout_width">@dimen/lvDividerWidth</item>
-        <item name="android:layout_height">@dimen/lvDividerHeight</item>
-    </style>
-
-    <style name="listViewSectionDividerVerticalDivider">
-        <item name="android:layout_width">@dimen/lvDividerWidth</item>
-        <item name="android:layout_marginTop">@dimen/lvSectionDividerMargin</item>
-        <item name="android:layout_marginBottom">@dimen/lvSectionDividerMargin</item>
+    <style name="welcome_title_style">
+        <item name="android:textSize">@dimen/font_header_size</item>
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textStyle">bold</item>
     </style>
     
-    <style name="listViewItemIconStyle">
-        <item name="android:layout_width">@dimen/lvItemWidth</item>
-        <item name="android:layout_height">@dimen/lvItemHeight</item>
+     <!-- Edit Event StyleS  -->
+    <style name="edit_actionbar_style" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/yellow</item>
+	    <item name="android:textSize">@dimen/font_header_size</item>
+	    <item name="android:textColor">@color/white</item>
+	    <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="edit_warning_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="edit_input_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="edit_photo_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="edit_button_style">
         <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@color/white</item>
     </style>
-
-    <style name="listViewHeaderItemButtonStyle">
-        <item name="android:layout_width">@dimen/lvItemHeight</item>
-        <item name="android:layout_height">@dimen/lvItemHeight</item>
+    
+    <!-- I Need Styles -->
+    <style name="ineed_title_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="ineed_list_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <!-- My Care Text Styles -->
+    
+    <style name="mycare_header_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="mycare_infotitle_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="mycare_infouser_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="mycare_phonetitle_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="mycare_phoneuser_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+     <style name="mycare_addnew_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+     <style name="mycare_input_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <!-- Timeline Text Styles -->
+    
+    <style name="timeline_icon_style">
+        <item name="android:scaleType">center</item>
+        <item name="android:background">@color/white</item>
+    </style>
+    
+    <style name="timeline_week_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="timeline_date_style">
+        <item name="android:textSize">@dimen/font_small_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="timeline_tip_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="timeline_diarydate_style">
+        <item name="android:textSize">@dimen/font_small_size</item>
+        <item name="android:textColor">@color/light_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="timeline_voice_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="timeline_diarynotes_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="timeline_appttitle_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="timeline_apptdetails_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="timeline_apptnotes_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+	<style name="timeline_topbuttons_style">
+        <item name="android:background">@android:color/transparent</item>
         <item name="android:scaleType">centerInside</item>
     </style>
 </resources>
