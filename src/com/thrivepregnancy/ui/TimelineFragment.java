@@ -123,7 +123,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		databaseHelper = activity.getHelper();
 		eventDataHelper = new EventDataHelper(databaseHelper);
     	SharedPreferences preferences = activity.getSharedPreferences(StartupActivity.PREFERENCES, Activity.MODE_PRIVATE);
-    	firstTipWeek = preferences.getInt(StartupActivity.PREFERENCE_FIRST_WEEK, 0);
+    	firstTipWeek = preferences.getInt(StartupActivity.PREFERENCE_FIRST_WEEK, 1);
 	}
 	
 	@Override
@@ -193,7 +193,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			String week = activity.getString(R.string.week) + " ";
 			for (Event event: events){
 				if (event.getType().equals(Event.Type.TIP)){				
-					String weekText = week + String.valueOf(firstTipWeek + 1 + tipCount++);
+					String weekText = week + String.valueOf(firstTipWeek + tipCount++);
 					weekMap.put(event, weekText);
 				}
 			}			
