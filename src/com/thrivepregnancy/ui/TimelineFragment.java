@@ -193,7 +193,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			String week = activity.getString(R.string.week) + " ";
 			for (Event event: events){
 				if (event.getType().equals(Event.Type.TIP)){				
-					String weekText = week + String.valueOf(firstTipWeek + tipCount++);
+					String weekText = week + String.valueOf(firstTipWeek + 1 + tipCount++);
 					weekMap.put(event, weekText);
 				}
 			}			
