@@ -16,13 +16,13 @@
 	<dimen name="welcome_large_spacing">30dp</dimen>
 	
 	<dimen name="timeline_listitembottom_spacing">5dp</dimen>
-	<dimen name="timeline_tipiconright_spacing">10dp</dimen>
+	<dimen name="timeline_tipiconright_spacing">5dp</dimen>
 	<dimen name="timeline_item_padding">3dp</dimen>
 	
 	<dimen name="activity_item_padding">3dp</dimen>
 	
 	<dimen name="ineed_item_padding">5dp</dimen>
-	<dimen name="ineed_right_spacing">20dp</dimen>
+	<dimen name="ineed_right_spacing">30dp</dimen>
 	
 	<dimen name="care_iconright_spacing">10dp</dimen>
 	<dimen name="care_item_padding">3dp</dimen>

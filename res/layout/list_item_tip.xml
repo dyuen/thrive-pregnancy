@@ -27,6 +27,7 @@ The top level tag attribute is required in the Timeline list adapter
 		    	android:layout_height="wrap_content"
 	        	android:adjustViewBounds="true"
 	        	android:contentDescription="@string/icon"
+	        	android:paddingRight="@dimen/timeline_tipiconright_spacing"
 	        	android:background="@android:color/transparent"
 	        	style="@style/edit_button_style"
 	        	
@@ -65,6 +66,7 @@ The top level tag attribute is required in the Timeline list adapter
 		    	android:layout_height="wrap_content"
 	        	android:adjustViewBounds="true"
 	        	android:contentDescription="@string/icon"
+	        	android:paddingRight="@dimen/timeline_tipiconright_spacing"
 	        	style="@style/edit_button_style"
 	        	/>
 	        <!-- Tip text -->
