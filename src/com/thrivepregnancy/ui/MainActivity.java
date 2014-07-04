@@ -50,7 +50,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
-
+        
         // Specify that the Home/Up button should not be enabled, since there is no hierarchical
         // parent.
         actionBar.setHomeButtonEnabled(false);

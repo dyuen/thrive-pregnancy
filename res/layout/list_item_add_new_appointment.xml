@@ -29,7 +29,7 @@ Layout of the "Add new" line in Care list Appointments
 	    	android:id="@+id/list_item_add_new"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-	    	android:src="@drawable/ic_add"
+	    	android:src="@drawable/ic_add_selector"
 	    	android:contentDescription="@string/note"
 	    	android:adjustViewBounds="true"
 	    	android:padding="@dimen/care_item_padding"

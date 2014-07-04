@@ -45,7 +45,7 @@
     <string name="Question_Title">My Questions</string>
 
 <!--'Diary Entries'-->
-
+	<string name="Diary_Action">Diary Entry</string>
     <string name="Diary_Notes">Notes</string>
     <string name="Diary_Date">Date</string>
     <string name="Diary_Warning">Please enter notes and date</string>
@@ -58,7 +58,7 @@
     
 <!--'Appointments'-->
 	<string name="Appointment_Title">My Appointments</string>
-	
+	<string name="Appt_Action">Appointment</string>
     <string name="Appt_Purpose">Appointment For</string>
     <string name="Appt_Doctor">Doctor</string>
     <string name="Appt_Date">Date</string>
@@ -73,7 +73,7 @@
 
 <!--'Test Results'-->
 	<string name="TestResults_Title">My Test Results</string>
-	
+	<string name="Test_Action">Test Result</string>
     <string name="Test_Date">Date</string>
     <string name="Test_Notes">Notes</string>
     <string name="Test_Photo">Test Photo</string>

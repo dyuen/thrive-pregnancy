@@ -41,7 +41,7 @@ The top level tag attribute is required in the Mycare list adapters
                 android:padding="@dimen/care_item_padding"
                 android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content"
-                android:src="@drawable/ic_pencil"
+                android:src="@drawable/ic_pencil_selector"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/icon"
                 style="@style/edit_button_style"

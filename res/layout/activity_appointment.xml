@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         style="@style/edit_button_style" 
-        android:src="@drawable/ic_delete"
+        android:src="@drawable/ic_delete_selector"
         android:contentDescription="@string/Appt_Delete"
         android:padding="@dimen/activity_item_padding"
         />
@@ -100,8 +100,8 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        style="@style/edit_button_style" 
-	        android:src="@drawable/ic_camera"
-	        android:contentDescription="@string/Appt_Delete"
+	        android:src="@drawable/ic_camera_selector"
+	        android:contentDescription="@string/Appt_Create"
 	        />
 		<TextView
 	        android:id="@+id/appt_create_text"
