@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         style="@style/edit_button_style" 
-        android:src="@drawable/ic_delete"
+        android:src="@drawable/ic_delete_selector"
         android:contentDescription="@string/Test_Delete"
         android:padding="@dimen/activity_item_padding"
         />
@@ -69,7 +69,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        style="@style/edit_button_style" 
-	        android:src="@drawable/ic_camera"
+	        android:src="@drawable/ic_camera_selector"
 	        android:contentDescription="@string/Test_Create"
 	        />
 		<TextView

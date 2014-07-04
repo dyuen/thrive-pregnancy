@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
@@ -79,6 +80,8 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	private LinearLayout m_layout;
 	private Event.Type m_eventType;
 	
+	private ActionBar m_actionBar;
+	
 	private static final int REQUEST_IMAGE_CAPTURE = 1;
 	private static final String IMAGE_PATH = "imagePath";
 	private static final String DELETED = "deleted";
@@ -89,6 +92,8 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	protected void StartUp(Event.Type type) {
         // Mode will be one of MainActivity.REQUEST_MODE_NEW or MainActivity.REQUEST_MODE_EDIT
         // If mode is edit, then REQUEST_PRIMARY_KEY will contain the primary key of the Event
+		String activityTitle;
+		
         m_mode = getIntent().getStringExtra(MainActivity.REQUEST_MODE);
         m_eventType = type;
         
@@ -102,6 +107,30 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         
         m_dateListener = this;
         m_timeListener = this;
+        
+        if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)) {
+        	activityTitle = "Edit ";
+        } else {
+        	activityTitle = "New ";
+        }
+        
+        switch(m_eventType) {
+        case DIARY_ENTRY:
+        	activityTitle += getString(R.string.Diary_Action);
+        	break;
+        case APPOINTMENT:
+        	activityTitle += getString(R.string.Appt_Action);
+        	break;
+        case TEST_RESULT:
+        	activityTitle += getString(R.string.Test_Action);
+        	break;	
+        }
+        
+        m_actionBar = getActionBar();
+        m_actionBar.setLogo(R.drawable.ic_logo_arrow);
+        m_actionBar.setTitle(activityTitle);
+        m_actionBar.setDisplayUseLogoEnabled(true);
+        m_actionBar.setHomeButtonEnabled(true);
         
         CreateEvent();
 	}
@@ -396,6 +425,11 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
+	    	case android.R.id.home:
+	            // app icon in action bar clicked; goto parent activity.
+	            this.finish();
+            return true;
+            
 	        case R.id.menu_save:
 	        	String notes = m_noteView.getText().toString();	
 	        	

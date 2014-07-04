@@ -32,6 +32,7 @@ Defines the layout of individual items in the I Need list
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:padding="@dimen/ineed_item_padding"
+		        android:button="@drawable/radio_button_selector"
 		        />
 
 		    <RadioButton
@@ -39,6 +40,7 @@ Defines the layout of individual items in the I Need list
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:padding="@dimen/ineed_item_padding"
+		        android:button="@drawable/radio_button_selector"
 		         />
 
 		</RadioGroup>
@@ -48,7 +50,7 @@ Defines the layout of individual items in the I Need list
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/ineed_item_padding"
-                android:src="@drawable/ic_info"
+                android:src="@drawable/ic_info_selector"
                 style="@style/edit_button_style"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/INeed_Resources_Title"/>

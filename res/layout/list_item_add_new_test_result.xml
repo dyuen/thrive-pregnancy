@@ -28,7 +28,7 @@ Layout of the "Add new" line in Care list Test Results
 		    	android:id="@+id/list_item_add_new"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
-		    	android:src="@drawable/ic_add"
+		    	android:src="@drawable/ic_add_selector"
 		    	android:contentDescription="@string/note"
 		    	android:adjustViewBounds="true"
 		    	style="@style/edit_button_style"

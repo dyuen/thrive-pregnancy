@@ -75,11 +75,9 @@ public class NeedFragment extends Fragment {
 		@Override
 		public View getView(final int position, View view, ViewGroup parent) {
 			View item;
-			String needTitle = "";
+			final String needTitle = needs.get(position).getTitle();
 			
 			item = view;
-			
-			needTitle = needs.get(position).getTitle();
 			
 			if(view == null) item = LayoutInflater.from(context).inflate(R.layout.need_list, parent, false);
 			
@@ -107,6 +105,8 @@ public class NeedFragment extends Fragment {
 					Log.d("NeedFragment.getView", "htmlfile: " + htmlfile);
 					
 					parentBundle.putString("htmlfile", htmlfile);
+					parentBundle.putString("needtitle", needTitle);
+					
 					intent.putExtras(parentBundle);
 					startActivity(intent);
 				}
