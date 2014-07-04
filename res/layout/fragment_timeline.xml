@@ -43,6 +43,5 @@ Layout of the My Timeline page
 	     android:layout_height="match_parent"
 	     android:background="@color/white"
 	     android:divider="@color/light_light_grey"
-	     android:dividerHeight="@dimen/timeline_listitembottom_spacing"
 	     />
 </LinearLayout>

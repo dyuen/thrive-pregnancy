@@ -26,10 +26,10 @@ The top level tag attribute is required in the Timeline list adapter
 	       	 	android:layout_width="wrap_content"
 		    	android:layout_height="wrap_content"
 	        	android:adjustViewBounds="true"
-	        	android:paddingRight="@dimen/timeline_tipiconright_spacing"
 	        	android:contentDescription="@string/icon"
+	        	android:background="@android:color/transparent"
 	        	style="@style/edit_button_style"
-	        	android:background="@color/light_light_grey"
+	        	
 	        	/>   
 	   		
 	    	<!-- Week number -->
@@ -38,7 +38,7 @@ The top level tag attribute is required in the Timeline list adapter
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"
 	        	android:padding="@dimen/timeline_item_padding"
-	        	android:background="@color/light_light_grey"
+	        	
 	        	style="@style/timeline_week_style"
 	        	/>
 	    	<!-- Week date range -->
@@ -47,7 +47,7 @@ The top level tag attribute is required in the Timeline list adapter
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
 	        	android:padding="@dimen/timeline_item_padding"
-	        	android:background="@color/light_light_grey"
+	        	
 	        	style="@style/timeline_date_style"
 	        	/>
 	   	</TableRow>
@@ -63,7 +63,6 @@ The top level tag attribute is required in the Timeline list adapter
 	      		android:src="@drawable/ic_tips"
 	        	android:layout_width="wrap_content"
 		    	android:layout_height="wrap_content"
-		    	android:paddingRight="@dimen/timeline_tipiconright_spacing"
 	        	android:adjustViewBounds="true"
 	        	android:contentDescription="@string/icon"
 	        	style="@style/edit_button_style"
@@ -102,4 +101,21 @@ The top level tag attribute is required in the Timeline list adapter
 	           	android:contentDescription="@string/photo"	   		
 	        	/>
        	</TableRow>
+       	<TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            
+            android:background="@color/light_light_grey"
+			android:padding="0dip"
+            >
+	       	<ImageView
+	           	android:id="@+id/list_item_bottom"
+	           	android:layout_width="match_parent"
+	           	android:layout_span="3"
+		    	android:layout_height="@dimen/timeline_listitembottom_spacing"
+		    	android:background="@drawable/timeline"
+		    	android:contentDescription="@string/icon"
+	        	/>
+	       	</TableRow>
  </TableLayout>

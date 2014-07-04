@@ -168,4 +168,21 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
 	            android:contentDescription="@string/photo"		
 	            />
 	    </TableRow>
+	    <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            
+            android:background="@color/light_light_grey"
+			android:padding="0dip"
+            >
+	       	<ImageView
+	           	android:id="@+id/list_item_bottom"
+	           	android:layout_width="match_parent"
+	           	android:layout_span="4"
+		    	android:layout_height="@dimen/timeline_listitembottom_spacing"
+		    	android:background="@drawable/timeline"
+		    	android:contentDescription="@string/icon"
+	        	/>
+	       	</TableRow>
 </TableLayout>
