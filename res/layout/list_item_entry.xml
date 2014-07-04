@@ -14,6 +14,8 @@ The top level tag attribute is required in the Timeline list adapter
     <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
             
 	    <!-- Diary icon on top of timeline -->
@@ -62,6 +64,8 @@ The top level tag attribute is required in the Timeline list adapter
 		<TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
             <TextView
 	           	android:layout_width="wrap_content"
@@ -81,6 +85,8 @@ The top level tag attribute is required in the Timeline list adapter
 		<TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
 	         <TextView
 	           	android:layout_width="wrap_content"
@@ -99,9 +105,12 @@ The top level tag attribute is required in the Timeline list adapter
 	            />
 		</TableRow>
 		<TableRow
+	        android:id="@+id/list_item_entry_audio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:visibility="gone">
 	         <TextView
 	           	android:layout_width="wrap_content"
@@ -109,7 +118,6 @@ The top level tag attribute is required in the Timeline list adapter
 		    	android:background="@android:color/transparent"
 	        	/>
 	        <LinearLayout
-	            android:id="@+id/list_item_entry_audio"
 	            android:layout_width="match_parent"
             	android:layout_height="wrap_content"
             	android:layout_span="3"

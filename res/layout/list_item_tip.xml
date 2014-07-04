@@ -15,7 +15,9 @@ The top level tag attribute is required in the Timeline list adapter
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:background="@color/light_light_grey">
+            android:background="@drawable/timeline"
+			android:padding="0dip"
+            >
           
 	    	<!-- "Week dot" icon on top of timeline -->
 	    	<ImageView
@@ -28,29 +30,32 @@ The top level tag attribute is required in the Timeline list adapter
 	        	android:contentDescription="@string/icon"
 	        	style="@style/edit_button_style"
 	        	android:background="@color/light_light_grey"
-	        	/>
-	    	    
+	        	/>   
 	   		
-	    	<!-- Week number and date range -->
+	    	<!-- Week number -->
 	    	<TextView
 	        	android:id="@+id/list_item_tip_week"
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"
 	        	android:padding="@dimen/timeline_item_padding"
+	        	android:background="@color/light_light_grey"
 	        	style="@style/timeline_week_style"
 	        	/>
-	    	<!-- Week number and date range -->
+	    	<!-- Week date range -->
 	    	<TextView
 	        	android:id="@+id/list_item_tip_range"
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
 	        	android:padding="@dimen/timeline_item_padding"
+	        	android:background="@color/light_light_grey"
 	        	style="@style/timeline_date_style"
 	        	/>
 	   	</TableRow>
 		<TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
     		<!-- Tip icon on top of timeline -->
 	   		<ImageView
@@ -77,6 +82,8 @@ The top level tag attribute is required in the Timeline list adapter
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             >
 	    	<TextView
 	           	android:id="@+id/list_item_tip_divider"

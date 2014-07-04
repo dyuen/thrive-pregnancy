@@ -14,6 +14,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
 	    <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
             
 		    <!-- Appointment icon on top of timeline-->
@@ -63,6 +65,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
         	<TextView
 	           	android:layout_width="wrap_content"
@@ -82,6 +86,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
 	        <TextView
 	           	android:layout_width="wrap_content"
@@ -101,6 +107,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
 	        <TextView
 	           	android:layout_width="wrap_content"
@@ -120,6 +128,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
 	        <TextView
 	           	android:layout_width="wrap_content"
@@ -139,6 +149,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/timeline"
+			android:padding="0dip"
             android:gravity="center_vertical">
 	        <TextView
 	           	android:layout_width="wrap_content"

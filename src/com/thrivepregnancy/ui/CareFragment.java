@@ -2,7 +2,6 @@ package com.thrivepregnancy.ui;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.io.File;
 import java.sql.SQLException;
@@ -16,6 +15,7 @@ import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -38,7 +38,7 @@ import android.widget.TextView;
 /**
  * Implements the "My Care" fragment in the {@link MainActivity} page
  */
-public class CareFragment extends Fragment {
+public class CareFragment extends Fragment{
 	
 	private static SimpleDateFormat dueDateFormat = new SimpleDateFormat("MMM d");
 	private static SimpleDateFormat testDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d");
@@ -55,7 +55,6 @@ public class CareFragment extends Fragment {
 	 */
 	public CareFragment(){
 		fragment = this;
-		Log.d(MainActivity.DEBUG_TAG, "---new CareFragment instance");
 	}
 
 	@Override
@@ -68,6 +67,7 @@ public class CareFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+		Log.d(MainActivity.DEBUG_TAG, "---MyCare onCreate");
 		activity = (MainActivity)getActivity();
 		DatabaseHelper databaseHelper = activity.getHelper();
 		eventDao = databaseHelper.getEventDao();
@@ -77,6 +77,7 @@ public class CareFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+//		Log.d(MainActivity.DEBUG_TAG, "---MyCare onResume");
 		// Create and set the adapter with this list
 		adapter = new CareListAdapter(fragmentView);
 		ListView listView = (ListView)getActivity().findViewById(R.id.lstCare);
@@ -332,6 +333,7 @@ public class CareFragment extends Fragment {
 				View entrySection = parentView.findViewById(R.id.new_question_entry);
 				if (requestSection.getVisibility() == View.VISIBLE){
 					requestSection.setVisibility(View.GONE);
+					((TextView)entrySection.findViewById(R.id.new_question_text)).setText("");
 					entrySection.setVisibility(View.VISIBLE);
 				}
 				else {
@@ -452,35 +454,20 @@ public class CareFragment extends Fragment {
 			deleteAppointment.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-					try {
-						eventDao.delete(event);
-						adapter.createBackingList();
-						adapter.notifyDataSetChanged();
-					}
-					catch (SQLException e){
-						Log.e(MainActivity.DEBUG_TAG, "Can't delete appointment", e);
-					}
+					activity.showConfirmationDialog(R.string.dlg_delete_appointment, 
+							new DeleteConfirmationListener(event));
 				}				
 			});			
 	    	setupPhotoView(event.getPhotoFile(), (ImageView)view.findViewById(R.id.list_item_appt_photo));
 		}
-		
 		private void populateQuestionView(View view, final Event event){
 			((TextView)view.findViewById(R.id.list_item_question_text)).setText(event.getText());
 	    	ImageButton deleteQuestion = (ImageButton)view.findViewById(R.id.list_item_question_delete);
 	    	deleteQuestion.setOnClickListener(new OnClickListener(){
 				@Override
-				// TODO Confirmation
 				public void onClick(View view){
-					Dao<Event, Integer> dao = activity.getHelper().getEventDao();
-					try {
-						dao.delete(event);
-						adapter.createBackingList();
-						adapter.notifyDataSetChanged();
-					}
-					catch (SQLException e){
-						Log.e(MainActivity.DEBUG_TAG, "Can't delete question", e);
-					}
+					activity.showConfirmationDialog(R.string.dlg_delete_question, 
+							new DeleteConfirmationListener(event));
 				}				
 			});			
 		}
@@ -504,14 +491,8 @@ public class CareFragment extends Fragment {
 			deleteTest.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-					try {
-						eventDao.delete(event);
-						adapter.createBackingList();
-						adapter.notifyDataSetChanged();
-					}
-					catch (SQLException e){
-						Log.e(MainActivity.DEBUG_TAG, "Can't delete test result", e);
-					}
+					activity.showConfirmationDialog(R.string.dlg_delete_test_result, 
+							new DeleteConfirmationListener(event));
 				}				
 			});			
 			
@@ -557,7 +538,35 @@ public class CareFragment extends Fragment {
 		public long getItemId(int position) {
 			return 0;
 		}
-	}
+	}    
+    
+    private class DeleteConfirmationListener implements DialogInterface.OnClickListener {
+    	private final Event event;
+    	DeleteConfirmationListener(final Event event){
+    		this.event = event;
+    	}
+    	@Override
+    	public void onClick(DialogInterface dialog, int which){
+    		if (which == DialogInterface.BUTTON_POSITIVE){
+				try {
+					eventDao.delete(event);
+					deleteMediaFile(event.getAudioFile());
+					deleteMediaFile(event.getPhotoFile());
+					adapter.createBackingList();
+					adapter.notifyDataSetChanged();
+				}
+				catch (SQLException e){
+					Log.e(MainActivity.DEBUG_TAG, "Can't delete event", e);
+				}
+    		}
+    	}
+    	private void deleteMediaFile(String fileName){
+    		if (fileName != null && fileName.length() > 0){
+    			File file = new File(fileName);
+    			Log.d(MainActivity.DEBUG_TAG, file.delete() ? "Deleted " + fileName : "********** Can't delete " + fileName);
+    		}
+    	}
+    }
 
 	private long parseDate(SimpleDateFormat format, String date){
 		try {

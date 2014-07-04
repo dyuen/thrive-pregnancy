@@ -12,6 +12,15 @@
     <string name="save">Save</string>
     <string name="add_photo">Add Photo</string>
     <string name="add_new">Add new&#8230;</string>
+
+<!-- Confirmation dialogs -->
+    <string name="dlg_delete_appointment">Delete Appointment</string>
+    <string name="dlg_delete_diary_entry">Delete Diary Entry</string>
+    <string name="dlg_delete_test_result">Delete Test Result</string>
+    <string name="dlg_delete_question">Delete Question</string>
+    <string name="dlg_prompt">Are you sure?</string>
+    <string name="dlg_yes">Yes</string>
+    <string name="dlg_no">No</string>
     
 <!--'User preferences'--> 
     <string name="PREFERENCES">preferences</string>
@@ -43,7 +52,7 @@
     <string name="Diary_Photo">Diary Photo</string>
     <string name="Diary_Create">Take a diary picture</string>
     <string name="Diary_Delete">Delete a diary picture</string>
-    <string name="Diary_Record">Record Voice_Note</string>
+    <string name="Diary_Record">Record Voice Note</string>
     <string name="Diary_Record_Instructions">Start speaking, and press the audio button again when you are finished</string>
     <string name="Diary_Audio_Heading">Voice Note</string>
     

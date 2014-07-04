@@ -1,23 +1,14 @@
 package com.thrivepregnancy.ui;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 import com.thrivepregnancy.R;
 import com.thrivepregnancy.data.DatabaseHelper;
-import com.thrivepregnancy.data.Event;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,8 +16,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 
 /**
  * Contains the My Timeline, My Care and I Need screens ("pages")
@@ -53,7 +42,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//		Log.d(DEBUG_TAG, "onCreate");
         setContentView(R.layout.activity_main);
         
         // Create the adapter that will return a fragment for each of the pages
@@ -117,19 +105,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	}
 	
     @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
-    @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
     }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
     
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft){}
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft){}
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to the My Timeline,
      * My Care or I Need page.
@@ -182,4 +167,39 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     		}
     	}
     }
+    
+	private DialogInterface.OnClickListener dialogListener;
+
+	/**
+	 * Displays a delete confirmation popup
+	 * @param titleId resource id of the dialog title string, also used as the dialog id
+	 * @param dialogListener listener for the positive and negative dialog buttons
+	 */
+    void showConfirmationDialog(int titleId, DialogInterface.OnClickListener dialogListener){
+    	this.dialogListener = dialogListener;
+    	Bundle params = new Bundle();
+    	params.putString("title", getString(titleId));
+    	showDialog(titleId, params);
+    }
+    
+    /**
+     * Called by the system when the ap calls showDialog
+     */
+	@Override
+    protected Dialog onCreateDialog(int id, Bundle params) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // If title and message not set here, no title or message area will be generated
+        builder.setTitle(params.getString("title"));
+        builder.setMessage(getString(R.string.dlg_prompt));
+        builder.setPositiveButton(getString(R.string.dlg_yes), dialogListener);
+        builder.setNegativeButton(getString(R.string.dlg_no), dialogListener);
+        // Create the AlertDialog object and return it
+        return builder.create();
+    }
+	@Override
+	protected void onPrepareDialog (int id, Dialog dialog, Bundle params){
+		((AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dlg_yes), dialogListener);
+		((AlertDialog)dialog).setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dlg_no), dialogListener);
+		((AlertDialog)dialog).setTitle(params.getString("title"));
+	}
 }

@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -72,7 +73,7 @@ public class DiaryEntryActivity extends BaseActivity {
 			        	m_Recorder.start();
 			        }
 			        catch (IOException e){
-			        	
+			        	Log.e(MainActivity.DEBUG_TAG, "Can't record audio", e);
 			        }
 				}
 				else {
