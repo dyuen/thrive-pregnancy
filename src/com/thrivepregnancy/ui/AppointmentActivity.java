@@ -40,6 +40,9 @@ public class AppointmentActivity  extends BaseActivity{
      * References views from layout
      */
     private void SetViews() {
+    	//EditText date =(EditText)findViewById(R.id.appt_date);
+    	//date.setKeyListener(null);
+    	
     	set_purposeView((EditText)findViewById(R.id.appt_purpose));
     	set_dateView((EditText)findViewById(R.id.appt_date));
     	set_timeView((EditText)findViewById(R.id.appt_time));

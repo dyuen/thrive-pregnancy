@@ -1,6 +1,7 @@
 package com.thrivepregnancy.ui;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.io.File;
@@ -14,6 +15,7 @@ import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +31,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -38,7 +41,7 @@ import android.widget.TextView;
 /**
  * Implements the "My Care" fragment in the {@link MainActivity} page
  */
-public class CareFragment extends Fragment{
+public class CareFragment extends Fragment implements OnDateSetListener{
 	
 	private static SimpleDateFormat dueDateFormat = new SimpleDateFormat("MMM d");
 	private static SimpleDateFormat testDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d");
@@ -50,6 +53,10 @@ public class CareFragment extends Fragment{
 	private Dao<Event, Integer>	eventDao;
 	private MainActivity		activity;
 	private CareListAdapter 	adapter;
+	private EditText			m_dateView;
+	private OnDateSetListener 	m_dateListener;
+	private Calendar			m_dueDate;
+	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
 	 */
@@ -72,8 +79,23 @@ public class CareFragment extends Fragment{
 		DatabaseHelper databaseHelper = activity.getHelper();
 		eventDao = databaseHelper.getEventDao();
 	    dataHelper = new EventDataHelper(databaseHelper);
+	    m_dateListener = this;
 	}
-
+	
+    /**
+     * Called when the date has been set 
+     */
+	public void onDateSet(DatePicker view, int year, int month, int day) {
+		if (m_dueDate==null) m_dueDate = Calendar.getInstance();
+		
+		m_dueDate.set(Calendar.YEAR, year);		
+		m_dueDate.set(Calendar.MONTH, month);
+		m_dueDate.set(Calendar.DAY_OF_MONTH, day);
+        
+		m_dateView.setText(dueDateFormat.format(m_dueDate.getTime()));
+    }
+	
+	
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -429,6 +451,17 @@ public class CareFragment extends Fragment{
 					adapter.notifyDataSetChanged();
 				}
 			});
+	    	
+		    m_dateView = (EditText)view.findViewById(R.id.delivery_date_edit);
+		    
+	    	if (m_dateView != null) {
+		    	m_dateView.setOnClickListener(new OnClickListener() {        
+		            public void onClick(View v) {
+		              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", m_dateListener);
+		               	fragment.show(getFragmentManager(), "1");
+		            }
+		        });
+		    }
 		}
 		
 		private void populateAppointmentView(View view, final Event event){

@@ -122,6 +122,7 @@ The top level tag attribute is required in the Mycare list adapters
 	            	android:layout_height="wrap_content"
 	            	android:hint="@string/PersonalInfo_Due_Date" 
 	            	android:inputType="date"
+	            	android:focusable="false"
 	            	style="@style/mycare_input_style"
 	            	android:padding="@dimen/care_item_padding"
 	            	/>          
@@ -133,6 +134,7 @@ The top level tag attribute is required in the Mycare list adapters
 	            	style="@style/mycare_input_style"
 	            	android:padding="@dimen/care_item_padding"
 	            	/>          
+	            	<requestFocus />
 	        	<EditText
 	            	android:id="@+id/provider_location_edit"
 	            	android:layout_width="match_parent"
