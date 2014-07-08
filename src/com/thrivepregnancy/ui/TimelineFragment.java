@@ -267,6 +267,10 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					if(view == null || !view.getTag().equals(Event.Type.TIP.name())) {
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_tip, parent, false);
 					}
+					
+					view.setEnabled(false);
+					view.setOnClickListener(null);
+					
 					TextView text = (TextView)view.findViewById(R.id.list_item_tip_text);
 					TextView week = (TextView)view.findViewById(R.id.list_item_tip_week);
 					TextView range = (TextView)view.findViewById(R.id.list_item_tip_range);
@@ -285,7 +289,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 
 					week.setText(weekMap.get(event));
 					if (startMonth.equals(endMonth)){
-						range.setText(startMonth + " " + startDay + "-" + endDay);
+						range.setText(startMonth + " " + startDay + " - " + endDay);
 					}
 					else {
 						range.setText(startMonth + " " + startDay + " - " + endMonth + " " + endDay);

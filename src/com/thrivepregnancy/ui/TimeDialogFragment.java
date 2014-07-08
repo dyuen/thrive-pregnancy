@@ -8,6 +8,7 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.widget.TimePicker;
 
 /**
@@ -17,13 +18,27 @@ public class TimeDialogFragment extends DialogFragment{
 
 	private TimePicker 			timePicker;
 	private OnTimeSetListener 	timeListener;
+	private static int m_hour;
+	private static int m_min;
 	
-	public static TimeDialogFragment newInstance(String fragmentNumber, OnTimeSetListener timeListener) {
+	private final static int TIME_PICKER_INTERVAL = 5;
+	
+	public static TimeDialogFragment newInstance(String fragmentNumber, int h, int m, OnTimeSetListener timeListener) {
 		TimeDialogFragment newInstance = new TimeDialogFragment();
 		newInstance.timeListener =timeListener;
 		Bundle args = new Bundle();
 		args.putString("fragnum", fragmentNumber);
+		args.putInt("hour", h);
+		args.putInt("min", m);
+		
+		Log.d("hour",Integer.toString(h));
+		Log.d("min",Integer.toString(m));
+		
+		m_hour = h;
+		m_min = m;
+		
 		newInstance.setArguments(args);
+			
 		return newInstance;
 	}
 
@@ -33,9 +48,14 @@ public class TimeDialogFragment extends DialogFragment{
 		Activity parentActivity = getActivity();	
 		timePicker = (TimePicker)parentActivity.getLayoutInflater().inflate(R.layout.time_picker, null);
 		
+		timePicker.setCurrentHour(m_hour);
+		timePicker.setCurrentMinute(m_min);
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
+		
 		builder.setTitle("Select time");		
 		builder.setView(timePicker);
+		
 		// Pass the selected date back to the activity only when Save is clicked
 		builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {			
 			@Override

@@ -86,6 +86,14 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	private static final String IMAGE_PATH = "imagePath";
 	private static final String DELETED = "deleted";
 	
+	private static final String BLANK_APPT = "Appointment";
+	private static final String BLANK_DIARY = "Diary Entry";
+	private static final String BLANK_TEST = "Test Result";
+	
+	private static final String APPT_WARNING = "Please enter date and time of your appointment";
+	private static final String DIARY_WARNING = "Please enter a diary note or a picture";
+	private static final String TEST_WARNING = "Please enter a test result note or a picture";
+	
 	 /**
      * Setup global variables at startup
      */
@@ -188,7 +196,19 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         //create new event
         } else if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_NEW)) {
         	m_event = new Event();
-        	m_event.setDate(m_date.getTime());
+        	
+        	switch (m_eventType) {
+        	case APPOINTMENT:
+        		m_date.set(Calendar.HOUR_OF_DAY, 12);
+        		m_date.set(Calendar.MINUTE, 0);
+        		
+        		m_event.setDate(m_date.getTime());
+        		break;
+        	default:
+        		m_event.setDate(m_date.getTime());
+        		break;
+        	}
+        	
         	m_event.setType(m_eventType);
         } 
     }
@@ -217,7 +237,8 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
     	if (m_timeView != null) {
     		m_timeView.setOnClickListener(new OnClickListener() {        
 	            public void onClick(View v) {
-	              	TimeDialogFragment fragment = TimeDialogFragment.newInstance("1", m_timeListener);
+	              	TimeDialogFragment fragment = TimeDialogFragment.newInstance(
+	              			"1", m_date.get(Calendar.HOUR_OF_DAY), m_date.get(Calendar.MINUTE), m_timeListener);
 	               	fragment.show(getSupportFragmentManager(), "1");
 	            }
 	        });
@@ -248,6 +269,14 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 		
         if (m_buttonCreate != null) {
 	        m_buttonCreate.setOnClickListener(new OnClickListener() {        
+	            public void onClick(View v) {
+	            	DispatchTakePictureIntent();
+	            }
+	        });
+        }
+        
+        if (m_photoText != null) {
+        	m_photoText.setOnClickListener(new OnClickListener() {        
 	            public void onClick(View v) {
 	            	DispatchTakePictureIntent();
 	            }
@@ -424,6 +453,9 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
      */
     @Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+    	boolean warning = true;
+    	String purpose;
+    	
 	    switch (item.getItemId()) {
 	    	case android.R.id.home:
 	            // app icon in action bar clicked; goto parent activity.
@@ -444,26 +476,73 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 					Log.e(BaseActivity.class.getName(), "Unable to parse date", e);
 				}
 	        	
-	        	if (notes != null && (notes.length() != 0) && m_date != null){
-	        		// Save notes and date
-	        		m_event.setDate(m_date.getTime());
-	        		m_event.setText(notes);
-	        		
-	        		if (m_purposeView != null && (m_purposeView.getText().toString().length() != 0)) 
-	        			m_event.setPurpose(m_purposeView.getText().toString());
+				switch(m_eventType) {
+		        case DIARY_ENTRY:
+		        	m_warning = DIARY_WARNING;
+		        	
+		        	if (m_date != null) {
+			        	if (notes != null && (notes.length() != 0)) { 
+			        		warning = false;
+			        	} else {
+			        		if (m_currentPhotoPath != null && (!m_currentPhotoPath.equalsIgnoreCase(DELETED)) 
+		        				&& (m_currentPhotoPath.length() != 0)) {
+			        			notes = BLANK_DIARY;
+			        			warning = false;
+			        		}
+			        	}	
+		        	}
+		        	
+		        	break;
+		        case APPOINTMENT:
+		        	m_warning = APPT_WARNING;
+		        	
+		        	if (m_date != null) warning = false;
+		        	
+		        	if (m_purposeView != null && (m_purposeView.getText().toString().length() != 0)) {
+		        		purpose = m_purposeView.getText().toString();
+		        	} else {
+		        		purpose = BLANK_APPT;
+		        	}
+		        	
+		        	m_event.setPurpose(purpose);
+		        	
 	        		if (m_doctorView != null && (m_doctorView.getText().toString().length() != 0)) 
 	        			m_event.setDoctor(m_doctorView.getText().toString());
 	        		if (m_addressView != null && (m_addressView.getText().toString().length() != 0)) 
 	        			m_event.setAddress(m_addressView.getText().toString());
 	        		
-	        		if (SaveEvent()) m_result = Activity.RESULT_OK;
-	        		closeActivity();
-	    		}
-	        	else {
-	        		// Remind user to enter information
+		        	break;
+		        case TEST_RESULT:
+		        	m_warning = TEST_WARNING;
+		        	
+		        	if (m_date != null) {
+			        	if (notes != null && (notes.length() != 0)) { 
+			        		warning = false;
+			        	} else {
+			        		if (m_currentPhotoPath != null && (!m_currentPhotoPath.equalsIgnoreCase(DELETED)) 
+		        				&& (m_currentPhotoPath.length() != 0)) {
+			        			notes = BLANK_TEST;
+			        			warning = false;
+			        		}
+			        	}	
+		        	}
+		        	
+		        	break;	
+		        }
+				
+				if (warning) {
+					// Remind user to enter information
 		        	m_warnView.setText(m_warning);
-	        	}
-	            
+				} else {
+		        	if (notes != null && (notes.length() != 0)) m_event.setText(notes);
+		        	if (m_date != null) m_event.setDate(m_date.getTime());
+		        	
+		        	if (SaveEvent()) { 
+		        		m_result = Activity.RESULT_OK;
+		        		closeActivity();
+		    		}
+				}
+				
 	            return true;
 	        
 	        default:	        	

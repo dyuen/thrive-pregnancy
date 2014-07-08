@@ -21,9 +21,11 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
 		    <!-- Appointment icon on top of timeline-->
 		   	<ImageView
 		   	    android:id="@+id/list_item_appt_timeline"
+		   	    android:background="@android:color/transparent"
 		    	android:src="@drawable/ic_appts"
-		    	android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
+		    	android:layout_width="@dimen/timeline_icon_width"
+			    android:layout_height="@dimen/timeline_icon_height"
+			    android:paddingLeft="@dimen/timeline_icon_left"
 				android:paddingRight="@dimen/timeline_tipiconright_spacing"
 		       	android:adjustViewBounds="true"
 		       	android:contentDescription="@string/icon"

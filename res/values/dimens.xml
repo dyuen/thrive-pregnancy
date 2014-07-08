@@ -19,6 +19,10 @@
 	<dimen name="timeline_tipiconright_spacing">5dp</dimen>
 	<dimen name="timeline_item_padding">3dp</dimen>
 	
+	<dimen name="timeline_icon_left">5dp</dimen>
+	<dimen name="timeline_icon_width">48dp</dimen>
+	<dimen name="timeline_icon_height">48dp</dimen>
+	
 	<dimen name="activity_item_padding">3dp</dimen>
 	
 	<dimen name="ineed_item_padding">5dp</dimen>

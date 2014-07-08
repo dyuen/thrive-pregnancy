@@ -36,6 +36,7 @@ Layout of the "Add new" line in Care list Appointments
 	    	style="@style/edit_button_style"
 		    />
 	    <TextView
+	        android:id="@+id/list_item_add_new_text"
 	        android:text="@string/add_new"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"

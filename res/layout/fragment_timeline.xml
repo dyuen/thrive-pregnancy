@@ -1,7 +1,7 @@
 <!-- 
 Layout of the My Timeline page
 -->
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,12 +9,20 @@ Layout of the My Timeline page
     android:orientation = "vertical"
     android:background="@android:color/transparent"
     tools:context=".MainActivity" >
-    <RelativeLayout
+	 <ListView
+	     android:id="@+id/lstTimeline"
+	     android:layout_width="match_parent"
+	     android:layout_height="match_parent"
+	     android:layout_alignParentTop="true"
+	     android:background="@color/white"
+	     android:divider="@color/light_light_grey"
+	     />
+	  <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" 
-        android:background="@color/light_light_grey"
-        android:paddingBottom="@dimen/timeline_listitembottom_spacing"
+        android:background="@android:color/transparent"
+        android:layout_alignParentTop="true"
         >        
         <ImageButton
 	        android:id="@+id/btnNote"
@@ -37,11 +45,4 @@ Layout of the My Timeline page
         	android:adjustViewBounds="true"
 	        />
      </RelativeLayout>
-	 <ListView
-	     android:id="@+id/lstTimeline"
-	     android:layout_width="match_parent"
-	     android:layout_height="match_parent"
-	     android:background="@color/white"
-	     android:divider="@color/light_light_grey"
-	     />
-</LinearLayout>
+</RelativeLayout>

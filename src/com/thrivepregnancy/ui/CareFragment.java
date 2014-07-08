@@ -319,16 +319,19 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 
 			case R.layout.list_item_add_new_appointment:
 				((ImageButton)view.findViewById(R.id.list_item_add_new)).setOnClickListener(addNewAppointmentListener);
+				((TextView)view.findViewById(R.id.list_item_add_new_text)).setOnClickListener(addNewAppointmentListener);
 				break;
 				
 			case R.layout.list_item_add_new_question:
 				CreateNewQuestionOnClickLister listener = new CreateNewQuestionOnClickLister(view);
 				((ImageButton)view.findViewById(R.id.list_item_add_new)).setOnClickListener(listener);
+				((TextView)view.findViewById(R.id.list_item_add_new_text)).setOnClickListener(listener);
 				((ImageButton)view.findViewById(R.id.new_question_save)).setOnClickListener(listener);
 				break;
 				
 			case R.layout.list_item_add_new_test_result:
 				((ImageButton)view.findViewById(R.id.list_item_add_new)).setOnClickListener(addNewTestResultListener);
+				((TextView)view.findViewById(R.id.list_item_add_new_text)).setOnClickListener(addNewTestResultListener);
 				break;
 				
 			}		

@@ -8,27 +8,32 @@ The top level tag attribute is required in the Timeline list adapter
 	    android:tag="TIP" 
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-    	android:shrinkColumns="0"
-    	android:stretchColumns="2"
+    	android:background="@color/light_light_grey"
 	    >
+	    <TableLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+	    	android:shrinkColumns="0"
+	    	android:stretchColumns="2"
+		    >
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:background="@drawable/timeline"
 			android:padding="0dip"
             >
-          
 	    	<!-- "Week dot" icon on top of timeline -->
 	    	<ImageView
 	   	    	android:id="@+id/list_item_tip_timeline"
 	        	android:src="@drawable/ic_timeline_dot"
-	       	 	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
+	        	android:background="@android:color/transparent"
+	       	 	android:layout_width="@dimen/timeline_icon_width"
+			    android:layout_height="@dimen/timeline_icon_height"
 	        	android:adjustViewBounds="true"
 	        	android:contentDescription="@string/icon"
 	        	android:paddingRight="@dimen/timeline_tipiconright_spacing"
-	        	android:background="@android:color/transparent"
+	        	android:paddingLeft="@dimen/timeline_icon_left"
 	        	style="@style/edit_button_style"
 	        	
 	        	/>   
@@ -52,6 +57,14 @@ The top level tag attribute is required in the Timeline list adapter
 	        	style="@style/timeline_date_style"
 	        	/>
 	   	</TableRow>
+	</TableLayout>
+	<TableLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+    	android:shrinkColumns="0"
+    	android:stretchColumns="2"
+    	android:background="@color/white"
+	    >
 		<TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,8 +75,10 @@ The top level tag attribute is required in the Timeline list adapter
 	   		<ImageView
 	    		android:id="@+id/list_item_tip_timeline_2"
 	      		android:src="@drawable/ic_tips"
-	        	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
+	      		android:background="@android:color/transparent"
+	        	android:layout_width="@dimen/timeline_icon_width"
+			    android:layout_height="@dimen/timeline_icon_height"
+			    android:paddingLeft="@dimen/timeline_icon_left"
 	        	android:adjustViewBounds="true"
 	        	android:contentDescription="@string/icon"
 	        	android:paddingRight="@dimen/timeline_tipiconright_spacing"
@@ -121,3 +136,4 @@ The top level tag attribute is required in the Timeline list adapter
 	        	/>
 	       	</TableRow>
  </TableLayout>
+</TableLayout>
