@@ -1,5 +1,6 @@
 package com.thrivepregnancy.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import 	android.view.MotionEvent;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -64,6 +67,7 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
 	private FragmentManager		fragmentManager;
 	private Calendar 			calendar;
 	private OnDateSetListener 	dateListener;
+	private EditText 			dateView;
 	private final static Integer MIN_NAME_LENGTH = 3;
 	
     @Override
@@ -81,7 +85,7 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
         	this.finish();
     	}
     	
-    	EditText dateView = (EditText)findViewById(R.id.startup_date);
+    	dateView = (EditText)findViewById(R.id.startup_date);
         dateView.setOnClickListener(new OnClickListener() {        
             public void onClick(View v) {
             	// Limit due date range to from now to nine months away
@@ -94,7 +98,13 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
             }
         });
     }
-    
+/*    
+    @Override
+    public void onResume(){
+    	super.onResume();
+    	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+*/    
     /**
      * Called when the date has been set 
      */

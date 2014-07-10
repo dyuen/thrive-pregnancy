@@ -60,7 +60,9 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	private OnDateSetListener m_dateListener;
 	private OnTimeSetListener m_timeListener;
 	private Calendar m_date;
+	private Calendar m_CalFirstWeek;
 	private long m_dueDate;
+	private long m_selectedDate;
 	
 	private TextView m_warnView;
 	private String m_warning;
@@ -105,6 +107,10 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 		String activityTitle;
 		SharedPreferences preferences =  getSharedPreferences(StartupActivity.PREFERENCES, MODE_PRIVATE);
 		m_dueDate = preferences.getLong(StartupActivity.PREFERENCE_DUE_DATE, 0);
+		m_CalFirstWeek = Calendar.getInstance();
+		m_CalFirstWeek.setTimeInMillis(m_dueDate);
+		m_CalFirstWeek.add(Calendar.DAY_OF_YEAR, 7 * (-40));
+		
         m_mode = getIntent().getStringExtra(MainActivity.REQUEST_MODE);
         m_eventType = type;
         
@@ -140,6 +146,11 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         m_actionBar.setHomeButtonEnabled(true);
         
         CreateEvent();
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
 	}
 	
 	/**
@@ -195,7 +206,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         	
         //create new event
         } else if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_NEW)) {
-        	m_event = new Event();
+       		m_event = new Event();
         	
         	switch (m_eventType) {
         	case APPOINTMENT:
@@ -220,32 +231,8 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
     	m_layout = layout;
     	
     	if (m_dateView != null) {
-	    	m_dateView.setOnClickListener(new OnClickListener() {        
-	            public void onClick(View v) {
-	            	// Date range is restricted to the current date through to the due date
-	            	long now = Calendar.getInstance().getTimeInMillis();
-	            	int title = R.string.Diary_Popup_Date;
-	            	if (m_eventType.equals(Event.Type.APPOINTMENT)){
-	            		title = R.string.Appt_Popup_Date;
-	            	}
-	            	else if (m_eventType.equals(Event.Type.TEST_RESULT)){
-	            		title = R.string.Test_Popup_Date;
-	            	}
-	            	DateDialogFragment fragment = null;
-	            	if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)){
-		            	fragment = DateDialogFragment.newInstance("1", m_dateListener, title, now, m_dueDate, m_event.getDate().getTime());	            		
-	            	}
-	            	else {
-	            		fragment = DateDialogFragment.newInstance("1", m_dateListener, title, now, m_dueDate, now);
-	            	}
-	               	fragment.show(getSupportFragmentManager(), "1");
-	            }
-	        });
-	    	
-	    	String strDate;
-	    	
-	    	strDate = m_dateFormat.format(m_event.getDate());
-	    	
+    		setupDatePicker();	    	
+	    	String strDate = m_dateFormat.format(m_event.getDate());	    	
 	        m_dateView.setText(strDate);
     	}
     	
@@ -258,17 +245,13 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	            }
 	        });
 	    	
-	    	String strDate;
-	    	
-	    	strDate = m_timeFormat.format(m_event.getDate());
-	    	
+	    	String strDate = m_timeFormat.format(m_event.getDate());	    	
 	        m_timeView.setText(strDate);
 		}
 
     	if (m_noteView != null) {
     		if (m_event.getText() != null && (m_event.getText().length() > 0)) m_noteView.setText(m_event.getText());
-    	}
-    	
+    	}    	
     	
     	if (m_purposeView != null) {
     		if (m_event.getPurpose() != null && (m_event.getPurpose().length() > 0)) m_purposeView.setText(m_event.getPurpose());
@@ -314,6 +297,64 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         if (SetPhoto()) {
         	setContentView(m_layout);
         }
+    }
+    
+    private void setupDatePicker(){
+    	m_dateView.setOnClickListener(new OnClickListener() {        
+            public void onClick(View v) {
+            	int title = R.string.Diary_Popup_Date;
+            	if (m_eventType.equals(Event.Type.APPOINTMENT)){
+            		title = R.string.Appt_Popup_Date;
+            	}
+            	else if (m_eventType.equals(Event.Type.TEST_RESULT)){
+            		title = R.string.Test_Popup_Date;
+            	}
+            	long today = Calendar.getInstance().getTimeInMillis();
+    			
+            	long earliest;
+        		if (m_event.getType().equals(Event.Type.DIARY_ENTRY)){
+        			earliest = m_CalFirstWeek.getTimeInMillis();
+        		}
+        		else {
+        			earliest = today;
+        		}
+        		
+            	long latest = m_dueDate;
+            	
+            	long initial;
+            	if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)){
+        			initial = m_event.getDate().getTime();
+            	}
+            	else {
+        			initial = m_selectedDate == 0 ? today : m_selectedDate;
+            	}
+            	DateDialogFragment fragment = DateDialogFragment.newInstance("1", m_dateListener, title, earliest, latest, initial);
+               	fragment.show(getSupportFragmentManager(), "1");
+            }
+        });    	
+    }
+    
+    /**
+     * Called when the date has been set 
+     */
+	public void onDateSet(DatePicker view, int year, int month, int day) {
+		if (m_date == null){
+			m_date = Calendar.getInstance();
+			m_date.clear();        
+		}
+		
+		m_date.set(Calendar.YEAR, year);		
+		m_date.set(Calendar.MONTH, month);
+		m_date.set(Calendar.DAY_OF_MONTH, day);
+		
+		Date date = m_date.getTime();
+		// Save the new date in the event
+		m_event.setDate(date);
+		m_selectedDate = date.getTime();
+		// Must recreate 
+		setupDatePicker();        
+		// Update the display
+        m_dateView.setText(m_dateFormat.format(date.getTime()));
     }
     
     /**
@@ -428,24 +469,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
     	}
     }
 
-    /**
-     * Called when the date has been set 
-     */
-	public void onDateSet(DatePicker view, int year, int month, int day) {
-		// Save the new date in the calendar
-		if (m_date == null){
-			m_date = Calendar.getInstance();
-			m_date.clear();        
-		}
-		
-		m_date.set(Calendar.YEAR, year);		
-		m_date.set(Calendar.MONTH, month);
-		m_date.set(Calendar.DAY_OF_MONTH, day);
-        
-		// Update the display
-        m_dateView.setText(m_dateFormat.format(m_date.getTime()));
-    }
-    
 	/**
      * Called when the time has been set 
      */
