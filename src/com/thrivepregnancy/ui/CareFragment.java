@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -43,15 +44,15 @@ import android.widget.TextView;
  */
 public class CareFragment extends Fragment implements OnDateSetListener{
 	
-	private static SimpleDateFormat dueDateFormat = new SimpleDateFormat("MMM d");
-	private static SimpleDateFormat testDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d");
-	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa");
-
+	private static SimpleDateFormat dueDateFormat = new SimpleDateFormat("MMM d", Locale.CANADA);
+	private static SimpleDateFormat testDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d", Locale.CANADA);
+	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa", Locale.CANADA);
+	
 	private View 				fragmentView;
 	private CareFragment 		fragment;
 	private EventDataHelper 	dataHelper;
 	private Dao<Event, Integer>	eventDao;
-	private MainActivity		activity;
+	private MainActivity		mainActivity;
 	private CareListAdapter 	adapter;
 	private EditText			m_dateView;
 	private OnDateSetListener 	m_dateListener;
@@ -75,8 +76,8 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 		Log.d(MainActivity.DEBUG_TAG, "---MyCare onCreate");
-		activity = (MainActivity)getActivity();
-		DatabaseHelper databaseHelper = activity.getHelper();
+		mainActivity = (MainActivity)getActivity();
+		DatabaseHelper databaseHelper = mainActivity.getHelper();
 		eventDao = databaseHelper.getEventDao();
 	    dataHelper = new EventDataHelper(databaseHelper);
 	    m_dateListener = this;
@@ -86,7 +87,9 @@ public class CareFragment extends Fragment implements OnDateSetListener{
      * Called when the date has been set 
      */
 	public void onDateSet(DatePicker view, int year, int month, int day) {
-		if (m_dueDate==null) m_dueDate = Calendar.getInstance();
+		if (m_dueDate==null) {
+			m_dueDate = Calendar.getInstance();
+		}
 		
 		m_dueDate.set(Calendar.YEAR, year);		
 		m_dueDate.set(Calendar.MONTH, month);
@@ -166,7 +169,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	@Override
 	public void onActivityResult(int requestCodeIgnored, int resultCode, Intent intent){
 		if (intent == null){
-			// Return from called activity by pressing back button
+			// Return from called mainActivity by pressing back button
 			return;
 		}
 		else {
@@ -178,11 +181,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		private List<Event> 			appointmentEvents;
 		private List<Event> 			questionEvents;
 		private List<Event> 			testResultEvents;
-		private int						appointmentListIndex;
-		private int						questionListIndex;
-		private int						testResultListIndex;
 		private boolean					editingProviderContact;
-		private View					providerView;
 		private SharedPreferences 		preferences;
 		private CareListAdapter			adapter;
 		
@@ -198,7 +197,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			editingProviderContact = false;
 			
 			// "Cache" the provider contact info locally
-			preferences = activity.getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
+			preferences = mainActivity.getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
 			dueDate = preferences.getLong(StartupActivity.PREFERENCE_DUE_DATE, 0);
 	    	providerName = preferences.getString(StartupActivity.PREFERENCE_PROVIDER_NAME, "");
 	    	providerLocation = preferences.getString(StartupActivity.PREFERENCE_PROVIDER_LOCATION, "");
@@ -267,16 +266,8 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	        }
 	        elementBackers.add(backerADD_NEW_TEST_RESULT);
 			
-	        resetIndices();
 			return elementBackers;
 	    }
-	    
-	    private void resetIndices(){
-	        appointmentListIndex = 0;
-			questionListIndex = 0;
-			testResultListIndex = 0;	    	
-	    }
-
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
 			ImageView 	photoView = null;
@@ -284,7 +275,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			
 			ElementBacker backer = elementBackers.get(position);
 			if(view == null || !view.getTag().equals(backer.tag)) {
-				view = LayoutInflater.from(activity).inflate(backer.resourceId, parent, false);
+				view = LayoutInflater.from(mainActivity).inflate(backer.resourceId, parent, false);
 			}
 		
 			Event event = backer.event;
@@ -385,7 +376,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		OnClickListener addNewAppointmentListener = new OnClickListener(){
 			@Override
 			public void onClick(View view){
-				Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+				Intent intent = new Intent(mainActivity.getApplicationContext(), AppointmentActivity.class);
 				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
 				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);				
 			}
@@ -394,7 +385,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		OnClickListener addNewTestResultListener = new OnClickListener(){
 			@Override
 			public void onClick(View view){
-				Intent intent = new Intent(activity.getApplicationContext(), TestResultActivity.class);
+				Intent intent = new Intent(mainActivity.getApplicationContext(), TestResultActivity.class);
 				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
 				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_TEST_RESULT);				
 			}
@@ -436,17 +427,23 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 					if (editingProviderContact){
 						// Update the "cached" values and store them in preferences
 						SharedPreferences.Editor editor = preferences.edit();
-				    	
-				    	String strDueDate = ((EditText)fragmentView.findViewById(R.id.delivery_date_edit)).getText().toString();
-				    	dueDate = parseDate(dueDateFormat, strDueDate);
 				    	providerName = ((EditText)fragmentView.findViewById(R.id.provider_name_edit)).getText().toString();
 				    	providerLocation = ((EditText)fragmentView.findViewById(R.id.provider_location_edit)).getText().toString();
 				    	oncallPhone = ((EditText)fragmentView.findViewById(R.id.provider_oncall_phone_edit)).getText().toString();				
 				    	
-				    	editor.putLong(StartupActivity.PREFERENCE_DUE_DATE, dueDate);
 				    	editor.putString(StartupActivity.PREFERENCE_PROVIDER_NAME, providerName);
 				    	editor.putString(StartupActivity.PREFERENCE_PROVIDER_LOCATION, providerLocation);
 				    	editor.putString(StartupActivity.PREFERENCE_ONCALL_NUMBER, oncallPhone);
+				    	
+				    	// Due date may have changed: recalculate the timeline
+				    	if (m_dueDate != null){
+				    		Log.d(MainActivity.DEBUG_TAG, "******* New due date is " + dueDateFormat.format(m_dueDate.getTime()));
+
+				    		dueDate = m_dueDate.getTimeInMillis();
+				    		editor.putLong(StartupActivity.PREFERENCE_DUE_DATE, dueDate);
+				    		updateTimeline(dueDate);
+				    		mainActivity.getTimelineFragment().refreshOnTimelineChange();
+				    	}				    	
 				    	editor.commit();
 					}
 					// Toggle the editing state and notify 
@@ -460,11 +457,39 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	    	if (m_dateView != null) {
 		    	m_dateView.setOnClickListener(new OnClickListener() {        
 		            public void onClick(View v) {
-		              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", m_dateListener);
+		            	Calendar earliest = Calendar.getInstance();
+		            	earliest.setTimeInMillis(dueDate);
+		            	earliest.add(Calendar.DAY_OF_YEAR, -60);
+		            	Calendar latest = Calendar.getInstance();
+		            	latest.setTimeInMillis(dueDate);
+		            	latest.add(Calendar.DAY_OF_YEAR, 60);
+		            	
+		              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", m_dateListener, R.string.PersonalInfo_Delivery_Date,
+		              			earliest.getTimeInMillis(), latest.getTimeInMillis(), dueDate);
 		               	fragment.show(getFragmentManager(), "1");
 		            }
 		        });
 		    }
+		}
+		
+		private void updateTimeline(long newDueDate){
+			List<Event> tips = dataHelper.getTips();
+			Calendar dueDate = Calendar.getInstance();
+			dueDate.setTimeInMillis(newDueDate);
+			
+			int week = 1;
+			for (Event tip: tips){
+		        Calendar date = (Calendar)dueDate.clone();
+		        date.add(Calendar.DAY_OF_YEAR, 7 * (week - 41));
+				tip.setDate(date.getTime());
+				try {
+					eventDao.update(tip);
+				}
+				catch (SQLException e){
+					Log.e(MainActivity.DEBUG_TAG, "Can't update event", e);
+				}
+				week++;
+			}
 		}
 		
 		private void populateAppointmentView(View view, final Event event){
@@ -480,7 +505,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			editAppointment.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-					Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+					Intent intent = new Intent(mainActivity.getApplicationContext(), AppointmentActivity.class);
 					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);	        	
 					intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, eventId);	        	
 					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
@@ -490,7 +515,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			deleteAppointment.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-					activity.showConfirmationDialog(R.string.dlg_delete_appointment, 
+					mainActivity.showConfirmationDialog(R.string.dlg_delete_appointment, 
 							new DeleteConfirmationListener(event));
 				}				
 			});			
@@ -502,7 +527,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	    	deleteQuestion.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-					activity.showConfirmationDialog(R.string.dlg_delete_question, 
+					mainActivity.showConfirmationDialog(R.string.dlg_delete_question, 
 							new DeleteConfirmationListener(event));
 				}				
 			});			
@@ -517,7 +542,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			editTest.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-					Intent intent = new Intent(activity.getApplicationContext(), TestResultActivity.class);
+					Intent intent = new Intent(mainActivity.getApplicationContext(), TestResultActivity.class);
 					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);	        	
 					intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, eventId);	        	
 					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_TEST_RESULT);
@@ -527,7 +552,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			deleteTest.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-					activity.showConfirmationDialog(R.string.dlg_delete_test_result, 
+					mainActivity.showConfirmationDialog(R.string.dlg_delete_test_result, 
 							new DeleteConfirmationListener(event));
 				}				
 			});			

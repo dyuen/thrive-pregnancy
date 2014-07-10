@@ -60,6 +60,28 @@ public class EventDataHelper{
         
 		return events;
 	}
+	
+	/** returns date-ordered list of all Tip event objects */
+	public List<Event> getTips() {
+		List<Event> events = null;
+		
+		try {
+			QueryBuilder<Event, Integer> queryBuilder = eventDao.queryBuilder();
+			PreparedQuery<Event> preparedQuery;
+			
+			queryBuilder.where().eq("type", Event.Type.TIP);
+			queryBuilder.orderBy("date",true);
+			
+			preparedQuery = queryBuilder.prepare();
+			
+			events = eventDao.query(preparedQuery);
+		} catch (SQLException e) {
+			Log.e(EventDataHelper.class.getName(), "Unable to get tip events", e);
+		}
+        
+		return events;
+	}
+	
 	/** returns date-ordered list of all Appointment event objects */
 	public List<Event> getAppointments() {
 		List<Event> events = null;

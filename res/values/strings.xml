@@ -9,6 +9,7 @@
     <string name="needit">Need It</string>
     <string name="gotit">Got It</string>
     <string name="week">Week</string>
+    <string name="date">Date</string>
     <string name="save">Save</string>
     <string name="add_photo">Add Photo</string>
     <string name="add_new">Add new&#8230;</string>
@@ -22,10 +23,10 @@
     <string name="dlg_yes">Yes</string>
     <string name="dlg_no">No</string>
     
-<!--'User preferences'--> 
+<!--'User preferences' 
     <string name="PREFERENCES">preferences</string>
 	<string name="PREFERENCE_NAME">name</string>
-	<string name="PREFERENCE_DUE_DATE">date</string>
+	<string name="PREFERENCE_DUE_DATE">date</string> -->
 	
 <!-- Warning messages for Save -->
     <string name="startup_warning">Please enter your full name and your due date</string>
@@ -48,6 +49,7 @@
 	<string name="Diary_Action">Diary Entry</string>
     <string name="Diary_Notes">Notes</string>
     <string name="Diary_Date">Date</string>
+    <string name="Diary_Popup_Date">Entry Date</string>
     <string name="Diary_Warning">Please enter notes and date</string>
     <string name="Diary_Photo">Diary Photo</string>
     <string name="Diary_Create">Take a diary picture</string>
@@ -62,6 +64,7 @@
     <string name="Appt_Purpose">Appointment For</string>
     <string name="Appt_Doctor">Doctor</string>
     <string name="Appt_Date">Date</string>
+    <string name="Appt_Popup_Date">Appointment Date</string>
     <string name="Appt_Time">Time</string>
     <string name="Appt_Address">Address</string>
     <string name="Appt_Notes">Notes</string>
@@ -75,6 +78,7 @@
 	<string name="TestResults_Title">My Test Results</string>
 	<string name="Test_Action">Test Result</string>
     <string name="Test_Date">Date</string>
+    <string name="Test_Popup_Date">Test Result Date</string>
     <string name="Test_Notes">Notes</string>
     <string name="Test_Photo">Test Photo</string>
     <string name="Test_Create">Take a test picture</string>
@@ -95,7 +99,8 @@
 
     <string name="PersonalInfo_Title">Personal Info</string>
     <string name="PersonalInfo_Mother_Name">Name</string>
-    <string name="PersonalInfo_Due_Date">Est. Due Date</string>
+    <string name="PersonalInfo_Delivery_Date">Est. Delivery Date</string>
+    <string name="PersonalInfo_Due_Date">Estimated Due Date</string>
     <string name="PersonalInfo_Primary_Doctor">Doctor</string>
     <string name="PersonalInfo_Hospital">Hospital</string>
     <string name="PersonalInfo_DrPhone">24-hour Doctor</string>

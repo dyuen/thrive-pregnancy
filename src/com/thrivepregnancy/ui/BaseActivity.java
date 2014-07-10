@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -51,14 +52,15 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	private Dao<Event, Integer> m_eventDao;
 	protected Event m_event;
 	
-	private SimpleDateFormat m_dateFormat;
-	private SimpleDateFormat m_timeFormat;
-	private SimpleDateFormat m_combinedFormat;
+	private static SimpleDateFormat m_dateFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
+	private static SimpleDateFormat m_timeFormat = new SimpleDateFormat("hh:mm a", Locale.CANADA);
+	private static SimpleDateFormat m_combinedFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy hh:mm a", Locale.CANADA);
 	
 	private Integer m_result = 0;
 	private OnDateSetListener m_dateListener;
 	private OnTimeSetListener m_timeListener;
 	private Calendar m_date;
+	private long m_dueDate;
 	
 	private TextView m_warnView;
 	private String m_warning;
@@ -101,17 +103,14 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         // Mode will be one of MainActivity.REQUEST_MODE_NEW or MainActivity.REQUEST_MODE_EDIT
         // If mode is edit, then REQUEST_PRIMARY_KEY will contain the primary key of the Event
 		String activityTitle;
-		
+		SharedPreferences preferences =  getSharedPreferences(StartupActivity.PREFERENCES, MODE_PRIVATE);
+		m_dueDate = preferences.getLong(StartupActivity.PREFERENCE_DUE_DATE, 0);
         m_mode = getIntent().getStringExtra(MainActivity.REQUEST_MODE);
         m_eventType = type;
         
         m_eventDao = getHelper().getEventDao();
         
-        m_date = Calendar.getInstance();
-        
-        m_dateFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
-        m_timeFormat = new SimpleDateFormat("hh:mm a", Locale.CANADA);
-        m_combinedFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy hh:mm a", Locale.CANADA);
+        m_date = Calendar.getInstance();        
         
         m_dateListener = this;
         m_timeListener = this;
@@ -189,6 +188,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)) {
         	try {
         		m_event = m_eventDao.queryForId(getIntent().getIntExtra(MainActivity.REQUEST_PRIMARY_KEY,0));
+        		m_date.setTime(m_event.getDate());
         	} catch (SQLException e) {
     			Log.e(BaseActivity.class.getName(), "Unable to query event", e);
     		}
@@ -222,7 +222,22 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
     	if (m_dateView != null) {
 	    	m_dateView.setOnClickListener(new OnClickListener() {        
 	            public void onClick(View v) {
-	              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", m_dateListener);
+	            	// Date range is restricted to the current date through to the due date
+	            	long now = Calendar.getInstance().getTimeInMillis();
+	            	int title = R.string.Diary_Popup_Date;
+	            	if (m_eventType.equals(Event.Type.APPOINTMENT)){
+	            		title = R.string.Appt_Popup_Date;
+	            	}
+	            	else if (m_eventType.equals(Event.Type.TEST_RESULT)){
+	            		title = R.string.Test_Popup_Date;
+	            	}
+	            	DateDialogFragment fragment = null;
+	            	if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)){
+		            	fragment = DateDialogFragment.newInstance("1", m_dateListener, title, now, m_dueDate, now);	            		
+	            	}
+	            	else {
+	            		fragment = DateDialogFragment.newInstance("1", m_dateListener, title, now, m_dueDate, m_event.getDate().getTime());
+	            	}
 	               	fragment.show(getSupportFragmentManager(), "1");
 	            }
 	        });

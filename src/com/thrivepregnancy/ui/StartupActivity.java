@@ -84,7 +84,12 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
     	EditText dateView = (EditText)findViewById(R.id.startup_date);
         dateView.setOnClickListener(new OnClickListener() {        
             public void onClick(View v) {
-              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", dateListener);
+            	// Limit due date range to from now to nine months away
+            	Calendar now = Calendar.getInstance();
+            	Calendar latest = Calendar.getInstance();
+            	latest.add(Calendar.WEEK_OF_YEAR, 40);
+              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", dateListener, R.string.PersonalInfo_Due_Date, 
+              			now.getTimeInMillis(), latest.getTimeInMillis(), now.getTimeInMillis());
                	fragment.show(fragmentManager, "1");
             }
         });

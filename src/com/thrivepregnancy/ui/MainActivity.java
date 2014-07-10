@@ -37,7 +37,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     /**
      * The {@link ViewPager} implements the page swipe animation
      */
-    private ViewPager 			mViewPager;
+    private ViewPager 			viewPager;
+    private TimelineFragment	timelineFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,9 +61,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Set up the ViewPager, attaching the adapter and setting up a listener for when the
         // user swipes between pages.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mainPageAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setAdapter(mainPageAdapter);
+        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 // When swiping between different pages, select the corresponding tab.
@@ -104,10 +105,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	    }
 	}
 	
-    @Override
+    public TimelineFragment getTimelineFragment() {
+		return timelineFragment;
+	}
+
+	public void setTimelineFragment(TimelineFragment timelineFragment) {
+		this.timelineFragment = timelineFragment;
+	}
+
+	@Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
+        viewPager.setCurrentItem(tab.getPosition());
     }
     
     @Override
@@ -115,6 +124,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft){}
 
+ 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to the My Timeline,
      * My Care or I Need page.
@@ -136,7 +146,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     		// Determine screen orientation
     		switch (i) {
     		case 0:
-    			return new TimelineFragment();
+    			TimelineFragment timelineFragment = new TimelineFragment();
+    			activity.setTimelineFragment(timelineFragment);
+    			return timelineFragment;
     		case 1:
     			return new CareFragment();
     		default:

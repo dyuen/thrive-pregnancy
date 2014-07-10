@@ -8,6 +8,7 @@ import com.thrivepregnancy.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.View;
 import android.os.Bundle;
@@ -22,24 +23,32 @@ public class DateDialogFragment extends DialogFragment{
 	private DatePicker 			datePicker;
 	private OnDateSetListener 	dateListener;
 	private AlertDialog			dialog;
-	
-	public static DateDialogFragment newInstance(String fragmentNumber, OnDateSetListener dateListener) {
+	private int					title;
+
+	public static DateDialogFragment newInstance(String fragmentNumber, OnDateSetListener dateListener, int title, 
+	long earliestDate, long latestDate, long defaultDate) {
 		DateDialogFragment newInstance = new DateDialogFragment();
 		newInstance.dateListener = dateListener;
+		newInstance.title = title;
+		
 		Bundle args = new Bundle();
 		args.putString("fragnum", fragmentNumber);
+		args.putLong("earliest", earliestDate);
+		args.putLong("latest", latestDate);
+		args.putLong("default", defaultDate);
+		args.putInt("title", title);
 		newInstance.setArguments(args);
+		
 		return newInstance;
 	}
 
 	@Override
 	public AlertDialog onCreateDialog(Bundle savedInstanceState) {
-		
 		Activity parentActivity = getActivity();	
 		datePicker = (DatePicker)parentActivity.getLayoutInflater().inflate(R.layout.date_picker, null);
-		
 		AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
-		builder.setTitle("Select a date");		
+		
+		builder.setTitle(getString(title));		
 		builder.setView(datePicker);
 		// Pass the selected date back to the activity only when Save is clicked
 		builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {			
@@ -51,12 +60,25 @@ public class DateDialogFragment extends DialogFragment{
 		
 		return builder.create();
 	}
-	
-	private void configurePickerDates(){
-		Calendar now = Calendar.getInstance(); 
-		datePicker.setMinDate((now.getTime()).getTime());
-		now.add(Calendar.MONTH, 9);
-		datePicker.setMaxDate((now.getTime()).getTime());
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState){
+		super.onActivityCreated(savedInstanceState);
+		Bundle args = getArguments();
+		long earliest = args.getLong("earliest");
+		long latest = args.getLong("latest");
+		long defaultDate = args.getLong("default");
+		if (earliest != -1){
+			datePicker.setMinDate(earliest);
+		}
+		if (latest != -1){
+			datePicker.setMaxDate(latest);
+		}
+		if (defaultDate != -1){
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(defaultDate);
+			datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+		}
+
+		
 	}
-	
 }

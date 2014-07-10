@@ -13,10 +13,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
@@ -59,11 +61,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	
 	/** loads name and due date from user preferences */
 	public void ReadUserPreferences () {
+		/*
 		SharedPreferences preferences = m_context.getSharedPreferences(m_context.getResources().getString(R.string.PREFERENCES), 0);
 		
 		m_name = preferences.getString(m_context.getResources().getString(R.string.PREFERENCE_NAME), null);
 		long dateInMillis = preferences.getLong(m_context.getResources().getString(R.string.PREFERENCE_DUE_DATE), -1);
+		*/
+		SharedPreferences preferences = m_context.getSharedPreferences(StartupActivity.PREFERENCES, 0);
 		
+		m_name = preferences.getString(StartupActivity.PREFERENCE_NAME, null);
+		long dateInMillis = preferences.getLong(StartupActivity.PREFERENCE_DUE_DATE, -1);
+
 		m_duedate= Calendar.getInstance();
 		m_duedate.setTimeInMillis(dateInMillis);
 	}
@@ -71,12 +79,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	/** Returns tip date by due date and week */
 	public Date ReturnDate(Integer week) {
 
-        Calendar date = (Calendar)m_duedate.clone();;
-    	
+        Calendar date = (Calendar)m_duedate.clone();
+        date.add(Calendar.DAY_OF_YEAR, 7 * (week - 41));
+        /*
         for (int i=41; i>week; i--) {
         	date.add(Calendar.DATE, -7);
         }
-        
+*/       
         return date.getTime();
     }
     
@@ -109,6 +118,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	private void createEvents(List<String[]> eventList) {
 		String[] eventString;
 		Event event;
+// Log.d(MainActivity.DEBUG_TAG, "*** Creating Tip Events");
 		boolean firstTip = true;
 		try {
 			for (int i=0; i<eventList.size(); i++) {
@@ -125,6 +135,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 				
 				event.setType(Event.Type.TIP);
 				event.setDate(ReturnDate(Integer.parseInt(eventString[0])));
+/*
+SimpleDateFormat format = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
+String d = format.format(event.getDate());
+Log.d(MainActivity.DEBUG_TAG, "***** " + "Week " + (i+1) + " " + d);
+*/
 				event.setText(eventString[1].replace("\"","\\\""));
 				event.setPhotoFile(eventString[2]);
 				event.setAudioFile(eventString[3]);

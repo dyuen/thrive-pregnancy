@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
@@ -49,11 +50,11 @@ import android.widget.TextView;
  */
 public class TimelineFragment extends Fragment implements OnCompletionListener, OnErrorListener, OnPreparedListener{
 
-	private static SimpleDateFormat diaryEntryFormat = new SimpleDateFormat("MMMMMMMMM d");
-	private static SimpleDateFormat monthFormat = new SimpleDateFormat("MMMMMMMMM");
-	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa");
+	private static SimpleDateFormat diaryEntryFormat = new SimpleDateFormat("MMMMMMMMM d", Locale.CANADA);
+	private static SimpleDateFormat monthFormat = new SimpleDateFormat("MMMMMMMMM", Locale.CANADA);
+	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa", Locale.CANADA);
 
-	private static enum RefreshType {ON_NEW_OR_EDIT, ON_DELETE}
+	private static enum RefreshType {ON_NEW_OR_EDIT, ON_DELETE, ON_TIMELINE_CHANGE}
 
 	private View 				fragmentView;
 	private TimelineFragment 	fragment;
@@ -174,6 +175,10 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			adapter.refresh(RefreshType.ON_NEW_OR_EDIT);
 		}
 	}
+	
+	void refreshOnTimelineChange(){
+		adapter.refresh(RefreshType.ON_TIMELINE_CHANGE);
+	}
 
 	private class TimelineListAdapter extends BaseAdapter{
 		private final Context 	context;
@@ -188,12 +193,18 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 
 		// Maps Tip events to the to week number strings
 		private void createWeekMap(){
+//Log.d(MainActivity.DEBUG_TAG, "*** Mapping tips to week number");
 			weekMap = new HashMap<Event, String>();
 			int	tipCount = 0;
 			String week = activity.getString(R.string.week) + " ";
 			for (Event event: events){
 				if (event.getType().equals(Event.Type.TIP)){
 					String weekText = week + String.valueOf(firstTipWeek + tipCount++);
+/*
+SimpleDateFormat format = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
+String s = format.format(event.getDate());
+Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
+*/
 					weekMap.put(event, weekText);
 				}
 			}
@@ -318,7 +329,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 						}
 					});
 					ImageButton deleteAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_delete);
-//					deleteAppointment.setOnClickListener(new DeleteEventListener(event, R.string.dlg_delete_appointment));
 					deleteAppointment.setOnClickListener(new OnClickListener(){
 						@Override
 						public void onClick(View view){
