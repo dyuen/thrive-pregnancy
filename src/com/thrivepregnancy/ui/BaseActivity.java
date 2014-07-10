@@ -233,10 +233,10 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	            	}
 	            	DateDialogFragment fragment = null;
 	            	if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)){
-		            	fragment = DateDialogFragment.newInstance("1", m_dateListener, title, now, m_dueDate, now);	            		
+		            	fragment = DateDialogFragment.newInstance("1", m_dateListener, title, now, m_dueDate, m_event.getDate().getTime());	            		
 	            	}
 	            	else {
-	            		fragment = DateDialogFragment.newInstance("1", m_dateListener, title, now, m_dueDate, m_event.getDate().getTime());
+	            		fragment = DateDialogFragment.newInstance("1", m_dateListener, title, now, m_dueDate, now);
 	            	}
 	               	fragment.show(getSupportFragmentManager(), "1");
 	            }
