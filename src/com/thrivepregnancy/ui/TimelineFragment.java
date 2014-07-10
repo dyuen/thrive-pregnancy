@@ -335,7 +335,25 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 							activity.showConfirmationDialog(R.string.dlg_delete_appointment, 
 									new DeleteConfirmationListener(event));
 						}				
-					});			
+					});		
+					
+					photoView.setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(v.getContext(), PictureActivity.class);
+							Bundle parentBundle = new Bundle();
+							String imagePath = event.getPhotoFile();
+							String activityTitle = "Appointment Photo";
+							
+							parentBundle.putString("imagepath", imagePath);
+							parentBundle.putString("imagetitle", activityTitle);
+							
+							intent.putExtras(parentBundle);
+							startActivity(intent);
+						}
+					});
+					
 					break;
 
 				case DIARY_ENTRY:
@@ -378,6 +396,23 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 							}
 						});
 					}
+					
+					photoView.setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(v.getContext(), PictureActivity.class);
+							Bundle parentBundle = new Bundle();
+							String imagePath = event.getPhotoFile();
+							String activityTitle = "Diary Photo";
+							
+							parentBundle.putString("imagepath", imagePath);
+							parentBundle.putString("imagetitle", activityTitle);
+							
+							intent.putExtras(parentBundle);
+							startActivity(intent);
+						}
+					});
 
 					notes.setText(event.getText());
 					date.setText(diaryEntryFormat.format(event.getDate()));

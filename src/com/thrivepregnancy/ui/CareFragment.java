@@ -519,7 +519,26 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 							new DeleteConfirmationListener(event));
 				}				
 			});			
-	    	setupPhotoView(event.getPhotoFile(), (ImageView)view.findViewById(R.id.list_item_appt_photo));
+			
+			ImageView photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
+	    	setupPhotoView(event.getPhotoFile(), photoView);
+	    	
+	    	photoView.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(v.getContext(), PictureActivity.class);
+					Bundle parentBundle = new Bundle();
+					String imagePath = event.getPhotoFile();
+					String activityTitle = "Appointment Photo";
+					
+					parentBundle.putString("imagepath", imagePath);
+					parentBundle.putString("imagetitle", activityTitle);
+					
+					intent.putExtras(parentBundle);
+					startActivity(intent);
+				}
+			});
 		}
 		private void populateQuestionView(View view, final Event event){
 			((TextView)view.findViewById(R.id.list_item_question_text)).setText(event.getText());
@@ -557,7 +576,26 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				}				
 			});			
 			
-	    	setupPhotoView(event.getPhotoFile(), (ImageView)view.findViewById(R.id.list_item_test_result_photo));
+			ImageView photoView = (ImageView)view.findViewById(R.id.list_item_test_result_photo);
+			
+	    	setupPhotoView(event.getPhotoFile(), photoView);
+	    	
+	    	photoView.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(v.getContext(), PictureActivity.class);
+					Bundle parentBundle = new Bundle();
+					String imagePath = event.getPhotoFile();
+					String activityTitle = "Test Result";
+					
+					parentBundle.putString("imagepath", imagePath);
+					parentBundle.putString("imagetitle", activityTitle);
+					
+					intent.putExtras(parentBundle);
+					startActivity(intent);
+				}
+			});
 		}
 		
 		private void setupPhotoView(String photoFile, ImageView photoView){
