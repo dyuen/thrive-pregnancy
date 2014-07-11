@@ -25,8 +25,8 @@ import com.thrivepregnancy.data.Event;
  */
 public class DiaryEntryActivity extends BaseActivity {
 	
+	private static MediaRecorder 	m_Recorder;
 	private TextView 		m_AudioInstructions;
-	private MediaRecorder 	m_Recorder;
 	private String 			m_AudioFilePath;
 
     @Override

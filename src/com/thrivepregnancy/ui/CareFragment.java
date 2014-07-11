@@ -15,6 +15,7 @@ import com.thrivepregnancy.R;
 import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
+import com.thrivepregnancy.ui.TimelineFragment.TimelineListAdapter;
 
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
@@ -55,13 +56,13 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	private MainActivity		mainActivity;
 	private CareListAdapter 	adapter;
 	private EditText			m_dateView;
-	private OnDateSetListener 	m_dateListener;
 	private Calendar			m_dueDate;
 	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
 	 */
 	public CareFragment(){
+		super();
 		fragment = this;
 	}
 
@@ -75,12 +76,10 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-		Log.d(MainActivity.DEBUG_TAG, "---MyCare onCreate");
 		mainActivity = (MainActivity)getActivity();
 		DatabaseHelper databaseHelper = mainActivity.getHelper();
 		eventDao = databaseHelper.getEventDao();
 	    dataHelper = new EventDataHelper(databaseHelper);
-	    m_dateListener = this;
 	}
 	
     /**
@@ -98,13 +97,17 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		m_dateView.setText(dueDateFormat.format(m_dueDate.getTime()));
     }
 	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState){
+		super.onActivityCreated( savedInstanceState);
+		adapter = new CareListAdapter(fragmentView);
+		mainActivity.setCareListAdapter(adapter);
+	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-//		Log.d(MainActivity.DEBUG_TAG, "---MyCare onResume");
 		// Create and set the adapter with this list
-		adapter = new CareListAdapter(fragmentView);
 		ListView listView = (ListView)getActivity().findViewById(R.id.lstCare);
 		listView.setAdapter(adapter);
 	}
@@ -177,7 +180,8 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			adapter.notifyDataSetChanged();
 		}
 	}
-    private class CareListAdapter extends BaseAdapter{
+    
+	public class CareListAdapter extends BaseAdapter{
 		private List<Event> 			appointmentEvents;
 		private List<Event> 			questionEvents;
 		private List<Event> 			testResultEvents;
@@ -268,6 +272,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			
 			return elementBackers;
 	    }
+	    
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
 			ImageView 	photoView = null;
@@ -464,9 +469,9 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		            	latest.setTimeInMillis(dueDate);
 		            	latest.add(Calendar.DAY_OF_YEAR, 60);
 		            	
-		              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", m_dateListener, R.string.PersonalInfo_Delivery_Date,
+		              	DateDialogFragment dateDialog = DateDialogFragment.newInstance("1", R.string.PersonalInfo_Delivery_Date,
 		              			earliest.getTimeInMillis(), latest.getTimeInMillis(), dueDate);
-		               	fragment.show(getFragmentManager(), "1");
+		              	dateDialog.show(getFragmentManager(), "1");
 		            }
 		        });
 		    }
@@ -516,7 +521,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				@Override
 				public void onClick(View view){
 					mainActivity.showConfirmationDialog(R.string.dlg_delete_appointment, 
-							new DeleteConfirmationListener(event));
+							new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_CARE);
 				}				
 			});			
 			
@@ -547,7 +552,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				@Override
 				public void onClick(View view){
 					mainActivity.showConfirmationDialog(R.string.dlg_delete_question, 
-							new DeleteConfirmationListener(event));
+							new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_CARE);
 				}				
 			});			
 		}
@@ -571,8 +576,9 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			deleteTest.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
+//					showConfirmationDialog(R.string.dlg_delete_test_result, event, ConfirmationFragment.DELETE_FROM_CARE);
 					mainActivity.showConfirmationDialog(R.string.dlg_delete_test_result, 
-							new DeleteConfirmationListener(event));
+							new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_CARE);
 				}				
 			});			
 			
@@ -637,7 +643,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		public long getItemId(int position) {
 			return 0;
 		}
-	}    
+	}
     
     private class DeleteConfirmationListener implements DialogInterface.OnClickListener {
     	private final Event event;
@@ -647,22 +653,8 @@ public class CareFragment extends Fragment implements OnDateSetListener{
     	@Override
     	public void onClick(DialogInterface dialog, int which){
     		if (which == DialogInterface.BUTTON_POSITIVE){
-				try {
-					eventDao.delete(event);
-					deleteMediaFile(event.getAudioFile());
-					deleteMediaFile(event.getPhotoFile());
-					adapter.createBackingList();
-					adapter.notifyDataSetChanged();
-				}
-				catch (SQLException e){
-					Log.e(MainActivity.DEBUG_TAG, "Can't delete event", e);
-				}
-    		}
-    	}
-    	private void deleteMediaFile(String fileName){
-    		if (fileName != null && fileName.length() > 0){
-    			File file = new File(fileName);
-    			Log.d(MainActivity.DEBUG_TAG, file.delete() ? "Deleted " + fileName : "********** Can't delete " + fileName);
+    			adapter.createBackingList();
+    			adapter.notifyDataSetChanged();
     		}
     	}
     }

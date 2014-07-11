@@ -27,7 +27,6 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -54,11 +53,11 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	private static SimpleDateFormat monthFormat = new SimpleDateFormat("MMMMMMMMM", Locale.CANADA);
 	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa", Locale.CANADA);
 
-	private static enum RefreshType {ON_NEW_OR_EDIT, ON_DELETE, ON_TIMELINE_CHANGE}
+	public static enum RefreshType {ON_NEW_OR_EDIT, ON_DELETE, ON_TIMELINE_CHANGE}
 
 	private View 				fragmentView;
 	private TimelineFragment 	fragment;
-	private MainActivity 		activity;
+	private MainActivity 		mainActivity;
 	private ImageButton 		apptButton;
 	private ImageButton 		entryButton;
 	private TimelineListAdapter adapter;
@@ -72,6 +71,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	 * Empty public constructor required per the {@link Fragment} API documentation
 	 */
 	public TimelineFragment(){
+		super();
 		fragment = this;
 	}
 
@@ -84,8 +84,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, options);
 
-        options.inSampleSize = calculateInSampleSize(options, reqWidth,
-                reqHeight);
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
@@ -94,7 +93,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
         }
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
@@ -109,6 +107,9 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
          return inSampleSize;
       }
 
+	/**
+	* creates and returns the view hierarchy associated with the fragment.
+	*/
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 	    // Inflate the layout for this fragment
@@ -116,28 +117,36 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		return fragmentView;
 	}
 
+	/**
+	* called to do initial creation of the fragment.
+	*/
 	@Override
 	public void onCreate(Bundle savedInstanceState){
-		Log.d(MainActivity.DEBUG_TAG, "---Timeline onCreate");
 		super.onCreate(savedInstanceState);
-		activity = (MainActivity)getActivity();
-		databaseHelper = activity.getHelper();
+		mainActivity = (MainActivity)getActivity();
+		databaseHelper = mainActivity.getHelper();
 		eventDataHelper = new EventDataHelper(databaseHelper);
-    	SharedPreferences preferences = activity.getSharedPreferences(StartupActivity.PREFERENCES, Activity.MODE_PRIVATE);
+    	SharedPreferences preferences = mainActivity.getSharedPreferences(StartupActivity.PREFERENCES, Activity.MODE_PRIVATE);
     	firstTipWeek = preferences.getInt(StartupActivity.PREFERENCE_FIRST_WEEK, 1);
 	}
 
+	/**
+	* tells the fragment that its activity has completed its own Activity.onCreate()
+	*/
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState){
 		super.onActivityCreated( savedInstanceState);
+		adapter = new TimelineListAdapter(getView().getContext());
+		mainActivity.setTimelineListAdapter(adapter);
 	}
 
+	/**
+	* makes the fragment interacting with the user (based on its containing activity being resumed)
+	*/
 	@Override
 	public void onResume() {
 		super.onResume();
-//		Log.d(MainActivity.DEBUG_TAG, "---Timeline onResume");
 
-		adapter = new TimelineListAdapter(getView().getContext());
 		listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
 		listView.setAdapter(adapter);
 		adapter.scrollToThisWeek(listView);
@@ -146,7 +155,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		apptButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+				Intent intent = new Intent(mainActivity.getApplicationContext(), AppointmentActivity.class);
 				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);
 				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
 			}
@@ -155,7 +164,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		entryButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
+				Intent intent = new Intent(mainActivity.getApplicationContext(), DiaryEntryActivity.class);
 				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);
 				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_DIARY_ENTRY);
 			}
@@ -180,7 +189,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		adapter.refresh(RefreshType.ON_TIMELINE_CHANGE);
 	}
 
-	private class TimelineListAdapter extends BaseAdapter{
+	public class TimelineListAdapter extends BaseAdapter{
 		private final Context 	context;
 		private List<Event> 	events;
 		HashMap<Event, String> 	weekMap;
@@ -193,18 +202,12 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 
 		// Maps Tip events to the to week number strings
 		private void createWeekMap(){
-//Log.d(MainActivity.DEBUG_TAG, "*** Mapping tips to week number");
 			weekMap = new HashMap<Event, String>();
 			int	tipCount = 0;
-			String week = activity.getString(R.string.week) + " ";
+			String week = mainActivity.getString(R.string.week) + " ";
 			for (Event event: events){
 				if (event.getType().equals(Event.Type.TIP)){
 					String weekText = week + String.valueOf(firstTipWeek + tipCount++);
-/*
-SimpleDateFormat format = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
-String s = format.format(event.getDate());
-Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
-*/
 					weekMap.put(event, weekText);
 				}
 			}
@@ -212,7 +215,6 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 
 		// Regenerate the event list and wek map, refresh the display
 		void refresh(RefreshType refreshType){
-//			Log.d(MainActivity.DEBUG_TAG, "---Refreshing "+ refreshType.name());
 			events = eventDataHelper.getTimelineEvents();
 			createWeekMap();
 			notifyDataSetChanged();
@@ -223,7 +225,6 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 
 		// Scroll to the Tip event at beginning of current week
 		public void scrollToThisWeek(ListView listView){
-//			Log.d(MainActivity.DEBUG_TAG, "------Scrolling to this week");
 			int position = 0;
 			int nonTipEventsDuringWeek = 0;
 			Date now = new Date();
@@ -322,7 +323,7 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 					editButtonA.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							Intent intent = new Intent(activity.getApplicationContext(), AppointmentActivity.class);
+							Intent intent = new Intent(mainActivity.getApplicationContext(), AppointmentActivity.class);
 							intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
 							intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());
 							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
@@ -332,8 +333,8 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 					deleteAppointment.setOnClickListener(new OnClickListener(){
 						@Override
 						public void onClick(View view){
-							activity.showConfirmationDialog(R.string.dlg_delete_appointment, 
-									new DeleteConfirmationListener(event));
+							mainActivity.showConfirmationDialog(R.string.dlg_delete_appointment, 
+									new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_TIMELINE);
 						}				
 					});		
 					
@@ -368,7 +369,7 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 					editButton.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							Intent intent = new Intent(activity.getApplicationContext(), DiaryEntryActivity.class);
+							Intent intent = new Intent(mainActivity.getApplicationContext(), DiaryEntryActivity.class);
 							intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
 							intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());
 							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_DIARY_ENTRY);
@@ -379,8 +380,8 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 					deleteEntry.setOnClickListener(new OnClickListener(){
 						@Override
 						public void onClick(View view){
-							activity.showConfirmationDialog(R.string.dlg_delete_diary_entry,
-									new DeleteConfirmationListener(event));
+							mainActivity.showConfirmationDialog(R.string.dlg_delete_diary_entry,
+									new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_TIMELINE);
 						}
 					});
 
@@ -418,29 +419,14 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 					date.setText(diaryEntryFormat.format(event.getDate()));
 					break;
 			}
-
 			if (bitmap != null){
 				photoView.setVisibility(View.VISIBLE);
 				photoView.setImageBitmap(bitmap);
-			} else {
+			} 
+			else {
 				photoView.setVisibility(View.GONE);
 			}
-
 			return view;
-		}
-
-		// Listener for delete Diary Entry or delete Appointment buttons
-		private class DeleteEventListener implements OnClickListener{
-			final Event	event;
-			final int	type;
-			DeleteEventListener(final Event event, int type){
-				this.event = event;
-				this.type = type;
-			}
-			@Override
-			public void onClick(View v) {
-				activity.showConfirmationDialog(type, new DeleteConfirmationListener(event));
-			}
 		}
 
 		private void playAudio(String audioFilePath){
@@ -456,7 +442,6 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
     		catch (IOException e){
     			Log.e(MainActivity.DEBUG_TAG, "Error preparing audio playback", e);
     		}
-
 		}
 
 		/**
@@ -551,8 +536,7 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
 	public void onPrepared(MediaPlayer mp){
 		mp.start();
 	}
-
-	private class DeleteConfirmationListener implements DialogInterface.OnClickListener {
+    private class DeleteConfirmationListener implements DialogInterface.OnClickListener {
     	private final Event event;
     	DeleteConfirmationListener(final Event event){
     		this.event = event;
@@ -560,24 +544,10 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + weekText + " " + s);
     	@Override
     	public void onClick(DialogInterface dialog, int which){
     		if (which == DialogInterface.BUTTON_POSITIVE){
-				try {
-					int result = databaseHelper.getEventDao().delete(event);
-					Log.d(MainActivity.DEBUG_TAG, "Delete " + event.getId() + " result = " + result);
-					deleteMediaFile(event.getAudioFile());
-					deleteMediaFile(event.getPhotoFile());
-					adapter.refresh(RefreshType.ON_DELETE);
-					adapter.notifyDataSetChanged();
-				}
-				catch (SQLException e){
-					Log.e(MainActivity.DEBUG_TAG, "Can't delete event", e);
-				}
-    		}
-    	}
-    	private void deleteMediaFile(String fileName){
-    		if (fileName != null && fileName.length() > 0){
-    			File file = new File(fileName);
-    			Log.d(MainActivity.DEBUG_TAG, file.delete() ? "Deleted " + fileName : "********** Can't delete " + fileName);
+    			adapter.refresh(RefreshType.ON_DELETE);
+    			adapter.notifyDataSetChanged();
     		}
     	}
     }
+    
 }

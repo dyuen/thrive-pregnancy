@@ -66,7 +66,6 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
 	private String 				name = null;
 	private FragmentManager		fragmentManager;
 	private Calendar 			calendar;
-	private OnDateSetListener 	dateListener;
 	private EditText 			dateView;
 	private final static Integer MIN_NAME_LENGTH = 3;
 	
@@ -75,7 +74,6 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startup);
         fragmentManager = getSupportFragmentManager();
-        dateListener = this;
         
         // If name has been set, proceed immediately to main screen
     	SharedPreferences preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
@@ -92,7 +90,7 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
             	Calendar now = Calendar.getInstance();
             	Calendar latest = Calendar.getInstance();
             	latest.add(Calendar.WEEK_OF_YEAR, 40);
-              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", dateListener, R.string.PersonalInfo_Due_Date, 
+              	DateDialogFragment fragment = DateDialogFragment.newInstance("1", R.string.PersonalInfo_Due_Date, 
               			now.getTimeInMillis(), latest.getTimeInMillis(), now.getTimeInMillis());
                	fragment.show(fragmentManager, "1");
             }

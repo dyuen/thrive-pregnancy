@@ -23,11 +23,6 @@
     <string name="dlg_yes">Yes</string>
     <string name="dlg_no">No</string>
     
-<!--'User preferences' 
-    <string name="PREFERENCES">preferences</string>
-	<string name="PREFERENCE_NAME">name</string>
-	<string name="PREFERENCE_DUE_DATE">date</string> -->
-	
 <!-- Warning messages for Save -->
     <string name="startup_warning">Please enter your full name and your due date</string>
         

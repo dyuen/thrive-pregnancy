@@ -57,7 +57,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	private static SimpleDateFormat m_combinedFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy hh:mm a", Locale.CANADA);
 	
 	private Integer m_result = 0;
-	private OnDateSetListener m_dateListener;
 	private OnTimeSetListener m_timeListener;
 	private Calendar m_date;
 	private Calendar m_CalFirstWeek;
@@ -118,7 +117,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         
         m_date = Calendar.getInstance();        
         
-        m_dateListener = this;
         m_timeListener = this;
         
         if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)) {
@@ -328,7 +326,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
             	else {
         			initial = m_selectedDate == 0 ? today : m_selectedDate;
             	}
-            	DateDialogFragment fragment = DateDialogFragment.newInstance("1", m_dateListener, title, earliest, latest, initial);
+            	DateDialogFragment fragment = DateDialogFragment.newInstance("1", title, earliest, latest, initial);
                	fragment.show(getSupportFragmentManager(), "1");
             }
         });    	
