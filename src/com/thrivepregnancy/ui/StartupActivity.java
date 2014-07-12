@@ -33,7 +33,9 @@ import com.thrivepregnancy.R;
 public class StartupActivity extends FragmentActivity implements OnDateSetListener{
 	
 	/**
-	 * Name of Preferences
+	 * Name of Preferences. Only PREFERENCE_NAME and PREFERENCE_DUE_DATE are set
+	 * by the StartupActivity, but in the absence of a "Common" class, all
+	 * keys are defined here.
 	 */
 	public static final String PREFERENCES = "preferences";
 	/**
@@ -60,6 +62,10 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
 	 * Week number of first tip
 	 */
 	public static final String PREFERENCE_FIRST_WEEK = "first";
+	/**
+	 * Current tab. Used to solve retention of display state across screen rotation 
+	 */
+	public static final String PREFERENCE_CURRENT_TAB = "tab";
 	
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
 

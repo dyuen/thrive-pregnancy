@@ -57,6 +57,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	private CareListAdapter 	adapter;
 	private EditText			m_dateView;
 	private Calendar			m_dueDate;
+	private ListView 			listView;
 	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -67,6 +68,15 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	}
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+		mainActivity = (MainActivity)getActivity();
+		DatabaseHelper databaseHelper = mainActivity.getHelper();
+		eventDao = databaseHelper.getEventDao();
+	    dataHelper = new EventDataHelper(databaseHelper);
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 	    // Inflate the layout for this fragment
 		fragmentView = inflater.inflate(R.layout.fragment_care, container, false);
@@ -74,12 +84,30 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	}
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-		mainActivity = (MainActivity)getActivity();
-		DatabaseHelper databaseHelper = mainActivity.getHelper();
-		eventDao = databaseHelper.getEventDao();
-	    dataHelper = new EventDataHelper(databaseHelper);
+	public void onActivityCreated(Bundle savedInstanceState){
+		super.onActivityCreated( savedInstanceState);
+//		Log.d(MainActivity.DEBUG_TAG, "--- creating adapter");
+		adapter = new CareListAdapter(fragmentView);
+		mainActivity.setCareListAdapter(adapter);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+//		Log.d(MainActivity.DEBUG_TAG, "--- setting adapter");
+		// Create and set the adapter with this list
+		listView = (ListView)getActivity().findViewById(R.id.lstCare);
+		listView.setAdapter(adapter);
+	}
+	
+	/**
+	 * Called by the main activity when an appointment has been deleted. The backing list
+	 * must be refreshed
+	 */
+	void refresh(){
+//		Log.d(MainActivity.DEBUG_TAG, "--- refreshing adapter");
+		adapter.refresh();
+		listView.setAdapter(adapter);
 	}
 	
     /**
@@ -96,21 +124,6 @@ public class CareFragment extends Fragment implements OnDateSetListener{
         
 		m_dateView.setText(dueDateFormat.format(m_dueDate.getTime()));
     }
-	
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState){
-		super.onActivityCreated( savedInstanceState);
-		adapter = new CareListAdapter(fragmentView);
-		mainActivity.setCareListAdapter(adapter);
-	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		// Create and set the adapter with this list
-		ListView listView = (ListView)getActivity().findViewById(R.id.lstCare);
-		listView.setAdapter(adapter);
-	}
 	
 	// These correspond to the tag attribute of the element's root layout 
     private static final String TAG_PROVIDER 			= "PROVIDER";
@@ -209,6 +222,11 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			
 	    	// Create and fill list of element backers, one per element in the list
 	    	elementBackers = createBackingList();
+	    }
+	    
+	    void refresh(){
+	    	// Create and fill list of element backers, one per element in the list
+	    	elementBackers = createBackingList();	    	
 	    }
 	    
 	    /**

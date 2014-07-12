@@ -28,30 +28,34 @@ import android.widget.DatePicker;
  * Contains the My Timeline, My Care and I Need screens ("pages")
  */
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener, OnDateSetListener {
-	private DatabaseHelper 	databaseHelper = null;
 	
 	public static final String DEBUG_TAG = "THRIVE";
 	
-	public static final String	REQUEST_MODE = "mode";
-	public static final String	REQUEST_MODE_NEW = "new";
-	public static final String	REQUEST_MODE_EDIT = "edit";
+	public static final String	REQUEST_MODE 		= "mode";
+	public static final String	REQUEST_MODE_NEW 	= "new";
+	public static final String	REQUEST_MODE_EDIT 	= "edit";
 	public static final String	REQUEST_PRIMARY_KEY = "pk";
+	
 	public static final int REQUEST_CODE_DIARY_ENTRY = 1;
 	public static final int REQUEST_CODE_APPOINTMENT = 2;
 	public static final int REQUEST_CODE_TEST_RESULT = 3;
 	
-	private static final int DIALOG_ID_CONFIRM = 0;
+	private static final int DIALOG_ID_CONFIRM 	= 0;
 	private static String	DIALOG_TITLE 		= "DIALOG_TITLE";
 	private static String	DIALOG_TEXT			= "DIALOG_TEXT";
 	private static String	DIALOG_VISIBLE		= "DIALOG_VISIBLE";
-	private boolean			dialogVisible;
-	private int dialogTitleId;
 	
 	static final int	DELETE_FROM_TIMELINE = 0;
 	static final int	DELETE_FROM_CARE = 1;
-	private Integer eventId;
-	private int deletingFrom;
-
+	
+	private static int  	currentTab;
+	private static boolean	rotating;
+	
+	private boolean		dialogVisible;
+	private int 		dialogTitleId;
+	private int 		deletingFrom;
+	
+	private Integer 	eventId;
 	
     private MainPagerAdapter 						mainPageAdapter;
     private TimelineFragment.TimelineListAdapter 	timelineListAdapter;
@@ -60,9 +64,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * The {@link ViewPager} implements the page swipe animation
      */
     private ViewPager 			viewPager;
+    
     private TimelineFragment	timelineFragment;
     private CareFragment		careFragment;
+//    private NeedFragment		needFragment;
+    
     private MainActivity		mainActivity;
+	private DatabaseHelper 		databaseHelper;	
+	private ActionBar 			actionBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,11 +92,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Create the adapter that will return a fragment for each of the pages
         FragmentManager fragmentManager = getSupportFragmentManager();
         mainPageAdapter = new MainPagerAdapter(fragmentManager, this);
-		timelineFragment = new TimelineFragment();
-		careFragment = new CareFragment();
+//		timelineFragment = new TimelineFragment();
+//		careFragment = new CareFragment();
+//		needFragment = new NeedFragment();
 
         // Set up the action bar.
-        final ActionBar actionBar = getActionBar();
+        actionBar = getActionBar();
         
         // Specify that the Home/Up button should not be enabled, since there is no hierarchical
         // parent.
@@ -120,6 +130,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
     
+    @Override
+    public void onResume(){
+    	super.onResume();
+//    	Log.d(DEBUG_TAG, "--- onResume: selecting tab " + currentTab +  " set rotate=false");
+    	rotating = false;
+    	actionBar.setSelectedNavigationItem(currentTab);    	
+    }
+    
 	@Override
 	protected void onSaveInstanceState (Bundle outState){
 		if (dialogVisible){
@@ -138,7 +156,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			deletingFrom= savedState.getInt("deletingFrom");
 		}
 	}
-   /**
+    /**
 	 * @return a DatabaseHelper
 	 */
 	protected DatabaseHelper getHelper() {
@@ -167,37 +185,53 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		this.careListAdapter = careListAdapter;
 	}
 
-	CareFragment getCareFragment() {
-		return careFragment;
-	}
 	void setCareFragment(CareFragment careFragment) {
 		this.careFragment = careFragment;
+	}
+    CareFragment getCareFragment() {
+		return careFragment;
 	}
     TimelineFragment getTimelineFragment() {
 		return timelineFragment;
 	}
-	void setTimelineFragment(TimelineFragment timelineFragment) {
-		this.timelineFragment = timelineFragment;
-	}
-
 
 	@Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in the ViewPager.
-        viewPager.setCurrentItem(tab.getPosition());
+		if (rotating){
+//			Log.d(DEBUG_TAG, "onTabSelected : " + tab.getPosition() + " rotating     currentTab=" + currentTab);			
+		}
+		else{
+			currentTab = tab.getPosition();			
+//			Log.d(DEBUG_TAG, "onTabSelected : " + tab.getPosition() + " not rotating currentTab=" + currentTab);
+		}
+		viewPager.setCurrentItem(tab.getPosition());
     }
     
     @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft){}
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft){
+//    	Log.d(DEBUG_TAG, "onTabReSelected : " + tab.getPosition());
+    }
     @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft){}
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft){
+//    	Log.d(DEBUG_TAG, "onTabUnSelected : " + tab.getPosition());
+    }
 
+    /**
+     * Called when screen rotates
+     */
+    @Override
+    public Object onRetainCustomNonConfigurationInstance(){
+//    	Log.d(DEBUG_TAG, "onRetainCustomNonConfigurationInstance set rotate=true");
+    	rotating = true;
+    	return null;
+    }    
  
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to the My Timeline,
      * My Care or I Need page.
      */
-    public static class MainPagerAdapter extends FragmentPagerAdapter {
+    public class MainPagerAdapter extends FragmentPagerAdapter {
 
     	private MainActivity activity;
 
@@ -214,9 +248,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     		// Determine screen orientation
     		switch (i) {
     		case 0:
-    			return activity.timelineFragment;
+    			timelineFragment = new TimelineFragment();
+    			return timelineFragment;
     		case 1:
-    			return activity.careFragment;
+    			careFragment = new CareFragment();
+    			return careFragment;
     		default:
     			return new NeedFragment();
     		}
@@ -291,11 +327,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			if (which == DialogInterface.BUTTON_POSITIVE){
 				try {
 					Dao<Event, Integer> dao = databaseHelper.getDao(Event.class);
+					Log.d(DEBUG_TAG, "Deleting event " + eventId);
 					Event event = dao.queryForId(mainActivity.eventId);
 					dao.delete(event);
 					deleteMediaFile(event.getAudioFile());
 					deleteMediaFile(event.getPhotoFile());
 					mainActivity.timelineListAdapter.refresh(TimelineFragment.RefreshType.ON_DELETE);
+					careFragment.refresh();
 				}
 				catch (SQLException e){
 					Log.e(DEBUG_TAG, "Can't delete event", e);

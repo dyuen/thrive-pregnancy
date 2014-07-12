@@ -175,13 +175,16 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	 * Handles the result from Appointment, TestResult or DiaryEntry activity
 	 */
 	@Override
-	public void onActivityResult(int requestCodeIgnored, int resultCode, Intent intent){
+	public void onActivityResult(int requestCode, int resultCode, Intent intent){
 		if (intent == null){
 			// Return from called activity by pressing back button
 			return;
 		}
 		else {
 			adapter.refresh(RefreshType.ON_NEW_OR_EDIT);
+			if (requestCode == MainActivity.REQUEST_CODE_APPOINTMENT){
+				this.mainActivity.getCareFragment().refresh();
+			}
 		}
 	}
 	
