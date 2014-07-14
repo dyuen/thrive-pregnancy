@@ -229,40 +229,6 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	    	elementBackers = createBackingList();	    	
 	    }
 	    
-	    /**
-		 * Scales image to fix out of memory crash
-		 */
-		public Bitmap decodeSampledBitmapFromPath(String path, int reqWidth, int reqHeight) {
-	 
-	        final BitmapFactory.Options options = new BitmapFactory.Options();
-	        options.inJustDecodeBounds = true;
-	        BitmapFactory.decodeFile(path, options);
-	 
-	        options.inSampleSize = calculateInSampleSize(options, reqWidth,
-	                reqHeight);
-	 
-	        // Decode bitmap with inSampleSize set
-	        options.inJustDecodeBounds = false;
-	        Bitmap bmp = BitmapFactory.decodeFile(path, options);
-	        return bmp;
-	        }
-	 
-	    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-	 
-	        final int height = options.outHeight;
-	        final int width = options.outWidth;
-	        int inSampleSize = 1;
-	 
-	        if (height > reqHeight || width > reqWidth) {
-	            if (width > height) {
-	                inSampleSize = Math.round((float) height / (float) reqHeight);
-	            } else {
-	                inSampleSize = Math.round((float) width / (float) reqWidth);
-	             }
-	         }
-	         return inSampleSize;
-	      }
-	    
 	    public ArrayList<ElementBacker> createBackingList(){
 	    	elementBackers = new ArrayList<ElementBacker>();	    	
 	        elementBackers.add(backerPROVIDER);
@@ -294,7 +260,6 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
 			ImageView 	photoView = null;
-			Bitmap 		bitmap = null;
 			
 			ElementBacker backer = elementBackers.get(position);
 			if(view == null || !view.getTag().equals(backer.tag)) {
@@ -302,16 +267,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			}
 		
 			Event event = backer.event;
-			
-			if (event != null){		
-				String photoFile = event.getPhotoFile();
-				if (photoFile != null && photoFile.length() > 0){
-					File file = new File(photoFile);
-					//bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());  
-					bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
-				}
-			}
-			
+				
 			switch (backer.resourceId) {
 			case R.layout.list_item_provider:
 		    	populateProviderView(view);
@@ -350,11 +306,15 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				
 			}		
 			
-			if (bitmap != null){
-				photoView.setVisibility(View.VISIBLE);
-				photoView.setImageBitmap(bitmap);
-			} else if (photoView != null) {
-				photoView.setVisibility(View.GONE);
+			if (event != null){		
+				String photoFile = event.getPhotoFile();
+				
+				if (photoFile != null && photoFile.length() > 0){
+					ImageLoader imageloader = new ImageLoader(photoFile,photoView);
+					imageloader.loadBitmap();
+				} else if (photoView != null) {
+					photoView.setVisibility(View.GONE);
+				}
 			}
 			
 			return view;

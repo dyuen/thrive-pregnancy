@@ -76,38 +76,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	}
 
 	/**
-	 * Scales image to fix out of memory crash
-	 */
-	public static Bitmap decodeSampledBitmapFromPath(String path, int reqWidth, int reqHeight) {
-
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);
-
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        Bitmap bmp = BitmapFactory.decodeFile(path, options);
-        return bmp;
-        }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-            if (width > height) {
-                inSampleSize = Math.round((float) height / (float) reqHeight);
-            } else {
-                inSampleSize = Math.round((float) width / (float) reqWidth);
-             }
-         }
-         return inSampleSize;
-      }
-
-	/**
 	* creates and returns the view hierarchy associated with the fragment.
 	*/
 	@Override
@@ -196,10 +164,11 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		private final Context 	context;
 		private List<Event> 	events;
 		HashMap<Event, String> 	weekMap;
-
+		
 		public TimelineListAdapter(Context context) {
 			this.context = context;
 			events = eventDataHelper.getTimelineEvents();
+			
 			createWeekMap();
 		}
 
@@ -250,7 +219,8 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		public View getView(int position, View view, ViewGroup parent) {
 			ImageView 	photoView = null;
 			Bitmap 		bitmap = null;
-
+			
+			
 			final Event event = events.get(position);
 
 			String photoFile = event.getPhotoFile();
@@ -266,13 +236,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					} catch (IOException e) {
 						Log.e(MainActivity.DEBUG_TAG, "Can't load image from assets", e);
 					}
-				}
-				else {
-					File file = new File(photoFile);
-
-					//bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-					bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
-
 				}
 			}
 
@@ -426,14 +389,19 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			TextView divider = (TextView)view.findViewById(R.id.list_item_tip_divider);
 			
 			if (bitmap != null){
-				divider.setVisibility(View.VISIBLE);
+				if (divider!= null) divider.setVisibility(View.VISIBLE);
 				photoView.setVisibility(View.VISIBLE);
 				
 				photoView.setImageBitmap(bitmap);
 			} 
 			else {
-				divider.setVisibility(View.GONE);
+				if (divider!= null) divider.setVisibility(View.GONE);
 				photoView.setVisibility(View.GONE);
+				
+				if (photoFile != null && photoFile.length() > 0){
+					ImageLoader imageloader = new ImageLoader(photoFile,photoView);
+					imageloader.loadBitmap();
+				}
 			}
 			return view;
 		}

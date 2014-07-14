@@ -1,15 +1,13 @@
 package com.thrivepregnancy.ui;
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.File;
 
-import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.view.WindowManager;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -17,74 +15,77 @@ import android.widget.ImageView;
  * loading it. This prevents exceeding available heap size when trying to load large
  * photo images.
  */
+
 public class ImageLoader {
-
-	/**
-	 * Load an ImageView with an image defined in a resource 
-	 * @param resourceId resource Id
-	 * @param resources the resources
-	 * @param view view in which the image will be rendered
-	 * @param screenWidth width of the screen, used to set upper limit on required width or height, depending on orientation
-	 * @param orientation the current screen orientation
-	 */
-	public static Bitmap compressPicture(int resourceId, Resources resources, int screenWidth){
-		// Determine the image dimensions
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeResource(resources, resourceId, options);
-		
-		options.inSampleSize = calculateInSampleSize(options, screenWidth);
-	    
-		// Decode bitmap with inSampleSize set
-	    options.inJustDecodeBounds = false;
-	    Bitmap bitmap = BitmapFactory.decodeResource(resources, resourceId, options);
-	    return bitmap;
-	}
-	/*
-	private static void saveToFile(){
-		FileOutputStream fos;
-		String strFileContents = "Some text to write to the file.";
-		fos = openFileOutput("Filename.txt", Context.MODE_PRIVATE);
-		fos.write(strFileContents.getBytes());
-		fos.close();		
-	}
-	*/
+	private ImageView m_photoView;
+	private String m_photo;
 	
-	public static void load(InputStream streamIn, Resources resources){
-		// Read the stream only to the point of obtaining the image dimensions
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeStream(streamIn, null, options);
-		int imageHeight = options.outHeight;
-		int imageWidth = options.outWidth;
-		String imageType = options.outMimeType;
+	public ImageLoader(String photo, ImageView photoView) {
+		m_photoView = photoView;
+		m_photo = photo;
 	}
 	
-	private static int calculateInSampleSize(BitmapFactory.Options options, int screenWidth) {
-		int requiredWidth;
-		int requiredHeight;
-		
-		// Raw height and width of image
-		final int height = options.outHeight;
-		final int width = options.outWidth;
+	public void loadBitmap() {
+		if (m_photo != null && !m_photo.equals("")) {
+            new ImageLoaderTask().execute(m_photo);
+        }
+	}
+	
+	private class ImageLoaderTask extends AsyncTask<String, String, Bitmap> {
 
-		requiredWidth = screenWidth;
-		float ratio = ((float)height) / width;
-		requiredHeight = (int)(ratio * requiredWidth);
-		int inSampleSize = 1;
-
-		if (height > requiredHeight || width > requiredWidth) {
-
-			final int halfHeight = height / 2;
-			final int halfWidth = width / 2;
-
-			// Calculate the largest inSampleSize value that is a power of 2 and keeps both
-			// height and width larger than the view height and width.
-			while ((halfHeight / inSampleSize) > requiredHeight
-			&& (halfWidth / inSampleSize) > requiredWidth) {
-				inSampleSize *= 2;
-			}
+		/**
+		 * Scales image to fix out of memory crash
+		 */
+		private Bitmap decodeSampledBitmapFromPath(String path, int reqWidth, int reqHeight) {
+	
+	        final BitmapFactory.Options options = new BitmapFactory.Options();
+	        options.inJustDecodeBounds = true;
+	        BitmapFactory.decodeFile(path, options);
+	
+	        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+	
+	        // Decode bitmap with inSampleSize set
+	        options.inJustDecodeBounds = false;
+	        Bitmap bmp = BitmapFactory.decodeFile(path, options);
+	        return bmp;
+	        }
+	
+		private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+	        final int height = options.outHeight;
+	        final int width = options.outWidth;
+	        int inSampleSize = 1;
+	
+	        if (height > reqHeight || width > reqWidth) {
+	            if (width > height) {
+	                inSampleSize = Math.round((float) height / (float) reqHeight);
+	            } else {
+	                inSampleSize = Math.round((float) width / (float) reqWidth);
+	             }
+	         }
+	         return inSampleSize;
+	      }
+	
+		@Override
+		protected Bitmap doInBackground(String... param) {
+	        try {
+	        	File file = new File(param[0]);
+	
+				Bitmap bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
+				
+	            return bitmap;
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return null;
+	        }
 		}
-		return inSampleSize;
-	}	
+		
+		protected void onPostExecute(Bitmap bitmap) {
+            if (bitmap != null) {
+            	m_photoView.setVisibility(View.VISIBLE);
+            	m_photoView.setImageBitmap(bitmap);
+            } else {
+                Log.e("ImageLoaderTask", "failed to load image");
+            }
+        }
+	}
 }
