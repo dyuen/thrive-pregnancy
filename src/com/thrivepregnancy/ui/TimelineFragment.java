@@ -422,11 +422,17 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					date.setText(diaryEntryFormat.format(event.getDate()));
 					break;
 			}
+			
+			TextView divider = (TextView)view.findViewById(R.id.list_item_tip_divider);
+			
 			if (bitmap != null){
+				divider.setVisibility(View.VISIBLE);
 				photoView.setVisibility(View.VISIBLE);
+				
 				photoView.setImageBitmap(bitmap);
 			} 
 			else {
+				divider.setVisibility(View.GONE);
 				photoView.setVisibility(View.GONE);
 			}
 			return view;

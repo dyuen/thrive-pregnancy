@@ -31,19 +31,20 @@ Statup Activity layout
         android:layout_marginTop="@dimen/welcome_item_spacing"
         android:text="@string/app_name"
         style="@style/welcome_title_style"/>
-
+	
     <EditText
         android:id="@+id/startup_name"
         android:hint="@string/PersonalInfo_Mother_Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/welcome_large_spacing"
+    	android:layout_marginTop="@dimen/welcome_large_spacing"
         android:textAppearance="?android:attr/textAppearanceMedium" 
         style="@style/welcome_input_style"
-        >
-        <requestFocus />
-    </EditText>
+        android:inputType="text" 
+        />
+     <requestFocus />
+     
     <EditText
         android:id="@+id/startup_date"
         android:hint="@string/PersonalInfo_Due_Date"
@@ -56,6 +57,8 @@ Statup Activity layout
         android:textAppearance="?android:attr/textAppearanceMedium" 
         style="@style/welcome_input_style"
         />
+    
+    
     <TextView
         android:id="@+id/startup_warning"
         android:layout_marginTop="@dimen/welcome_item_spacing"
