@@ -520,11 +520,16 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 		        	
 		        	if (m_date != null) {
 		        		String audioFileName = m_event.getAudioFile();
-			        	if ((notes != null && (notes.length() != 0)) || (audioFileName != null && audioFileName.length() != 0)){ 
+			        	if ((notes != null && (notes.length() != 0))){ 
 			        		warning = false;
 			        	} else {
 			        		if (m_currentPhotoPath != null && (!m_currentPhotoPath.equalsIgnoreCase(DELETED)) 
 		        				&& (m_currentPhotoPath.length() != 0)) {
+			        			notes = BLANK_DIARY;
+			        			warning = false;
+			        		}
+			        		
+			        		if (audioFileName != null && audioFileName.length() != 0) {
 			        			notes = BLANK_DIARY;
 			        			warning = false;
 			        		}
