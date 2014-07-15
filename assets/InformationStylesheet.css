@@ -1,24 +1,43 @@
+html { font-size: 100%; }
+
 body {
+	font-size: 1em;
 	background-color: #FAF9F8;
 }
 
+@media (max-width: 300px) {
+    html { font-size: 100%; }
+}
+
+@media (min-width: 500px) {
+    html { font-size: 120%; }
+}
+
+@media (min-width: 700px) {
+    html { font-size: 140%; }
+}
+
+@media (min-width: 1200px) {
+    html { font-size: 300%; }
+}
+
+
 div.margin {
 	position: relative;
-    left: 15px;
-    padding-right: 25px;
+    padding-left: 1em;
+    padding-right: 1.5em;
 }
 
 div.whiterectangle {
 	position: relative;
     background-color: white;
-    border-radius: 10px;
+    border-radius: 1em;
 }
 
 div.content {
 	position: relative;
-	top: 15px;
-	left: 20px;
-	padding-right: 15px;
+	padding: 1em 1em 1em 1em;  /*top right bottom left*/
+	overflow:auto; 
 }
 
 h1 {
@@ -40,27 +59,33 @@ h3 {
 
 p.icon {
     position: relative;
-    left: 0px;
     display:inline;
 }
 
 p.besideicon{
     position: relative;
-    left: 10px;
-	padding-right: 30px;
+    padding-left: .5em;
+	padding-right: 0px;
     display:inline;
+}
+
+p.noheader {
+    font-family: "Roboto";
+    position: relative;
+    font-size:1.2em;
+    padding-left: 0em;
 }
 
 p {
     font-family: "Roboto";
-    font-size: 20px;
     position: relative;
-    left: 40px;
+    font-size:1.2em;
+    padding-left: 1em;
 }
 
 img {
-	height: 23px;
-	width: 23px;
+	height: 1.2em;
+	width: 1.2em;
 }
 
 /* unvisited link */

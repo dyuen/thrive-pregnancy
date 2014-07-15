@@ -51,7 +51,7 @@ public class NeedFragment extends Fragment {
 	    	needDao = dataHelper.getNeedDao();
 	    }
 	    
-	    NeedAdapter adapter = new NeedAdapter(getView().getContext(), dataHelper.getNeeds());
+	    NeedAdapter adapter = new NeedAdapter(getView().getContext());
 	    
 	    list=(ListView)getView().findViewById(R.id.lst_need);
 	    list.setAdapter(adapter);
@@ -64,19 +64,21 @@ public class NeedFragment extends Fragment {
 	}
 	
   	private class NeedAdapter extends BaseAdapter{
-		private final Context context;
-		private final List<Need> needs;
+		private Context context;
+		private List<Need> needs;
 		
-		public NeedAdapter(Context context, List<Need> needs) {
+		public NeedAdapter(Context context) {
+			Log.i("NeedAdapter","constructor");
 			this.context = context;
-			this.needs = needs;
+			this.needs = dataHelper.getNeeds();
 		}
 		
 		@Override
 		public View getView(final int position, View view, ViewGroup parent) {
 			View item;
-			final String needTitle = needs.get(position).getTitle();
-			
+			final Need need = needs.get(position);
+			final String needTitle = need.getTitle();
+
 			item = view;
 			
 			if(view == null) item = LayoutInflater.from(context).inflate(R.layout.need_list, parent, false);
@@ -86,9 +88,9 @@ public class NeedFragment extends Fragment {
 			
 			RadioButton radioNeedIt = (RadioButton) item.findViewById(R.id.radio_needit);
 			RadioButton radioGotIt = (RadioButton) item.findViewById(R.id.radio_gotit);
-
-			if (needs.get(position).getNeedit()) radioNeedIt.setChecked(true);
-			if (needs.get(position).getGotit()) radioGotIt.setChecked(true);
+			
+			if (need.getNeedit()) radioNeedIt.setChecked(true);
+			if (need.getGotit()) radioGotIt.setChecked(true);
 			
 			ImageButton resource = (ImageButton) item.findViewById(R.id.img_needresource);
 			
@@ -122,7 +124,6 @@ public class NeedFragment extends Fragment {
 					
 					try {
 						Log.d("NeedFragment.getView", "position: " + position);
-						Need need = needDao.queryForId(position + 1);
 						
 						if (checked) {
 							need.setNeedit(true);
@@ -149,7 +150,7 @@ public class NeedFragment extends Fragment {
 					
 					try {
 						Log.d("NeedFragment.getView", "position: " + position);
-						Need need = needDao.queryForId(position + 1);
+						
 						
 						if (checked) {
 							need.setGotit(true);
@@ -165,6 +166,8 @@ public class NeedFragment extends Fragment {
 					}
 				}
 			});
+			
+			
 			return item;
 		}
 
