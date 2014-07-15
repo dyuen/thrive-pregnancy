@@ -12,8 +12,8 @@
 	<!-- Spacing -->
 	<dimen name="edit_item_spacing">10dp</dimen>
 	
-	<dimen name="welcome_item_spacing">10dp</dimen>
-	<dimen name="welcome_large_spacing">30dp</dimen>
+	<dimen name="welcome_item_spacing">5dp</dimen>
+	<dimen name="welcome_large_spacing">20dp</dimen>
 	
 	<dimen name="timeline_listitembottom_spacing">5dp</dimen>
 	<dimen name="timeline_tipiconright_spacing">5dp</dimen>

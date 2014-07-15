@@ -105,6 +105,7 @@ The top level tag attribute is required in the Timeline list adapter
 	           	android:id="@+id/list_item_tip_divider"
 	           	android:layout_width="wrap_content"
 		    	android:layout_height="wrap_content"
+		    	android:visibility="gone"	
 	        	/>
 	        <!-- Photo visible only if one is defined -->  
 	       	<ImageView
