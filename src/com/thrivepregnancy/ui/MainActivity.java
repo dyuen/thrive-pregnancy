@@ -67,7 +67,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     
     private TimelineFragment	timelineFragment;
     private CareFragment		careFragment;
-//    private NeedFragment		needFragment;
     
     private MainActivity		mainActivity;
 	private DatabaseHelper 		databaseHelper;	
@@ -92,9 +91,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Create the adapter that will return a fragment for each of the pages
         FragmentManager fragmentManager = getSupportFragmentManager();
         mainPageAdapter = new MainPagerAdapter(fragmentManager, this);
-//		timelineFragment = new TimelineFragment();
-//		careFragment = new CareFragment();
-//		needFragment = new NeedFragment();
 
         // Set up the action bar.
         actionBar = getActionBar();
@@ -133,7 +129,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     public void onResume(){
     	super.onResume();
-//    	Log.d(DEBUG_TAG, "--- onResume: selecting tab " + currentTab +  " set rotate=false");
     	rotating = false;
     	actionBar.setSelectedNavigationItem(currentTab);    	
     }
@@ -198,12 +193,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	@Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in the ViewPager.
-		if (rotating){
-//			Log.d(DEBUG_TAG, "onTabSelected : " + tab.getPosition() + " rotating     currentTab=" + currentTab);			
-		}
-		else{
+		if (!rotating){
 			currentTab = tab.getPosition();			
-//			Log.d(DEBUG_TAG, "onTabSelected : " + tab.getPosition() + " not rotating currentTab=" + currentTab);
 		}
 		viewPager.setCurrentItem(tab.getPosition());
     }

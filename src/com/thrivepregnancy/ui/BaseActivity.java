@@ -48,7 +48,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 
 	private DatabaseHelper 	databaseHelper = null;
 	
-	private String m_mode;
+	protected String m_mode;
 	private Dao<Event, Integer> m_eventDao;
 	protected Event m_event;
 	
@@ -62,6 +62,8 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	private Calendar m_CalFirstWeek;
 	private long m_dueDate;
 	private long m_selectedDate;
+	protected String m_audioFileName;
+
 	
 	private TextView m_warnView;
 	private String m_warning;
@@ -94,7 +96,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	private static final String BLANK_TEST = "Test Result";
 	
 	private static final String APPT_WARNING = "Please enter date and time of your appointment";
-	private static final String DIARY_WARNING = "Please enter a diary note or a picture";
+	private static final String DIARY_WARNING = "Please enter a diary note, a picture or a recording";
 	private static final String TEST_WARNING = "Please enter a test result note or a picture";
 	
 	 /**
@@ -190,7 +192,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
     /**
      * Creates Event object either from existing record or new
      */
-    private void CreateEvent() {
+    protected void CreateEvent() {
     	
     	//Edit existing event
         if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)) {
@@ -519,8 +521,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 		        	m_warning = DIARY_WARNING;
 		        	
 		        	if (m_date != null) {
-		        		String audioFileName = m_event.getAudioFile();
-			        	if ((notes != null && (notes.length() != 0)) || (audioFileName != null && audioFileName.length() != 0)){ 
+			        	if ((notes != null && (notes.length() != 0)) || (m_audioFileName != null && m_audioFileName.length() != 0)){ 
 			        		warning = false;
 			        	} else {
 			        		if (m_currentPhotoPath != null && (!m_currentPhotoPath.equalsIgnoreCase(DELETED)) 

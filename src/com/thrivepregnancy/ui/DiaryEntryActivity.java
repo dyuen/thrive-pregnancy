@@ -2,14 +2,17 @@ package com.thrivepregnancy.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.app.Activity;
 import android.media.MediaRecorder;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -36,7 +39,6 @@ public class DiaryEntryActivity extends BaseActivity{
 	private static final String KEY_AUDIO_FILE_NAME = "audioFileName";
 	
 	private static MediaRecorder 	recorder;
-//	private String 					audioFilePath;
 	private ViewGroup				areaNone;
 	private ViewGroup				areaRecording;
 	private ViewGroup				areaFinished;
@@ -45,6 +47,7 @@ public class DiaryEntryActivity extends BaseActivity{
 	private Button					done;
 	private Button					cancel;
 	private AudioPlayer				audioPlayer;
+	private File					audioFile;
 	
 	private enum AudioState {
 		NONE,		// No recording or playback underway 
@@ -72,8 +75,9 @@ public class DiaryEntryActivity extends BaseActivity{
 	    super.onSaveInstanceState(savedInstanceState);
 	    // Save state across screen rotation
 	    savedInstanceState.putString(KEY_AUDIO_STATE, audioState.toString());
-	    if (m_event.getAudioFile() != null){
-		    savedInstanceState.putString(KEY_AUDIO_FILE_NAME, m_event.getAudioFile());	    	
+	    
+	    if (m_audioFileName != null){
+		    savedInstanceState.putString(KEY_AUDIO_FILE_NAME, m_audioFileName);	    	
 	    }
 	}
 	
@@ -92,8 +96,9 @@ public class DiaryEntryActivity extends BaseActivity{
 		areaFinished = (ViewGroup)findViewById(R.id.audio_area_finished);		
 
 		if (savedInstanceState == null){
-			String fileName = m_event.getAudioFile();
-    		if (fileName != null && fileName.length() > 0){
+			m_audioFileName = m_event.getAudioFile();
+    		if (m_audioFileName != null && m_audioFileName.length() > 0){
+    			Log.d(MainActivity.DEBUG_TAG, "Existing audio file " + m_audioFileName);
 				setState(AudioState.FINISHED);
 			}
 			else {
@@ -108,7 +113,8 @@ public class DiaryEntryActivity extends BaseActivity{
 				audioPlayer.restore(this, areaFinished);
 			}
 			if (savedInstanceState.containsKey(KEY_AUDIO_FILE_NAME)){
-				m_event.setAudioFile(savedInstanceState.getString(KEY_AUDIO_FILE_NAME));
+				m_audioFileName = savedInstanceState.getString(KEY_AUDIO_FILE_NAME);
+    			Log.d(MainActivity.DEBUG_TAG, "Saved state audio file " + m_audioFileName);
 			}
 		}
     	setupAudioButtons();
@@ -124,7 +130,11 @@ public class DiaryEntryActivity extends BaseActivity{
 		
 		if (audioState.equals(AudioState.FINISHED)){
 			Log.d(MainActivity.DEBUG_TAG, "Creating new AudioPlayer");
-	    	audioPlayer = new AudioPlayer(this, areaFinished, m_event.getAudioFile());
+	    	audioPlayer = new AudioPlayer(this, areaFinished, m_audioFileName);
+		}
+		else if (audioState.equals(AudioState.NONE)){
+			m_audioFileName = null;
+			Log.d(MainActivity.DEBUG_TAG, "Setting audio file NULL");
 		}
 	}
 	
@@ -146,15 +156,16 @@ public class DiaryEntryActivity extends BaseActivity{
 		done.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				Log.d(MainActivity.DEBUG_TAG, "Releasing MediaRecorder");
 				recorder.stop();
 				recorder.release();
 				
-				File permanentFile = new File(getExternalFilesDir(null), formatter.format(new Date()) + "mpg");
+				audioFile = new File(getExternalFilesDir(null), formatter.format(new Date()) + "mpg");
 				File temporaryFile = getTemporaryAudioFile();
 				if (temporaryFile.exists()){
-					if (temporaryFile.renameTo(permanentFile)){
-						m_event.setAudioFile(permanentFile.getAbsolutePath());
+					if (temporaryFile.renameTo(audioFile)){
+						m_audioFileName = audioFile.getAbsolutePath();
+		    			Log.d(MainActivity.DEBUG_TAG, "Setting audio file to " + m_audioFileName);
+
 					}
 				}
 				setState(AudioState.FINISHED);
@@ -164,7 +175,6 @@ public class DiaryEntryActivity extends BaseActivity{
 		cancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				Log.d(MainActivity.DEBUG_TAG, "Releasing MediaRecorder");
 				recorder.stop();
 				recorder.release();
 				File temporaryFile = getTemporaryAudioFile();
@@ -182,17 +192,10 @@ public class DiaryEntryActivity extends BaseActivity{
 			public void onClick(View v) {
 				// Deletion can occur when player is playing or stopped
 				audioPlayer.stop();
-				String fileName = m_event.getAudioFile();
-	    		if (fileName != null && fileName.length() > 0){
-	    			File file = new File(fileName);
-	    			if (!file.delete()){ 
-	    				Log.e(MainActivity.DEBUG_TAG, "********** Can't delete " + fileName);
-	    			}
-	    		}
+				m_audioFileName = null;
     			setState(AudioState.NONE);
 			}
-		});
-		
+		});		
 	}
 	
 	private File getTemporaryAudioFile(){
@@ -201,7 +204,6 @@ public class DiaryEntryActivity extends BaseActivity{
 	
 	private void startRecording(){
         getTemporaryAudioFile();
-//        Log.d(MainActivity.DEBUG_TAG, "Creating new MediaR");
         if (recorder != null){
         	recorder.release();
         }
@@ -218,6 +220,18 @@ public class DiaryEntryActivity extends BaseActivity{
         catch (IOException e){
         	Log.e(MainActivity.DEBUG_TAG, "Can't record audio", e);
         }
+	}
+	
+	protected boolean SaveEvent(){
+		Log.d(MainActivity.DEBUG_TAG, "Saving event: audio file = " + m_audioFileName);
+		m_event.setAudioFile(m_audioFileName);
+		if (m_audioFileName == null && audioFile != null){
+			Log.d(MainActivity.DEBUG_TAG, "Deleting (real) audio file " + m_audioFileName);
+			if (!audioFile.delete()){ 
+				Log.e(MainActivity.DEBUG_TAG, "********** Can't delete " + m_audioFileName);
+			}
+		}
+		return super.SaveEvent();
 	}
 	
 	/**
