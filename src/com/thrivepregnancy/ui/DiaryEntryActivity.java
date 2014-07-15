@@ -36,7 +36,7 @@ public class DiaryEntryActivity extends BaseActivity{
 	private static final String KEY_AUDIO_FILE_NAME = "audioFileName";
 	
 	private static MediaRecorder 	recorder;
-	private String 					audioFilePath;
+//	private String 					audioFilePath;
 	private ViewGroup				areaNone;
 	private ViewGroup				areaRecording;
 	private ViewGroup				areaFinished;
@@ -91,7 +91,16 @@ public class DiaryEntryActivity extends BaseActivity{
 		areaRecording = (ViewGroup)findViewById(R.id.audio_area_recording);
 		areaFinished = (ViewGroup)findViewById(R.id.audio_area_finished);		
 
-		if (savedInstanceState != null){
+		if (savedInstanceState == null){
+			String fileName = m_event.getAudioFile();
+    		if (fileName != null && fileName.length() > 0){
+				setState(AudioState.FINISHED);
+			}
+			else {
+				setState(AudioState.NONE);	
+			}
+		}
+		else {
 			setState(AudioState.valueOf(savedInstanceState.getString(KEY_AUDIO_STATE)));
 			if (audioState.equals(AudioState.FINISHED)){
 				Log.d(MainActivity.DEBUG_TAG, "Restoring previous AudioPlayer");
@@ -101,9 +110,6 @@ public class DiaryEntryActivity extends BaseActivity{
 			if (savedInstanceState.containsKey(KEY_AUDIO_FILE_NAME)){
 				m_event.setAudioFile(savedInstanceState.getString(KEY_AUDIO_FILE_NAME));
 			}
-		}
-		else {
-			setState(AudioState.NONE);
 		}
     	setupAudioButtons();
     }

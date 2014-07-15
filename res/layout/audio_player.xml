@@ -4,21 +4,26 @@ Audio player - Start/Stop button, progress bar and playback time
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content" 
+    android:paddingTop="@dimen/audio_player_margin"
+    android:paddingBottom="@dimen/audio_player_margin">
     <ImageButton
         android:id="@+id/audio_playback_start_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:paddingRight="10dp"
         android:background="@android:color/transparent"
         />
     <ProgressBar
         android:id="@+id/audio_playback_progress"
         style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/progress_bar"
+        android:minHeight="3dp"
+        android:maxHeight="3dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@+id/audio_playback_start_stop" 
         android:layout_toLeftOf="@+id/audio_playback_time"

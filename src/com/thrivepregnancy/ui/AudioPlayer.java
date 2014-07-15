@@ -147,7 +147,7 @@ public class AudioPlayer {
 								activity.runOnUiThread(new Runnable(){
 									public void run(){
 										elapsed.setText(formatter.format(counter.getTime()));
-										progressBar.setProgress(secondsPlayed);
+										progressBar.setProgress(secondsPlayed - 1);
 									}
 								});
 								secondsPlayed++;

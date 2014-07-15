@@ -33,6 +33,8 @@
 	
 	<!-- Left or right margin for audio recording Done and Cancel buttons -->
 	<dimen name="audio_recording_button_horizontal_margin">60dp</dimen>
-	<!-- Top margin for the audio and photo areas in diary entry -->
+	<!-- Top margin for the audio and photo icon/text pairs in diary entry -->
 	<dimen name="diary_group_top_margin">20dp</dimen>
+	<!-- Audio player margins -->
+	<dimen name="audio_player_margin">8dp</dimen>
 </resources>

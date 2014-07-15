@@ -109,16 +109,37 @@ The top level tag attribute is required in the Timeline list adapter
 	        android:contentDescription="@string/photo"	
 	        />
 	</TableRow>
-	<!-- The audio player -->
+	<!-- The audio player and text -->
 	<TableRow
 	    android:id="@+id/list_item_entry_audio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/timeline"
 		android:padding="0dip"
+		android:gravity="center_vertical"
         android:visibility="gone">
-        <!-- Audio player -->
-        <include layout="@layout/audio_player"/>
+        <TextView
+	       	android:layout_width="wrap_content"
+		   	android:layout_height="wrap_content"
+		   	android:background="@android:color/transparent"
+	       	/>
+	    <LinearLayout
+            android:id="@+id/list_item_entry_audio_player"
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical"
+        	android:layout_span="3"
+            >
+	    	<TextView
+	       		android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content"
+		   		android:background="@android:color/transparent"
+		   		android:text="@string/Diary_VoiceNote"
+		   		android:layout_marginTop="10dp"
+	       		/>
+            <!-- Audio player --> 
+        	<include layout="@layout/audio_player"/>           
+        </LinearLayout>
     </TableRow>
 	<!-- Padding row -->
     <TableRow

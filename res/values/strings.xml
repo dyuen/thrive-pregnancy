@@ -50,6 +50,7 @@
     <string name="Diary_Create">Take a diary picture</string>
     <string name="Diary_Delete">Delete a diary picture</string>
     <string name="Diary_Record">Add Voice Note</string>
+    <string name="Diary_VoiceNote">Voice Note</string>
     <string name="Diary_Recording">Recording</string>
     <string name="Diary_Done">Done</string>
     <string name="Diary_Cancel">Cancel</string>

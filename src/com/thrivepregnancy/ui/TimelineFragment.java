@@ -357,6 +357,8 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					final String audioFile = event.getAudioFile();
 					if (audioFile != null && audioFile.length() > 0){
 						View audioView = (View)view.findViewById(R.id.list_item_entry_audio);
+						ViewGroup audioPlayerGroup = (ViewGroup)audioView.findViewById(R.id.list_item_entry_audio_player);
+				    	audioPlayer = new AudioPlayer(mainActivity, audioPlayerGroup, event.getAudioFile());
 						audioView.setVisibility(View.VISIBLE);
 					}
 					
