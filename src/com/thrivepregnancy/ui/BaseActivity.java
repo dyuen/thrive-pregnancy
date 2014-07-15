@@ -521,11 +521,12 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 		        	m_warning = DIARY_WARNING;
 		        	
 		        	if (m_date != null) {
-			        	if ((notes != null && (notes.length() != 0)) || (m_audioFileName != null && m_audioFileName.length() != 0)){ 
+			        	if ((notes != null && (notes.length() != 0))){ 
 			        		warning = false;
 			        	} else {
 			        		if (m_currentPhotoPath != null && (!m_currentPhotoPath.equalsIgnoreCase(DELETED)) 
-		        				&& (m_currentPhotoPath.length() != 0)) {
+		        				&& (m_currentPhotoPath.length() != 0)
+		        				|| (m_audioFileName != null)) {
 			        			notes = BLANK_DIARY;
 			        			warning = false;
 			        		}
