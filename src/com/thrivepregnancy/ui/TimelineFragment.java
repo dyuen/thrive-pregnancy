@@ -63,9 +63,10 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	private TimelineListAdapter adapter;
 	private DatabaseHelper		databaseHelper;
 	private EventDataHelper		eventDataHelper;
-	private	MediaPlayer 		mediaPlayer;
 	private ListView 			listView;
 	private int					firstTipWeek;
+	private AudioPlayer			audioPlayer;
+	private ViewGroup			player;
 
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -321,6 +322,8 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					((TextView)view.findViewById(R.id.list_item_appt_doctor)).setText(event.getDoctor());
 					((TextView)view.findViewById(R.id.list_item_appt_notes)).setText(event.getText());
 					photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
+					player = (ViewGroup)view.findViewById(R.id.list_item_entry_audio);
+					
 
 					ImageButton editButtonA = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
 					editButtonA.setOnClickListener(new OnClickListener() {
@@ -392,13 +395,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					if (audioFile != null && audioFile.length() > 0){
 						View audioView = (View)view.findViewById(R.id.list_item_entry_audio);
 						audioView.setVisibility(View.VISIBLE);
-						ImageButton playButton = (ImageButton)view.findViewById(R.id.list_item_entry_audio_button);
-						playButton.setOnClickListener(new View.OnClickListener() {
-							@Override
-							public void onClick(View v) {
-								playAudio(audioFile);
-							}
-						});
 					}
 					
 					photoView.setOnClickListener(new View.OnClickListener() {
@@ -430,21 +426,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 				photoView.setVisibility(View.GONE);
 			}
 			return view;
-		}
-
-		private void playAudio(String audioFilePath){
-    		mediaPlayer = new MediaPlayer ();
-    		try {
-    			URL url;
-    			mediaPlayer.setDataSource(audioFilePath);
-    			mediaPlayer.setOnCompletionListener(fragment);
-    			mediaPlayer.setOnErrorListener(fragment);
-    			mediaPlayer.setOnPreparedListener(fragment);
-    			mediaPlayer.prepareAsync();
-    		}
-    		catch (IOException e){
-    			Log.e(MainActivity.DEBUG_TAG, "Error preparing audio playback", e);
-    		}
 		}
 
 		/**
@@ -518,8 +499,9 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	 * Listener methods for the MediaPlayer
 	 */
 	public void onCompletion(MediaPlayer mp){
-		mediaPlayer.release();
+//		mediaPlayer.release();
 	}
+	
 	public boolean onError (MediaPlayer mp, int what, int extra){
 		/*
 		-1004 MEDIA_ERROR_IO Added in API level 17
@@ -539,6 +521,10 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	public void onPrepared(MediaPlayer mp){
 		mp.start();
 	}
+	
+	/**
+	 * Listener class for delete dialog
+	 */
     private class DeleteConfirmationListener implements DialogInterface.OnClickListener {
     	private final Event event;
     	DeleteConfirmationListener(final Event event){

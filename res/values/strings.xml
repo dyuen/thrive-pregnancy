@@ -49,7 +49,11 @@
     <string name="Diary_Photo">Diary Photo</string>
     <string name="Diary_Create">Take a diary picture</string>
     <string name="Diary_Delete">Delete a diary picture</string>
-    <string name="Diary_Record">Record Voice Note</string>
+    <string name="Diary_Record">Add Voice Note</string>
+    <string name="Diary_Recording">Recording</string>
+    <string name="Diary_Done">Done</string>
+    <string name="Diary_Cancel">Cancel</string>
+    <string name="Diary_Delete_Recording">Delete</string>
     <string name="Diary_Record_Instructions">Start speaking, and press the audio button again when you are finished</string>
     <string name="Diary_Audio_Heading">Voice Note</string>
     

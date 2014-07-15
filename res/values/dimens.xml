@@ -30,4 +30,9 @@
 	
 	<dimen name="care_iconright_spacing">10dp</dimen>
 	<dimen name="care_item_padding">3dp</dimen>
+	
+	<!-- Left or right margin for audio recording Done and Cancel buttons -->
+	<dimen name="audio_recording_button_horizontal_margin">60dp</dimen>
+	<!-- Top margin for the audio and photo areas in diary entry -->
+	<dimen name="diary_group_top_margin">20dp</dimen>
 </resources>

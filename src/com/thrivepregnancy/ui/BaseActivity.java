@@ -191,7 +191,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
      * Creates Event object either from existing record or new
      */
     private void CreateEvent() {
-    	Log.d("m_mode: ", m_mode);
     	
     	//Edit existing event
         if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)) {
@@ -204,6 +203,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         	
         //create new event
         } else if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_NEW)) {
+        	Log.d(MainActivity.DEBUG_TAG, "CreateEvent craeting new Event : mode = " + m_mode);
        		m_event = new Event();
         	
         	switch (m_eventType) {
@@ -248,7 +248,9 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 		}
 
     	if (m_noteView != null) {
-    		if (m_event.getText() != null && (m_event.getText().length() > 0)) m_noteView.setText(m_event.getText());
+    		if (m_event.getText() != null && (m_event.getText().length() > 0)) {
+    			m_noteView.setText(m_event.getText());
+    		}
     	}    	
     	
     	if (m_purposeView != null) {

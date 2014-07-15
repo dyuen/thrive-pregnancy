@@ -11,8 +11,7 @@ Statup Activity layout
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" 
-    >
+    android:paddingBottom="@dimen/activity_vertical_margin" >
 
     <ImageView
         android:layout_width="wrap_content"
@@ -40,10 +39,9 @@ Statup Activity layout
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/welcome_large_spacing"
         android:textAppearance="?android:attr/textAppearanceMedium" 
-        style="@style/welcome_input_style"
-        >
-        <requestFocus />
-    </EditText>
+        style="@style/welcome_input_style">
+     </EditText>
+     
     <EditText
         android:id="@+id/startup_date"
         android:hint="@string/PersonalInfo_Due_Date"
@@ -51,11 +49,11 @@ Statup Activity layout
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/welcome_item_spacing"
-        android:focusable="false"
+  		android:focusable="false"
         android:inputType="date"
         android:textAppearance="?android:attr/textAppearanceMedium" 
-        style="@style/welcome_input_style"
-        />
+        style="@style/welcome_input_style"/>
+    
     <TextView
         android:id="@+id/startup_warning"
         android:layout_marginTop="@dimen/welcome_item_spacing"
