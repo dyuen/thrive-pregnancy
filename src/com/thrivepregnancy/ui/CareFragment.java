@@ -476,12 +476,26 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		}
 		
 		private void populateAppointmentView(View view, final Event event){
-
+			
+			TextView address = (TextView)view.findViewById(R.id.list_item_appt_address);
+			TextView doctor = (TextView)view.findViewById(R.id.list_item_appt_doctor);
+			TextView apptnotes = (TextView)view.findViewById(R.id.list_item_appt_notes);
+			
 			((TextView)view.findViewById(R.id.list_item_appt_purpose)).setText(event.getPurpose());
 			((TextView)view.findViewById(R.id.list_item_appt_time)).setText(appointmentDateFormat.format(event.getDate()));
-			((TextView)view.findViewById(R.id.list_item_appt_address)).setText(event.getAddress());
-			((TextView)view.findViewById(R.id.list_item_appt_doctor)).setText(event.getDoctor());
-			((TextView)view.findViewById(R.id.list_item_appt_notes)).setText(event.getText());
+			
+			address.setText(event.getAddress());
+			doctor.setText(event.getDoctor());
+			apptnotes.setText(event.getText());
+			
+			if (event.getAddress() == null || event.getAddress().length()==0) 
+				address.setVisibility(View.GONE);
+			
+			if (event.getDoctor() == null || event.getDoctor().length()==0) 
+				doctor.setVisibility(View.GONE);
+			
+			if (event.getText() == null || event.getText().length()==0) 
+				apptnotes.setVisibility(View.GONE);
 			
 			ImageButton editAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
 			final Integer eventId = event.getId();
