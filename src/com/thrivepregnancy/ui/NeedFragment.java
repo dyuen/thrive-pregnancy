@@ -65,23 +65,19 @@ public class NeedFragment extends Fragment {
 	
   	private class NeedAdapter extends BaseAdapter{
 		private Context context;
-		private List<Need> needs;
 		
 		public NeedAdapter(Context context) {
 			Log.i("NeedAdapter","constructor");
 			this.context = context;
-			this.needs = dataHelper.getNeeds();
 		}
 		
 		@Override
 		public View getView(final int position, View view, ViewGroup parent) {
-			View item;
-			final Need need = needs.get(position);
+			View item = null;
+			final Need need = dataHelper.getNeeds().get(position);
 			final String needTitle = need.getTitle();
-
-			item = view;
 			
-			if(view == null) item = LayoutInflater.from(context).inflate(R.layout.need_list, parent, false);
+			item = LayoutInflater.from(context).inflate(R.layout.need_list, parent, false);
 			
 			TextView txtNeed = (TextView) item.findViewById(R.id.txt_needtitle);
 			txtNeed.setText(needTitle);
@@ -100,7 +96,7 @@ public class NeedFragment extends Fragment {
 				public void onClick(View v) {
 					Intent intent = new Intent(v.getContext(), InformationActivity.class);
 					Bundle parentBundle = new Bundle();
-					String htmlfile = needs.get(position).getResources();
+					String htmlfile = need.getResources();
 					
 					if (htmlfile == null || htmlfile.length() == 0) htmlfile = "empty.html";
 					
@@ -174,7 +170,7 @@ public class NeedFragment extends Fragment {
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return needs.size();
+			return dataHelper.getNeeds().size();
 		}
 
 		@Override
