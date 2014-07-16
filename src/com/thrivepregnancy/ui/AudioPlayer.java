@@ -8,6 +8,8 @@ import java.util.Calendar;
 import com.thrivepregnancy.R;
 
 import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -35,6 +37,7 @@ public class AudioPlayer {
 	private Activity 		activity;
 	private int 			secondsPlayed;
 	private static SimpleDateFormat formatter = new SimpleDateFormat("m:ss"); 
+	private final static int MAX_VOLUME = 100;
 	
 	/**
 	 * Constructor
@@ -136,6 +139,11 @@ public class AudioPlayer {
 					int duration = mp.getDuration() / 1000;
 					Log.d(MainActivity.DEBUG_TAG, "Duration = " + duration);
 					progressBar.setMax(duration);
+					
+					//volume control
+					final float volume = (float) (1 - (Math.log(MAX_VOLUME - 100) / Math.log(MAX_VOLUME)));
+					mp.setVolume(volume, volume);
+					
 					mp.start();
 					counter = Calendar.getInstance();
 					counter.clear();
@@ -162,6 +170,7 @@ public class AudioPlayer {
 					thread.start();
 				}
 			});
+			
 			mediaPlayer.prepareAsync();
 		}
 		catch (IOException e){
