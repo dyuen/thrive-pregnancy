@@ -67,7 +67,19 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	private int					firstTipWeek;
 	private AudioPlayer			audioPlayer;
 	private ViewGroup			player;
-
+	/**
+	 * Name of Preferences.
+	 */
+	public static final String PREFERENCES = "preferences";
+	/**
+	 * Preference index
+	 */
+	public static final String PREFERENCE_INDEX = "index";
+	/**
+	 * Preference top
+	 */	
+	public static final String PREFERENCE_TOP = "top";
+			
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
 	 */
@@ -98,7 +110,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
     	SharedPreferences preferences = mainActivity.getSharedPreferences(StartupActivity.PREFERENCES, Activity.MODE_PRIVATE);
     	firstTipWeek = preferences.getInt(StartupActivity.PREFERENCE_FIRST_WEEK, 1);
 	}
-
+	
 	/**
 	* tells the fragment that its activity has completed its own Activity.onCreate()
 	*/
@@ -108,7 +120,39 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		adapter = new TimelineListAdapter(getView().getContext());
 		mainActivity.setTimelineListAdapter(adapter);
 	}
-
+	
+	@Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        
+        SaveCurrentListPosition();
+        
+    }
+	
+	@Override
+    public void onPause()
+    {
+        super.onPause();
+        
+        SaveCurrentListPosition();
+        
+    }
+	/**
+	* saves current list position
+	*/
+	public void SaveCurrentListPosition() {
+		// save list current position
+        int index = listView.getFirstVisiblePosition();
+        View view = listView.getChildAt(0);
+        int top = (view == null) ? 0 : view.getTop();
+        
+        SharedPreferences preferences = getActivity().getSharedPreferences(PREFERENCES, 0);
+		SharedPreferences.Editor editor = preferences.edit();
+    	editor.putInt(PREFERENCE_INDEX, index);
+    	editor.putInt(PREFERENCE_TOP, top);
+    	editor.commit();
+	}
 	/**
 	* makes the fragment interacting with the user (based on its containing activity being resumed)
 	*/
@@ -149,7 +193,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			// Return from called activity by pressing back button
 			return;
 		}
-		else {
+		else {		
 			adapter.refresh(RefreshType.ON_NEW_OR_EDIT);
 			if (requestCode == MainActivity.REQUEST_CODE_APPOINTMENT){
 				this.mainActivity.getCareFragment().refresh();
@@ -197,23 +241,35 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		}
 
 		// Scroll to the Tip event at beginning of current week
-		public void scrollToThisWeek(ListView listView){
-			int position = 0;
-			int nonTipEventsDuringWeek = 0;
-			Date now = new Date();
-			for (Event event: events){
-				if (now.before(event.getDate())){
-					listView.post(new Scroller(position - nonTipEventsDuringWeek - 1, listView));
-					break;
+		public void scrollToThisWeek(ListView listView) {
+			int index = 0;
+			int top = 0;
+			
+			SharedPreferences preferences = getActivity().getSharedPreferences(PREFERENCES, 0);
+		
+	    	index = preferences.getInt(PREFERENCE_INDEX, 0);
+	    	top = preferences.getInt(PREFERENCE_TOP, 0);
+	    	
+	    	if (index ==0 && top == 0) {
+	    		int position = 0;
+				int nonTipEventsDuringWeek = 0;
+				Date now = new Date();
+				for (Event event: events){
+					if (now.before(event.getDate())){
+						listView.post(new Scroller(position - nonTipEventsDuringWeek - 1, listView));
+						break;
+					}
+					if (event.getType().equals(Event.Type.TIP)){
+						nonTipEventsDuringWeek = 0;
+					}
+					else {
+						nonTipEventsDuringWeek++;
+					}
+					position++;
 				}
-				if (event.getType().equals(Event.Type.TIP)){
-					nonTipEventsDuringWeek = 0;
-				}
-				else {
-					nonTipEventsDuringWeek++;
-				}
-				position++;
-			}
+	    	} else {
+	    		listView.setSelectionFromTop(index, top);
+	    	}
 		}
 
 		@Override

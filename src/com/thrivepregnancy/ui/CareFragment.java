@@ -15,6 +15,7 @@ import com.thrivepregnancy.R;
 import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
+import com.thrivepregnancy.ui.TimelineFragment.RefreshType;
 import com.thrivepregnancy.ui.TimelineFragment.TimelineListAdapter;
 
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -183,7 +184,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	 * Handles the result from Appointment or Test Result
 	 */
 	@Override
-	public void onActivityResult(int requestCodeIgnored, int resultCode, Intent intent){
+	public void onActivityResult(int requestCode, int resultCode, Intent intent){
 		if (intent == null){
 			// Return from called mainActivity by pressing back button
 			return;
@@ -191,6 +192,11 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		else {
 			adapter.createBackingList();
 			adapter.notifyDataSetChanged();
+			
+			//update timeline activity
+			if (requestCode == MainActivity.REQUEST_CODE_APPOINTMENT){
+				this.mainActivity.getTimelineFragment().refreshOnTimelineChange();
+			}
 		}
 	}
     
