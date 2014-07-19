@@ -1,20 +1,17 @@
 package com.thrivepregnancy.ui;
 
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import com.thrivepregnancy.R;
 
 import android.app.Activity;
-import android.content.Context;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,32 +24,68 @@ import android.widget.TextView;
  * Controls audio playback and the state of the audio player UI
  */
 public class AudioPlayer {
+
+	private static SimpleDateFormat formatter = new SimpleDateFormat("m:ss", Locale.CANADA); 
+	private final static int MAX_VOLUME = 100;
+
 	private final String 	audioFile;
 	private boolean			playing;
 	private ImageButton		playStartStop;
 	private ProgressBar		progressBar;
 	private TextView		elapsed;
 	private MediaPlayer		mediaPlayer;
+	private Thread 			timelineThread;
 	private Calendar		counter;
 	private Activity 		activity;
 	private int 			secondsPlayed;
-	private static SimpleDateFormat formatter = new SimpleDateFormat("m:ss"); 
-	private final static int MAX_VOLUME = 100;
+	private PlayerClient 	playerClient;
+	
+	/**
+	 * Optional interface for a client object. It allows an AudioPlayer to stop another
+	 * instance from playing (e.g. multiple recordings on the timeline) 
+	 */
+	public interface PlayerClient {
+		public AudioPlayer getActiveAudioPlayer();
+		public void setActiveAudioPlayer(AudioPlayer player);
+	}	
 	
 	/**
 	 * Constructor
-	 * @param audioFile full path of the audio file
-	 * @param player the ViewGroup containing a start/stop button, progress bar, and second counter
+	 * @param activity the parentActivity
+	 * @param playerView a viewgroup containing an image button, progress bar, and text field 
+	 * @param audioFile audio file to be played
 	 */
-	public AudioPlayer(Activity activity, ViewGroup player, final String audioFile){
+	public AudioPlayer(Activity activity, ViewGroup playerView, final String audioFile){
+		this(activity, playerView, audioFile, null);
+	}
+	
+	/**
+	 * Constructor
+	 * @param activity the parentActivity
+	 * @param playerView a viewgroup containing an image button, progress bar, and text field 
+	 * @param audioFile audio file to be played
+	 * @param playerClient optional
+	 */
+	public AudioPlayer(Activity activity, ViewGroup playerView, final String audioFile, PlayerClient playerClient){
 		this.audioFile = audioFile;
 		this.activity = activity;
-		Log.d(MainActivity.DEBUG_TAG, "New AudioPlayer for " + audioFile);
-		playStartStop = (ImageButton)player.findViewById(R.id.audio_playback_start_stop);
-		progressBar = (ProgressBar)player.findViewById(R.id.audio_playback_progress);
-		elapsed = (TextView)player.findViewById(R.id.audio_playback_time);
+		this.playerClient = playerClient;
 		
-		playStartStop.setImageResource(R.drawable.ic_play);
+//		Log.d(MainActivity.DEBUG_TAG, "New AudioPlayer for " + audioFile);
+		playStartStop = (ImageButton)playerView.findViewById(R.id.audio_playback_start_stop);
+		progressBar = (ProgressBar)playerView.findViewById(R.id.audio_playback_progress);
+		elapsed = (TextView)playerView.findViewById(R.id.audio_playback_time);
+		
+		initializeStartStop();
+	}
+	
+	private void initializeStartStop(){
+		if (playing){
+			playStartStop.setImageResource(R.drawable.ic_pause);
+		}
+		else {
+			playStartStop.setImageResource(R.drawable.ic_play);
+		}
 		playStartStop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -68,11 +101,18 @@ public class AudioPlayer {
 		});
 	}
 	
+	public boolean isPlaying(){
+		return playing;
+	}
+	
+	public boolean isPlaying(String anAudioFile){
+		return anAudioFile.equals(this.audioFile);
+	}
+	
 	/**
 	 * Stops playback, disposes of the MediaPlayer, and resets the UI
 	 */
 	public void stop(){		
-		playing = false;
 		if (mediaPlayer != null){
 			if (mediaPlayer.isPlaying()){
 				mediaPlayer.stop();
@@ -85,29 +125,45 @@ public class AudioPlayer {
 		progressBar.setProgress(0);
 		elapsed.setText("");
 		playStartStop.setImageResource(R.drawable.ic_play);
+		playing = false;
+		if (playerClient != null){
+			playerClient.setActiveAudioPlayer(null);
+		}
 	}
 	
 	/**
 	 * Restores the UI state after a rotation. This object and its MediaPlayer were retained, but
 	 * the UI objects will have been recreated
 	 */
-	public void restore(Activity activity, ViewGroup player){
+	public void restore(Activity activity, ViewGroup playerView){
 		this.activity = activity;
-		playStartStop = (ImageButton)player.findViewById(R.id.audio_playback_start_stop);
-		progressBar = (ProgressBar)player.findViewById(R.id.audio_playback_progress);
-		elapsed = (TextView)player.findViewById(R.id.audio_playback_time);
-		
+		playStartStop = (ImageButton)playerView.findViewById(R.id.audio_playback_start_stop);
+		initializeStartStop();
+		progressBar = (ProgressBar)playerView.findViewById(R.id.audio_playback_progress);
+		elapsed = (TextView)playerView.findViewById(R.id.audio_playback_time);
 	}
+	
 	/**
-	 * Creates a MediaPlayer and starts it
+	 * Creates a MediaPlayer and starts playing the file
 	 * @param audioFilePath
 	 */
 	private void start(){
+		// Stop any other active player
+		if (playerClient != null){
+			AudioPlayer activeAudioPlayer = playerClient.getActiveAudioPlayer();
+			if (activeAudioPlayer != null){
+				activeAudioPlayer.stop();
+			}
+			playerClient.setActiveAudioPlayer(this);
+		}
 		playing = true;
+		if (mediaPlayer != null){
+			stop();
+		}
+		
 		mediaPlayer = new MediaPlayer ();
-		Log.d(MainActivity.DEBUG_TAG, "Created MediaPlayer");
+//		Log.d(MainActivity.DEBUG_TAG, "Created MediaPlayer");
 		try {
-			URL url;
 			mediaPlayer.setDataSource(audioFile);
 			mediaPlayer.setOnCompletionListener(new OnCompletionListener(){
 				@Override
@@ -128,7 +184,7 @@ public class AudioPlayer {
 					-1010 MEDIA_ERROR_UNSUPPORTED Added in API level 17
 					*/
 					Log.e(MainActivity.DEBUG_TAG, "MediaPlayer error = " + what + " : " + extra);
-					// Report errors back to PlayerActivity
+					// TODO: Report errors back to PlayerActivity?
 					mp.release();
 					return true;
 				}
@@ -145,11 +201,13 @@ public class AudioPlayer {
 					mp.setVolume(volume, volume);
 					
 					mp.start();
+					
+					// Initialize the progress bar and elapsed time counter
 					counter = Calendar.getInstance();
 					counter.clear();
 					counter.set(Calendar.MINUTE, 0);
 					counter.set(Calendar.SECOND, 0);
-					Thread thread = new Thread(new Runnable(){
+					timelineThread = new Thread(new Runnable(){
 						public void run(){
 							while (playing){
 								activity.runOnUiThread(new Runnable(){
@@ -167,7 +225,7 @@ public class AudioPlayer {
 							}
 						}
 					});
-					thread.start();
+					timelineThread.start();
 				}
 			});
 			

@@ -24,7 +24,6 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
-import com.thrivepregnancy.R;
 import com.thrivepregnancy.ui.MainActivity;
 import com.thrivepregnancy.ui.StartupActivity;
 
@@ -107,6 +106,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 			while ((csvLine = csvReader.readNext()) != null) {
 				returnList.add(csvLine);
 			}
+			csvReader.close();
 		} catch (IOException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to read input file", e);
 		}

@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.io.File;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,16 +14,12 @@ import com.thrivepregnancy.R;
 import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
-import com.thrivepregnancy.ui.TimelineFragment.RefreshType;
-import com.thrivepregnancy.ui.TimelineFragment.TimelineListAdapter;
 
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -47,6 +42,7 @@ import android.widget.TextView;
 public class CareFragment extends Fragment implements OnDateSetListener{
 	
 	private static SimpleDateFormat dueDateFormat = new SimpleDateFormat("MMM d", Locale.CANADA);
+	private static SimpleDateFormat debugDateFormat = new SimpleDateFormat("MMM d, yyyy ", Locale.CANADA);
 	private static SimpleDateFormat testDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d", Locale.CANADA);
 	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa", Locale.CANADA);
 	
@@ -56,9 +52,18 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	private Dao<Event, Integer>	eventDao;
 	private MainActivity		mainActivity;
 	private CareListAdapter 	adapter;
-	private EditText			m_dateView;
-	private Calendar			m_dueDate;
 	private ListView 			listView;
+	private boolean				editingProviderContact;
+	private long				dueDate;
+	private SharedPreferences 	preferences;
+	
+	// Local preferences to store state during rotation. 
+	public static final String PREFERENCE_EDITING_PROVIDER = "editingProvider";
+	public static final String PREFERENCE_PENDING_DATE = 	 "pendingdate";
+	/**
+	 * Preference top
+	 */	
+	public static final String PREFERENCE_TOP = "top";
 	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -75,6 +80,14 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		DatabaseHelper databaseHelper = mainActivity.getHelper();
 		eventDao = databaseHelper.getEventDao();
 	    dataHelper = new EventDataHelper(databaseHelper);
+        preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, 0);
+        editingProviderContact = preferences.getBoolean(PREFERENCE_EDITING_PROVIDER, false);
+        if (editingProviderContact && preferences.contains(PREFERENCE_PENDING_DATE)){
+        	dueDate = preferences.getLong(PREFERENCE_PENDING_DATE, 0);
+        }
+        else {
+        	dueDate = preferences.getLong(StartupActivity.PREFERENCE_DUE_DATE, 0);
+        }
 	}
 	
 	@Override
@@ -87,15 +100,37 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState){
 		super.onActivityCreated( savedInstanceState);
-//		Log.d(MainActivity.DEBUG_TAG, "--- creating adapter");
 		adapter = new CareListAdapter(fragmentView);
 		mainActivity.setCareListAdapter(adapter);
 	}
 	
 	@Override
+	public void onPause(){
+		super.onPause();
+		SharedPreferences.Editor editor = preferences.edit();
+    	editor.putBoolean(PREFERENCE_EDITING_PROVIDER, editingProviderContact);
+    	if (editingProviderContact){
+    		Log.d(MainActivity.DEBUG_TAG, "onPause: editing = true pendingDate = " + debugDateFormat.format(new Date(dueDate)));
+    		editor.putLong(PREFERENCE_PENDING_DATE, dueDate);
+    	}
+    	else {
+    		Log.d(MainActivity.DEBUG_TAG, "onPause: editing = false");
+    		editor.remove(PREFERENCE_PENDING_DATE);
+    	}
+    	editor.commit();
+	}
+	
+	@Override
 	public void onResume() {
 		super.onResume();
-//		Log.d(MainActivity.DEBUG_TAG, "--- setting adapter");
+        editingProviderContact = preferences.getBoolean(PREFERENCE_EDITING_PROVIDER, false);
+        if (editingProviderContact){
+        	dueDate = preferences.getLong(PREFERENCE_PENDING_DATE, 0);
+			Log.d(MainActivity.DEBUG_TAG, "onResume: editing = true pendingDate = " + debugDateFormat.format(new Date(dueDate)));
+        }
+        else {
+        	Log.d(MainActivity.DEBUG_TAG, "onResume: editing = false" );
+		}
 		// Create and set the adapter with this list
 		listView = (ListView)getActivity().findViewById(R.id.lstCare);
 		listView.setAdapter(adapter);
@@ -106,24 +141,24 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	 * must be refreshed
 	 */
 	void refresh(){
-//		Log.d(MainActivity.DEBUG_TAG, "--- refreshing adapter");
 		adapter.refresh();
 		listView.setAdapter(adapter);
 	}
 	
     /**
-     * Called when the date has been set 
+     * Called when the date has been set in the date popup 
      */
-	public void onDateSet(DatePicker view, int year, int month, int day) {
-		if (m_dueDate==null) {
-			m_dueDate = Calendar.getInstance();
-		}
+	public void onDateSet(DatePicker unused, int year, int month, int day) {
+		Calendar date = Calendar.getInstance();
+		date.set(Calendar.YEAR, year);		
+		date.set(Calendar.MONTH, month);
+		date.set(Calendar.DAY_OF_MONTH, day);
 		
-		m_dueDate.set(Calendar.YEAR, year);		
-		m_dueDate.set(Calendar.MONTH, month);
-		m_dueDate.set(Calendar.DAY_OF_MONTH, day);
-        
-		m_dateView.setText(dueDateFormat.format(m_dueDate.getTime()));
+        dueDate = date.getTimeInMillis();
+        String strDueDate = dueDateFormat.format(dueDate);
+        Log.d(MainActivity.DEBUG_TAG, "New pendingDate = " + strDueDate);        
+		EditText dateView = (EditText)fragmentView.findViewById(R.id.delivery_date_edit);
+		dateView.setText(strDueDate);
     }
 	
 	// These correspond to the tag attribute of the element's root layout 
@@ -155,17 +190,12 @@ public class CareFragment extends Fragment implements OnDateSetListener{
     	int				type;		// See TYPE_.. above
     	final int		resourceId; // Resource id of the layout to render the element
     	Event			event;	    // (for TAG_APPOINTMENT, TAG_QUESTION, TAG_TEST_RESULT only)
-    	String			addNewText; // (for TAG_NEW only)
     	ElementBacker(final String tag, final int resourceId, int type){
     		this.resourceId = resourceId;
     		this.tag = tag;
     		this.type = type;
     	}
     	ElementBacker(final String tag, final int resourceId, int type, Event event){
-    		this(tag, resourceId, type);
-    		this.event = event;
-    	}
-    	ElementBacker(final String tag, final int resourceId, int type, int stringResourceId){
     		this(tag, resourceId, type);
     		this.event = event;
     	}
@@ -204,11 +234,8 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		private List<Event> 			appointmentEvents;
 		private List<Event> 			questionEvents;
 		private List<Event> 			testResultEvents;
-		private boolean					editingProviderContact;
-		private SharedPreferences 		preferences;
 		private CareListAdapter			adapter;
 		
-		private long dueDate;
 		private String providerName;
 		private String providerLocation;
 		private String oncallPhone;		
@@ -217,11 +244,9 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		
 	    public CareListAdapter(View fragmentView) {	    	
 	    	adapter = this;
-			editingProviderContact = false;
 			
 			// "Cache" the provider contact info locally
 			preferences = mainActivity.getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
-			dueDate = preferences.getLong(StartupActivity.PREFERENCE_DUE_DATE, 0);
 	    	providerName = preferences.getString(StartupActivity.PREFERENCE_PROVIDER_NAME, "");
 	    	providerLocation = preferences.getString(StartupActivity.PREFERENCE_PROVIDER_LOCATION, "");
 	    	oncallPhone = preferences.getString(StartupActivity.PREFERENCE_ONCALL_NUMBER, "");
@@ -308,8 +333,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			case R.layout.list_item_add_new_test_result:
 				((ImageButton)view.findViewById(R.id.list_item_add_new)).setOnClickListener(addNewTestResultListener);
 				((TextView)view.findViewById(R.id.list_item_add_new_text)).setOnClickListener(addNewTestResultListener);
-				break;
-				
+				break;				
 			}		
 			
 			if (event != null){		
@@ -386,6 +410,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	    	((TextView)view.findViewById(R.id.user_name)).setText(userName);
 
 	    	String strDueDate = dueDateFormat.format(new Date(dueDate));
+	        Log.d(MainActivity.DEBUG_TAG, "Populating view: dueDate = " + debugDateFormat.format(new Date(dueDate)));
 	    	
 	    	if (editingProviderContact){
 				(view.findViewById(R.id.provider_contact)).setVisibility(View.GONE);
@@ -413,9 +438,9 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	    	editOrSaveButton.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
+					SharedPreferences.Editor editor = preferences.edit();
 					if (editingProviderContact){
 						// Update the "cached" values and store them in preferences
-						SharedPreferences.Editor editor = preferences.edit();
 				    	providerName = ((EditText)fragmentView.findViewById(R.id.provider_name_edit)).getText().toString();
 				    	providerLocation = ((EditText)fragmentView.findViewById(R.id.provider_location_edit)).getText().toString();
 				    	oncallPhone = ((EditText)fragmentView.findViewById(R.id.provider_oncall_phone_edit)).getText().toString();				
@@ -425,26 +450,24 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				    	editor.putString(StartupActivity.PREFERENCE_ONCALL_NUMBER, oncallPhone);
 				    	
 				    	// Due date may have changed: recalculate the timeline
-				    	if (m_dueDate != null){
-				    		Log.d(MainActivity.DEBUG_TAG, "******* New due date is " + dueDateFormat.format(m_dueDate.getTime()));
-
-				    		dueDate = m_dueDate.getTimeInMillis();
-				    		editor.putLong(StartupActivity.PREFERENCE_DUE_DATE, dueDate);
-				    		updateTimeline(dueDate);
-				    		mainActivity.getTimelineFragment().refreshOnTimelineChange();
-				    	}				    	
-				    	editor.commit();
+				    	Log.d(MainActivity.DEBUG_TAG, "******* Saving: pendingDate is " + debugDateFormat.format(dueDate));
+				    	editor.putLong(StartupActivity.PREFERENCE_DUE_DATE,  dueDate);
+				    	updateTimeline(dueDate);
+				    	mainActivity.getTimelineFragment().refreshOnTimelineChange();
+				    	editingProviderContact = false;				    	
 					}
-					// Toggle the editing state and notify 
-					editingProviderContact = !editingProviderContact;
+					else {
+						editingProviderContact = true;
+					}
+					editor.putBoolean(PREFERENCE_EDITING_PROVIDER, editingProviderContact);
+			    	editor.commit();
 					adapter.notifyDataSetChanged();
 				}
 			});
 	    	
-		    m_dateView = (EditText)view.findViewById(R.id.delivery_date_edit);
-		    
-	    	if (m_dateView != null) {
-		    	m_dateView.setOnClickListener(new OnClickListener() {        
+		    EditText dateView = (EditText)view.findViewById(R.id.delivery_date_edit);		    
+	    	if (dateView != null) {
+		    	dateView.setOnClickListener(new OnClickListener() {        
 		            public void onClick(View v) {
 		            	Calendar earliest = Calendar.getInstance();
 		            	earliest.setTimeInMillis(dueDate);
@@ -453,9 +476,8 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		            	latest.setTimeInMillis(dueDate);
 		            	latest.add(Calendar.DAY_OF_YEAR, 60);
 		            	
-		              	DateDialogFragment dateDialog = DateDialogFragment.newInstance("1", R.string.PersonalInfo_Delivery_Date,
-		              			earliest.getTimeInMillis(), latest.getTimeInMillis(), dueDate);
-		              	dateDialog.show(getFragmentManager(), "1");
+		            	mainActivity.showDateDialog(R.string.PersonalInfo_Delivery_Date,
+		              			earliest.getTimeInMillis(), latest.getTimeInMillis(),dueDate, fragment);		            	
 		            }
 		        });
 		    }
@@ -463,12 +485,12 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		
 		private void updateTimeline(long newDueDate){
 			List<Event> tips = dataHelper.getTips();
-			Calendar dueDate = Calendar.getInstance();
-			dueDate.setTimeInMillis(newDueDate);
+			Calendar dueDateCal = Calendar.getInstance();
+			dueDateCal.setTimeInMillis(newDueDate);
 			
 			int week = 1;
 			for (Event tip: tips){
-		        Calendar date = (Calendar)dueDate.clone();
+		        Calendar date = (Calendar)dueDateCal.clone();
 		        date.add(Calendar.DAY_OF_YEAR, 7 * (week - 41));
 				tip.setDate(date.getTime());
 				try {
@@ -513,21 +535,20 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 					intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, eventId);	        	
 					fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
 				}				
-			});			
+			});	
+			
 			ImageButton deleteAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_delete);
 			deleteAppointment.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
 					mainActivity.showConfirmationDialog(R.string.dlg_delete_appointment, 
-							new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_CARE);
+							new DeleteConfirmationListener(), event, MainActivity.DELETE_FROM_CARE);
 				}				
 			});			
 			
 			ImageView photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
-	    	setupPhotoView(event.getPhotoFile(), photoView);
-	    	
-	    	photoView.setOnClickListener(new View.OnClickListener() {
-				
+	    	setupPhotoView(event.getPhotoFile(), photoView);	    	
+	    	photoView.setOnClickListener(new View.OnClickListener() {				
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(v.getContext(), PictureActivity.class);
@@ -550,7 +571,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				@Override
 				public void onClick(View view){
 					mainActivity.showConfirmationDialog(R.string.dlg_delete_question, 
-							new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_CARE);
+							new DeleteConfirmationListener(), event, MainActivity.DELETE_FROM_CARE);
 				}				
 			});			
 		}
@@ -574,18 +595,14 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			deleteTest.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-//					showConfirmationDialog(R.string.dlg_delete_test_result, event, ConfirmationFragment.DELETE_FROM_CARE);
 					mainActivity.showConfirmationDialog(R.string.dlg_delete_test_result, 
-							new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_CARE);
+							new DeleteConfirmationListener(), event, MainActivity.DELETE_FROM_CARE);
 				}				
 			});			
 			
-			ImageView photoView = (ImageView)view.findViewById(R.id.list_item_test_result_photo);
-			
-	    	setupPhotoView(event.getPhotoFile(), photoView);
-	    	
-	    	photoView.setOnClickListener(new View.OnClickListener() {
-				
+			ImageView photoView = (ImageView)view.findViewById(R.id.list_item_test_result_photo);			
+	    	setupPhotoView(event.getPhotoFile(), photoView);	    	
+	    	photoView.setOnClickListener(new View.OnClickListener() {				
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(v.getContext(), PictureActivity.class);
@@ -644,10 +661,10 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	}
     
     private class DeleteConfirmationListener implements DialogInterface.OnClickListener {
-    	private final Event event;
-    	DeleteConfirmationListener(final Event event){
-    		this.event = event;
-    	}
+//    	private final Event event;
+//    	DeleteConfirmationListener(final Event event){
+//    		this.event = event;
+//    	}
     	@Override
     	public void onClick(DialogInterface dialog, int which){
     		if (which == DialogInterface.BUTTON_POSITIVE){
@@ -656,14 +673,5 @@ public class CareFragment extends Fragment implements OnDateSetListener{
     		}
     	}
     }
-
-	private long parseDate(SimpleDateFormat format, String date){
-		try {
-			return format.parse(date).getTime();
-		}
-		catch (ParseException e){
-			Log.e(MainActivity.DEBUG_TAG, "Error parsing date string", e);
-			return 0;
-		}
-	}
+    
 }

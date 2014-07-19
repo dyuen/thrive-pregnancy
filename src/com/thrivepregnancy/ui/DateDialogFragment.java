@@ -25,7 +25,6 @@ public class DateDialogFragment extends DialogFragment{
 	public static DateDialogFragment newInstance(String fragmentNumber, int title, long earliestDate, long latestDate, long defaultDate) {
 		Log.d(MainActivity.DEBUG_TAG, "DateDialogFragment newInstance");
 		DateDialogFragment newInstance = new DateDialogFragment();
-//		newInstance.setRetainInstance(true);
 
 		Bundle args = new Bundle();
 		args.putString("fragnum", fragmentNumber);

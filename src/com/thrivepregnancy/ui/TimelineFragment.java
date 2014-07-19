@@ -1,13 +1,9 @@
 package com.thrivepregnancy.ui;
 
-import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,7 +43,7 @@ import android.widget.TextView;
 /**
  * Implements the "My Timeline" fragment in the {@link MainActivity} page
  */
-public class TimelineFragment extends Fragment implements OnCompletionListener, OnErrorListener, OnPreparedListener{
+public class TimelineFragment extends Fragment implements OnCompletionListener, OnErrorListener, OnPreparedListener, AudioPlayer.PlayerClient{
 
 	private static SimpleDateFormat diaryEntryFormat = new SimpleDateFormat("MMMMMMMMM d", Locale.CANADA);
 	private static SimpleDateFormat monthFormat = new SimpleDateFormat("MMMMMMMMM", Locale.CANADA);
@@ -65,7 +61,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	private EventDataHelper		eventDataHelper;
 	private ListView 			listView;
 	private int					firstTipWeek;
-	private AudioPlayer			audioPlayer;
+	private static AudioPlayer	activeAudioPlayer;
 	private ViewGroup			player;
 	/**
 	 * Name of Preferences.
@@ -121,23 +117,27 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		mainActivity.setTimelineListAdapter(adapter);
 	}
 	
+	public void setActiveAudioPlayer(AudioPlayer audioPlayer){
+		activeAudioPlayer = audioPlayer;
+	}
+	public AudioPlayer getActiveAudioPlayer(){
+		return activeAudioPlayer;
+	}
+	
 	@Override
     public void onDestroy()
     {
-        super.onDestroy();
-        
-        SaveCurrentListPosition();
-        
+        super.onDestroy();        
+        SaveCurrentListPosition();        
     }
 	
 	@Override
     public void onPause()
     {
-        super.onPause();
-        
-        SaveCurrentListPosition();
-        
+        super.onPause();        
+        SaveCurrentListPosition();        
     }
+	
 	/**
 	* saves current list position
 	*/
@@ -275,15 +275,12 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
 			ImageView 	photoView = null;
-			Bitmap 		bitmap = null;
-			
+			Bitmap 		bitmap = null;			
 			
 			final Event event = events.get(position);
-
 			String photoFile = event.getPhotoFile();
 
 			if (photoFile != null && photoFile.length() > 0){
-
 				if (event.getType().equals(Event.Type.TIP)){
 					AssetManager assetManager = getActivity().getAssets();
 
@@ -366,8 +363,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					}
 					
 					photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
-					player = (ViewGroup)view.findViewById(R.id.list_item_entry_audio);
-					
 
 					ImageButton editButtonA = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
 					editButtonA.setOnClickListener(new OnClickListener() {
@@ -388,8 +383,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 						}				
 					});		
 					
-					photoView.setOnClickListener(new View.OnClickListener() {
-						
+					photoView.setOnClickListener(new View.OnClickListener() {						
 						@Override
 						public void onClick(View v) {
 							Intent intent = new Intent(v.getContext(), PictureActivity.class);
@@ -419,6 +413,10 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					editButton.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
+							// Stop any active audio plaback
+							if (activeAudioPlayer != null){
+								activeAudioPlayer.stop();
+							}
 							Intent intent = new Intent(mainActivity.getApplicationContext(), DiaryEntryActivity.class);
 							intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);
 							intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, event.getId());
@@ -439,12 +437,20 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					if (audioFile != null && audioFile.length() > 0){
 						View audioView = (View)view.findViewById(R.id.list_item_entry_audio);
 						ViewGroup audioPlayerGroup = (ViewGroup)audioView.findViewById(R.id.list_item_entry_audio_player);
-				    	audioPlayer = new AudioPlayer(mainActivity, audioPlayerGroup, event.getAudioFile());
+						boolean isActivelyPlaying = false;
+						if (activeAudioPlayer != null){
+							if (activeAudioPlayer.isPlaying(audioFile)){
+								activeAudioPlayer.restore(mainActivity, audioPlayerGroup);
+								isActivelyPlaying = true;
+							}
+						}
+						if (!isActivelyPlaying){
+							new AudioPlayer(mainActivity, audioPlayerGroup, event.getAudioFile(), fragment);
+						}
 						audioView.setVisibility(View.VISIBLE);
 					}
 					
-					photoView.setOnClickListener(new View.OnClickListener() {
-						
+					photoView.setOnClickListener(new View.OnClickListener() {						
 						@Override
 						public void onClick(View v) {
 							Intent intent = new Intent(v.getContext(), PictureActivity.class);
@@ -559,9 +565,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	/**
 	 * Listener methods for the MediaPlayer
 	 */
-	public void onCompletion(MediaPlayer mp){
-//		mediaPlayer.release();
-	}
+	public void onCompletion(MediaPlayer mp){}
 	
 	public boolean onError (MediaPlayer mp, int what, int extra){
 		/*

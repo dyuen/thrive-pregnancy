@@ -2,6 +2,7 @@ package com.thrivepregnancy.ui;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Calendar;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -41,9 +42,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public static final int REQUEST_CODE_TEST_RESULT = 3;
 	
 	private static final int DIALOG_ID_CONFIRM 	= 0;
-	private static String	DIALOG_TITLE 		= "DIALOG_TITLE";
-	private static String	DIALOG_TEXT			= "DIALOG_TEXT";
-	private static String	DIALOG_VISIBLE		= "DIALOG_VISIBLE";
+	private static final int DIALOG_ID_DATE 	= 1;
+	
+	private static String	KEY_DIALOG_TITLE 		= "DIALOG_TITLE";
+	private static String	KEY_DIALOG_VISIBLE		= "DIALOG_VISIBLE";	
+	private static String	KEY_DATE_EARLIEST		= "EARLIEST";	
+	private static String	KEY_DATE_LATEST			= "LATEST";	
+	private static String	KEY_DATE_DEFAULT		= "DEFAULT";	
 	
 	static final int	DELETE_FROM_TIMELINE = 0;
 	static final int	DELETE_FROM_CARE = 1;
@@ -54,6 +59,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	private boolean		dialogVisible;
 	private int 		dialogTitleId;
 	private int 		deletingFrom;
+	private DatePicker	datePicker;
 	
 	private Integer 	eventId;
 	
@@ -67,10 +73,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     
     private TimelineFragment	timelineFragment;
     private CareFragment		careFragment;
+    private OnDateSetListener	dateSetListener;
     
     private MainActivity		mainActivity;
 	private DatabaseHelper 		databaseHelper;	
 	private ActionBar 			actionBar;
+	private AudioPlayer			audioPlayer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,15 +87,24 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         setContentView(R.layout.activity_main);
         
 		if (savedInstanceState != null){
-			if (savedInstanceState.containsKey(DIALOG_VISIBLE)){
-				dialogVisible = savedInstanceState.getBoolean(DIALOG_VISIBLE);
+			if (savedInstanceState.containsKey(KEY_DIALOG_VISIBLE)){
+				dialogVisible = savedInstanceState.getBoolean(KEY_DIALOG_VISIBLE);
 				if (dialogVisible){
-					dialogTitleId = savedInstanceState.getInt(DIALOG_TITLE);
+					dialogTitleId = savedInstanceState.getInt(KEY_DIALOG_TITLE);
 					eventId = savedInstanceState.getInt("eventId");
 					deletingFrom= savedInstanceState.getInt("deletingFrom");
 				}
 			}
 		}
+		// Will be non null if device was rotated with a date dialog visible 
+		MainActivity previousInstance = (MainActivity)getLastCustomNonConfigurationInstance();
+		if (previousInstance != null){
+			this.datePicker = previousInstance.datePicker;
+			this.dateSetListener = previousInstance.dateSetListener;
+			this.audioPlayer = audioPlayer;
+			previousInstance = null;
+		}
+		
         // Create the adapter that will return a fragment for each of the pages
         FragmentManager fragmentManager = getSupportFragmentManager();
         mainPageAdapter = new MainPagerAdapter(fragmentManager, this);
@@ -136,17 +153,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	@Override
 	protected void onSaveInstanceState (Bundle outState){
 		if (dialogVisible){
-			outState.putBoolean(DIALOG_VISIBLE, true);
-			outState.putInt(DIALOG_TITLE, dialogTitleId);
+			outState.putBoolean(KEY_DIALOG_VISIBLE, true);
+			outState.putInt(KEY_DIALOG_TITLE, dialogTitleId);
 			outState.putInt("eventId", eventId);
 			outState.putInt("deletingFrom", deletingFrom);
 		}
 	}
 	@Override
 	protected void onRestoreInstanceState (Bundle savedState){
-		if (savedState.containsKey(DIALOG_VISIBLE)){
+		if (savedState.containsKey(KEY_DIALOG_VISIBLE)){
 			dialogVisible = true;
-			dialogTitleId = savedState.getInt(DIALOG_TITLE);
+			dialogTitleId = savedState.getInt(KEY_DIALOG_TITLE);
 			eventId = savedState.getInt("eventId");
 			deletingFrom= savedState.getInt("deletingFrom");
 		}
@@ -160,7 +177,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	    }
 	    return databaseHelper;
 	}
-
+	
 	/**
 	 * Releases the database helper
 	 */
@@ -215,7 +232,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public Object onRetainCustomNonConfigurationInstance(){
 //    	Log.d(DEBUG_TAG, "onRetainCustomNonConfigurationInstance set rotate=true");
     	rotating = true;
-    	return null;
+    	return this;
     }    
  
     /**
@@ -240,6 +257,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     		switch (i) {
     		case 0:
     			timelineFragment = new TimelineFragment();
+    			if (audioPlayer != null){
+//    				timelineFragment.setAudioPlayer(audioPlayer);
+    			}
     			return timelineFragment;
     		case 1:
     			careFragment = new CareFragment();
@@ -286,30 +306,85 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		this.deletingFrom = deletingFrom;
     	
     	Bundle params = new Bundle();
-    	params.putString("title", getString(dialogTitleId));
+    	params.putString(KEY_DIALOG_TITLE, getString(dialogTitleId));
 		dialogVisible = true;
     	showDialog(DIALOG_ID_CONFIRM, params);
     }
     
+	/**
+	 * Displays a DateDialog using the legacy, i.e. non fragment method. This avoids
+	 * problems encountered nesting  a DateDialogFragment within another fragment
+	 * @param titleId
+	 * @param earliestDate
+	 * @param latestDate
+	 * @param defaultDate
+	 * @param dateSetListener
+	 */
+	DatePicker showDateDialog(int titleId, long earliestDate, long latestDate, long defaultDate, OnDateSetListener dateSetListener){
+		this.dateSetListener = dateSetListener;
+    	Bundle params = new Bundle();
+    	params.putString(KEY_DIALOG_TITLE, getString(titleId));
+    	if (earliestDate != -1){
+    		params.putLong(KEY_DATE_EARLIEST, earliestDate);
+    	}
+    	if (latestDate != -1){
+    		params.putLong(KEY_DATE_LATEST, latestDate);
+		}
+    	if (defaultDate != -1){
+    		params.putLong(KEY_DATE_DEFAULT, defaultDate);
+    	}
+//    	datePicker = (DatePicker)getLayoutInflater().inflate(R.layout.date_picker, null);
+		showDialog(this.DIALOG_ID_DATE, params);
+		return datePicker;
+	}
     /**
-     * Called by the system when the ap calls showDialog
+     * Called by the system when the app calls showDialog
      */
 	@Override
     protected Dialog onCreateDialog(int id, Bundle params) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // If title and message not set here, no title or message area will be generated
-        builder.setTitle(params.getString("title"));
-        builder.setMessage(getString(R.string.dlg_prompt));
-        builder.setPositiveButton(getString(R.string.dlg_yes), new DialogButtonListener());
-        builder.setNegativeButton(getString(R.string.dlg_no), new DialogButtonListener());
+        builder.setTitle(params.getString(KEY_DIALOG_TITLE));
+        
+        if (id == this.DIALOG_ID_CONFIRM){
+            // If title and message not set here, no title or message area will be generated
+            builder.setMessage(getString(R.string.dlg_prompt));
+            builder.setPositiveButton(getString(R.string.dlg_yes), new DialogButtonListener());
+            builder.setNegativeButton(getString(R.string.dlg_no), new DialogButtonListener());
+        }
+        else {
+        	builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener(){
+        		public void onClick(DialogInterface dialog, int which){
+        			dateSetListener.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+        		}
+        	});
+        	datePicker = (DatePicker)getLayoutInflater().inflate(R.layout.date_picker, null);
+        	long param = params.getLong(KEY_DATE_EARLIEST, 0);
+        	if (param != 0){
+        		datePicker.setMinDate(params.getLong(KEY_DATE_EARLIEST, 0));
+        	}
+        	param = params.getLong(KEY_DATE_LATEST, 0);
+        	if (param != 0){
+        		datePicker.setMaxDate(params.getLong(KEY_DATE_LATEST, 0));
+        	}
+        	param = params.getLong(KEY_DATE_DEFAULT, 0);
+    		if (param != 0){
+    			Calendar calendar = Calendar.getInstance();
+    			calendar.setTimeInMillis(param);
+    			datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+    		}
+         	builder.setView(datePicker);
+        }
         // Create the AlertDialog object and return it
         return builder.create();
     }
+	
 	@Override
 	protected void onPrepareDialog (int id, Dialog dialog, Bundle params){
-		((AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dlg_yes), new DialogButtonListener());
-		((AlertDialog)dialog).setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dlg_no), new DialogButtonListener());
-		((AlertDialog)dialog).setTitle(params.getString("title"));
+        if (id == this.DIALOG_ID_CONFIRM){
+        	((AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dlg_yes), new DialogButtonListener());
+        	((AlertDialog)dialog).setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dlg_no), new DialogButtonListener());
+        	((AlertDialog)dialog).setTitle(params.getString(KEY_DIALOG_TITLE));
+        }
 	}
 	
 	private class DialogButtonListener implements DialogInterface.OnClickListener {

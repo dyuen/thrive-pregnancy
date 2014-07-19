@@ -2,17 +2,15 @@ package com.thrivepregnancy.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
-import android.app.Activity;
 import android.media.MediaRecorder;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -32,7 +30,7 @@ import com.thrivepregnancy.data.Event;
 public class DiaryEntryActivity extends BaseActivity{
 	
 	// Audio file name format
-	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
+	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CANADA);
 	
 	// Keys for saved state
 	private static final String KEY_AUDIO_STATE 	= "audioState";
@@ -66,6 +64,7 @@ public class DiaryEntryActivity extends BaseActivity{
     	StartUp(Event.Type.DIARY_ENTRY);
     	SetViews();
     	FillViews(layout);
+    	audioPlayer = (AudioPlayer)getLastCustomNonConfigurationInstance();
     	    	
     	setUpAudio(savedInstanceState);
     }
@@ -74,8 +73,7 @@ public class DiaryEntryActivity extends BaseActivity{
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 	    super.onSaveInstanceState(savedInstanceState);
 	    // Save state across screen rotation
-	    savedInstanceState.putString(KEY_AUDIO_STATE, audioState.toString());
-	    
+	    savedInstanceState.putString(KEY_AUDIO_STATE, audioState.toString());	    
 	    if (m_audioFileName != null){
 		    savedInstanceState.putString(KEY_AUDIO_FILE_NAME, m_audioFileName);	    	
 	    }
@@ -109,8 +107,9 @@ public class DiaryEntryActivity extends BaseActivity{
 			setState(AudioState.valueOf(savedInstanceState.getString(KEY_AUDIO_STATE)));
 			if (audioState.equals(AudioState.FINISHED)){
 				Log.d(MainActivity.DEBUG_TAG, "Restoring previous AudioPlayer");
-				audioPlayer = (AudioPlayer)getLastCustomNonConfigurationInstance ();
-				audioPlayer.restore(this, areaFinished);
+				if (audioPlayer != null){
+					audioPlayer.restore(this, areaFinished);
+				}
 			}
 			if (savedInstanceState.containsKey(KEY_AUDIO_FILE_NAME)){
 				m_audioFileName = savedInstanceState.getString(KEY_AUDIO_FILE_NAME);
@@ -130,7 +129,9 @@ public class DiaryEntryActivity extends BaseActivity{
 		
 		if (audioState.equals(AudioState.FINISHED)){
 			Log.d(MainActivity.DEBUG_TAG, "Creating new AudioPlayer");
-	    	audioPlayer = new AudioPlayer(this, areaFinished, m_audioFileName);
+			if (audioPlayer == null){
+				audioPlayer = new AudioPlayer(this, areaFinished, m_audioFileName);
+			}
 		}
 		else if (audioState.equals(AudioState.NONE)){
 			m_audioFileName = null;
@@ -165,7 +166,6 @@ public class DiaryEntryActivity extends BaseActivity{
 					if (temporaryFile.renameTo(audioFile)){
 						m_audioFileName = audioFile.getAbsolutePath();
 		    			Log.d(MainActivity.DEBUG_TAG, "Setting audio file to " + m_audioFileName);
-
 					}
 				}
 				setState(AudioState.FINISHED);
@@ -192,6 +192,7 @@ public class DiaryEntryActivity extends BaseActivity{
 			public void onClick(View v) {
 				// Deletion can occur when player is playing or stopped
 				audioPlayer.stop();
+				audioPlayer = null;
 				m_audioFileName = null;
     			setState(AudioState.NONE);
 			}
@@ -230,6 +231,9 @@ public class DiaryEntryActivity extends BaseActivity{
 			if (!audioFile.delete()){ 
 				Log.e(MainActivity.DEBUG_TAG, "********** Can't delete " + m_audioFileName);
 			}
+		}
+		if (audioPlayer.isPlaying()){
+			audioPlayer.stop();
 		}
 		return super.SaveEvent();
 	}
