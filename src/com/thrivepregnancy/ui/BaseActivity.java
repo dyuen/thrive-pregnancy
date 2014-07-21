@@ -321,7 +321,8 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         			earliest = today;
         		}
         		
-            	long latest = m_dueDate;
+        		long latest = DateDialogFragment.UNSPECIFIED;
+//            	long latest = m_dueDate;
             	
             	long initial;
             	if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)){

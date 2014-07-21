@@ -19,6 +19,11 @@ import android.widget.DatePicker;
  */
 public class DateDialogFragment extends DialogFragment{
 	
+	/**
+	 * Not applicable value for earliest, latest or default date
+	 */
+	public static final long UNSPECIFIED = -1;
+	
 	private DatePicker 			datePicker;
 	private OnDateSetListener	dateListener;
 
@@ -76,13 +81,13 @@ public class DateDialogFragment extends DialogFragment{
 		long earliest = args.getLong("earliest");
 		long latest = args.getLong("latest");
 		long defaultDate = args.getLong("default");
-		if (earliest != -1){
+		if (earliest != UNSPECIFIED){
 			datePicker.setMinDate(earliest);
 		}
-		if (latest != -1){
+		if (latest != UNSPECIFIED){
 			datePicker.setMaxDate(latest);
 		}
-		if (defaultDate != -1){
+		if (defaultDate != UNSPECIFIED){
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(defaultDate);
 			datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
