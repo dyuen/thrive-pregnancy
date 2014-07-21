@@ -43,7 +43,6 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             	style="@style/timeline_appttitle_style"
             	android:singleLine="false"
             	android:layout_alignParentLeft="true"
-            	android:paddingRight="5dp" 
             	/>
         	<!--  Edit button -->
         	<ImageButton
@@ -51,12 +50,10 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             	android:layout_width="wrap_content"
             	android:layout_height="wrap_content"
             	android:src="@drawable/ic_pencil_selector"
-            	android:contentDescription="@string/appt"
             	android:adjustViewBounds="true"
             	android:padding="@dimen/timeline_item_padding"
             	style="@style/edit_button_style"
             	android:layout_toLeftOf="@id/list_item_appt_delete"
-            	android:paddingLeft="10dp" 
             	/>
         	<!-- Delete button -->
         	<ImageButton
@@ -64,7 +61,6 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             	android:layout_width="wrap_content"
             	android:layout_height="wrap_content"
             	android:src="@drawable/ic_delete_selector"
-            	android:contentDescription="@string/note"
             	android:adjustViewBounds="true"
             	android:padding="@dimen/timeline_item_padding"
             	style="@style/edit_button_style"

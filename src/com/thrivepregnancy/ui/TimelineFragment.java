@@ -361,7 +361,11 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					
 					photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
 
-					ImageButton editButtonA = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
+					// Since changing the layout of the appointment to use a RelativeLayout for the purpose
+					// and edit/delete buttons, clicking on delete brought up edit and vice-versa. Switching 
+					// the ids in findViewById solved it. Appears to be a serious Android bug 
+					
+					ImageButton editButtonA = (ImageButton)view.findViewById(R.id.list_item_appt_delete);
 					editButtonA.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
@@ -371,7 +375,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 							fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);
 						}
 					});
-					ImageButton deleteAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_delete);
+					ImageButton deleteAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
 					deleteAppointment.setOnClickListener(new OnClickListener(){
 						@Override
 						public void onClick(View view){

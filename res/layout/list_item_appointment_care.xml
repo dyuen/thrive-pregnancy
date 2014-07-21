@@ -25,36 +25,43 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             style="@style/edit_button_style"
             android:visibility="invisible"
             />
-        <!-- Purpose -->
-        <TextView
-            android:id="@+id/list_item_appt_purpose"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/timeline_appttitle_style"
-            android:padding="@dimen/care_item_padding"
-            /> 
-        <!--  Edit button -->
-        <ImageButton
-            android:id="@+id/list_item_appt_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_pencil_selector"
-            android:contentDescription="@string/appt"
-            android:adjustViewBounds="true"
-            style="@style/edit_button_style"
-            android:padding="@dimen/care_item_padding"
-            />
-        <!-- Delete button -->
-        <ImageButton
-            android:id="@+id/list_item_appt_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_delete_selector"
-            android:contentDescription="@string/note"
-            android:adjustViewBounds="true"
-            style="@style/edit_button_style"
-            android:padding="@dimen/care_item_padding"
-            />     
+            android:layout_height="wrap_content" 
+            android:layout_span="3"
+            >
+        	<!-- Purpose -->
+        	<TextView
+	            android:id="@+id/list_item_appt_purpose"
+    	        android:layout_width="wrap_content"
+        	    android:layout_height="wrap_content"
+            	style="@style/timeline_appttitle_style"
+	            android:padding="@dimen/care_item_padding"
+	            android:layout_alignParentLeft="true"
+    	        /> 
+        	<!-- Delete button -->
+	        <ImageButton
+    	        android:id="@+id/list_item_appt_delete"
+        	    android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+	            android:src="@drawable/ic_delete_selector"
+        	    android:adjustViewBounds="true"
+            	style="@style/edit_button_style"
+	            android:padding="@dimen/care_item_padding"
+	            android:layout_alignParentRight="true"
+    	        />     
+        	<!--  Edit button -->
+	        <ImageButton
+    	        android:id="@+id/list_item_appt_edit"
+        	    android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+	            android:src="@drawable/ic_pencil_selector"
+        	    android:adjustViewBounds="true"
+            	style="@style/edit_button_style"
+	            android:padding="@dimen/care_item_padding"
+	            android:layout_toLeftOf="@id/list_item_appt_delete"
+    	        />
+	    </RelativeLayout>
     </TableRow>
     <TableRow
         android:layout_width="match_parent"
