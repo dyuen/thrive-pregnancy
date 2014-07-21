@@ -119,7 +119,7 @@ public class DiaryEntryActivity extends BaseActivity{
     	setupAudioButtons();
     }
 	
-	// Set recording state and show corresponding view
+	// Set recording state and show corresponding view. Disable other UI elements when recording
 	private void setState(AudioState newState){
 		audioState = newState;
 		
@@ -127,15 +127,29 @@ public class DiaryEntryActivity extends BaseActivity{
 		areaRecording.setVisibility(audioState.equals(AudioState.RECORDING) ? View.VISIBLE : View.GONE);
 		areaFinished.setVisibility(audioState.equals(AudioState.FINISHED) ? View.VISIBLE : View.GONE);
 		
-		if (audioState.equals(AudioState.FINISHED)){
-			Log.d(MainActivity.DEBUG_TAG, "Creating new AudioPlayer");
-			if (audioPlayer == null){
-				audioPlayer = new AudioPlayer(this, areaFinished, m_audioFileName);
-			}
+		if (audioState.equals(AudioState.RECORDING)){
+			findViewById(R.id.diary_date).setEnabled(false);
+			findViewById(R.id.diary_notes).setEnabled(false);
+			findViewById(R.id.diary_delete).setEnabled(false);
+			findViewById(R.id.diary_create).setEnabled(false);
+			findViewById(R.id.diary_create_text).setEnabled(false);
 		}
-		else if (audioState.equals(AudioState.NONE)){
-			m_audioFileName = null;
-			Log.d(MainActivity.DEBUG_TAG, "Setting audio file NULL");
+		else {
+			findViewById(R.id.diary_date).setEnabled(true);
+			findViewById(R.id.diary_notes).setEnabled(true);
+			findViewById(R.id.diary_delete).setEnabled(true);
+			findViewById(R.id.diary_create).setEnabled(true);
+			findViewById(R.id.diary_create_text).setEnabled(true);
+			if (audioState.equals(AudioState.FINISHED)){
+				Log.d(MainActivity.DEBUG_TAG, "Creating new AudioPlayer");
+				if (audioPlayer == null){
+					audioPlayer = new AudioPlayer(this, areaFinished, m_audioFileName);
+				}
+			}
+			else if (audioState.equals(AudioState.NONE)){
+				m_audioFileName = null;
+				Log.d(MainActivity.DEBUG_TAG, "Setting audio file NULL");
+			}
 		}
 	}
 	
