@@ -38,6 +38,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 /**
@@ -334,7 +335,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					}
 					((TextView)view.findViewById(R.id.list_item_appt_purpose)).setText(event.getPurpose());
 					((TextView)view.findViewById(R.id.list_item_appt_time)).setText(appointmentDateFormat.format(event.getDate()));
-					
+/*					
 					TextView address = (TextView)view.findViewById(R.id.list_item_appt_address);
 					TextView doctor = (TextView)view.findViewById(R.id.list_item_appt_doctor);
 					TextView apptnotes = (TextView)view.findViewById(R.id.list_item_appt_notes);
@@ -361,6 +362,30 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 						apptnotes.setVisibility(View.GONE);
 						apptnotesDiv.setVisibility(View.GONE);
 					}
+*/					
+					TableRow addressDiv = (TableRow)view.findViewById(R.id.list_item_appt_address_div);
+					TableRow doctorDiv = (TableRow)view.findViewById(R.id.list_item_appt_doctor_div);
+					TableRow notesDiv = (TableRow)view.findViewById(R.id.list_item_appt_notes_div);
+					
+					if (event.getAddress() == null || event.getAddress().length()==0) {
+						addressDiv.setVisibility(View.GONE);
+					}
+					else {
+						((TextView)view.findViewById(R.id.list_item_appt_address)).setText(event.getAddress());
+					}
+					if (event.getDoctor() == null || event.getDoctor().length()==0) {
+						doctorDiv.setVisibility(View.GONE);
+					}
+					else {
+						((TextView)view.findViewById(R.id.list_item_appt_doctor)).setText(event.getDoctor());
+					}
+					if (event.getText() == null || event.getText().length()==0) {
+						notesDiv.setVisibility(View.GONE);
+					}
+					else {
+						((TextView)view.findViewById(R.id.list_item_appt_notes)).setText(event.getText());
+					}
+					
 					
 					photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
 

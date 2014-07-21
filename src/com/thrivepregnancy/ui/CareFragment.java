@@ -350,7 +350,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			return view;
 		}
 		
-		// For both the pencil and the checkmark
+		// Listener for add new question "plus" icon, and the save question checkmark
 		private class CreateNewQuestionOnClickLister implements OnClickListener{
 			View parentView;
 			CreateNewQuestionOnClickLister(View parentView){

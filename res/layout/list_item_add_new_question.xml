@@ -3,70 +3,73 @@
 Layout of the "Add new" line in Care list Questions
 -->
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:tag="ADD_NEW_QUESTION"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-    	android:shrinkColumns="0"
-    	android:stretchColumns="2"
-	    >
-	    <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:id="@+id/new_question_request">
-		    <!-- Question area hidden whne entering a question -->
-		    <ImageView
-		        android:src="@drawable/ic_questions"
-		        android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-		        android:paddingRight="@dimen/care_iconright_spacing"
-		        android:adjustViewBounds="true"
-		        android:contentDescription="@string/icon"
-		        style="@style/edit_button_style"
-		        android:visibility="invisible"/>
-		    
-		    	<!-- "Plus" image -->
-		    	<ImageButton
-		    		android:id="@+id/list_item_add_new"
-			    	android:layout_width="wrap_content"
-			    	android:layout_height="wrap_content"
-		    		android:src="@drawable/ic_add_selector"
-		    		android:contentDescription="@string/note"
-		    		android:adjustViewBounds="true"
-		    		style="@style/edit_button_style"
-		    		android:padding="@dimen/care_item_padding"
-			    	/>
-		    	<TextView
-		    	    android:id="@+id/list_item_add_new_text"
-		        	android:text="@string/add_new"
-			    	android:layout_width="wrap_content"
-			    	android:layout_height="wrap_content"
-			    	style="@style/mycare_addnew_style"
-			    	android:padding="@dimen/care_item_padding"
-			    	/>
-		    	<TextView
-	           	android:layout_width="wrap_content"
-		    	android:layout_height="wrap_content"
-		    	android:background="@android:color/transparent"
-	        	/>
-    		</TableRow>
-    <!-- Enter question area -->
+    android:tag="ADD_NEW_QUESTION"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:shrinkColumns="0"
+    android:stretchColumns="2"
+    >
+    <!-- My Questions area when not entering a question -->
     <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:id="@+id/new_question_request">
+            <!-- Questions icon -->
+            <ImageView
+                android:src="@drawable/ic_questions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/care_iconright_spacing"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/icon"
+                style="@style/edit_button_style"
+                android:visibility="invisible"/>
+        
+            <!-- Add new "Plus" icon -->
+            <ImageButton
+                android:id="@+id/list_item_add_new"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add_selector"
+                android:contentDescription="@string/note"
+                android:adjustViewBounds="true"
+                style="@style/edit_button_style"
+                android:padding="@dimen/care_item_padding"
+                />
+            <!-- "Add new..." -->
+            <TextView
+                android:id="@+id/list_item_add_new_text"
+                android:text="@string/add_new"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/mycare_addnew_style"
+                android:padding="@dimen/care_item_padding"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+            />
+    </TableRow>
+    <!-- My Questions area when entering a question -->
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:id="@+id/new_question_entry"
+        android:visibility="gone">
+        <!-- Questions icon -->
+        <ImageView
+            android:src="@drawable/ic_questions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:id="@+id/new_question_entry"
-            android:visibility="gone">
-		 <ImageView
-		        android:src="@drawable/ic_questions"
-		        android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-		        android:paddingRight="@dimen/care_iconright_spacing"
-		        android:adjustViewBounds="true"
-		        android:contentDescription="@string/icon"
-		        style="@style/edit_button_style"
-		        android:visibility="invisible"/>
-		 
+            android:paddingRight="@dimen/care_iconright_spacing"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/icon"
+            style="@style/edit_button_style"
+            android:visibility="invisible"/>
+        <!--  Text entry, wraps around into multiple lines --> 
         <EditText
             android:id="@+id/new_question_text"
             android:layout_width="wrap_content"
@@ -75,16 +78,16 @@ Layout of the "Add new" line in Care list Questions
             style="@style/mycare_input_style"
             android:hint="@string/MyCare_Question"
             />            
-    	<!-- "Checkmark" image -->
-    	<ImageButton
-    		android:id="@+id/new_question_save"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-    		android:src="@drawable/ic_checkmark"
-    		android:adjustViewBounds="true"
-    		style="@style/edit_button_style"
-    		android:contentDescription="@string/icon"
-    		android:padding="@dimen/care_item_padding"
-	    	/>
-       </TableRow>
+        <!-- Question save "Checkmark" image -->
+        <ImageButton
+            android:id="@+id/new_question_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_checkmark"
+            android:adjustViewBounds="true"
+            style="@style/edit_button_style"
+            android:contentDescription="@string/icon"
+            android:padding="@dimen/care_item_padding"
+            />
+    </TableRow>
 </TableLayout>
