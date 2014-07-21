@@ -335,34 +335,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					}
 					((TextView)view.findViewById(R.id.list_item_appt_purpose)).setText(event.getPurpose());
 					((TextView)view.findViewById(R.id.list_item_appt_time)).setText(appointmentDateFormat.format(event.getDate()));
-/*					
-					TextView address = (TextView)view.findViewById(R.id.list_item_appt_address);
-					TextView doctor = (TextView)view.findViewById(R.id.list_item_appt_doctor);
-					TextView apptnotes = (TextView)view.findViewById(R.id.list_item_appt_notes);
-					
-					address.setText(event.getAddress());
-					doctor.setText(event.getDoctor());
-					apptnotes.setText(event.getText());
-					
-					TextView addressDiv = (TextView)view.findViewById(R.id.list_item_appt_address_div);
-					TextView doctorDiv = (TextView)view.findViewById(R.id.list_item_appt_doctor_div);
-					TextView apptnotesDiv = (TextView)view.findViewById(R.id.list_item_appt_notes_div);
-					
-					if (event.getAddress() == null || event.getAddress().length()==0) {
-						address.setVisibility(View.GONE);
-						addressDiv.setVisibility(View.GONE);
-					}
-					
-					if (event.getDoctor() == null || event.getDoctor().length()==0) {
-						doctor.setVisibility(View.GONE);
-						doctorDiv.setVisibility(View.GONE);
-					}
-					
-					if (event.getText() == null || event.getText().length()==0) {
-						apptnotes.setVisibility(View.GONE);
-						apptnotesDiv.setVisibility(View.GONE);
-					}
-*/					
+
 					TableRow addressDiv = (TableRow)view.findViewById(R.id.list_item_appt_address_div);
 					TableRow doctorDiv = (TableRow)view.findViewById(R.id.list_item_appt_doctor_div);
 					TableRow notesDiv = (TableRow)view.findViewById(R.id.list_item_appt_notes_div);
@@ -385,7 +358,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					else {
 						((TextView)view.findViewById(R.id.list_item_appt_notes)).setText(event.getText());
 					}
-					
 					
 					photoView = (ImageView)view.findViewById(R.id.list_item_appt_photo);
 

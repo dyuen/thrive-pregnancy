@@ -8,7 +8,6 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
     android:tag="APPOINTMENT" 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:shrinkColumns="0"
     android:stretchColumns="1"
     >
     <!--  Appointment icon, purpose, edit/delete buttons -->
@@ -28,39 +27,50 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             android:paddingLeft="@dimen/timeline_icon_left"
             android:paddingRight="@dimen/timeline_tipiconright_spacing"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/icon"
             style="@style/edit_button_style"
             />
-        <!-- Purpose -->
-        <TextView
-            android:id="@+id/list_item_appt_purpose"
+        <RelativeLayout 
+            android:layout_span="3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/timeline_item_padding"
-            style="@style/timeline_appttitle_style" 
-            />
-        <!--  Edit button -->
-        <ImageButton
-            android:id="@+id/list_item_appt_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_pencil_selector"
-            android:contentDescription="@string/appt"
-            android:adjustViewBounds="true"
-            android:padding="@dimen/timeline_item_padding"
-            style="@style/edit_button_style"
-            />
-        <!-- Delete button -->
-        <ImageButton
-            android:id="@+id/list_item_appt_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_delete_selector"
-            android:contentDescription="@string/note"
-            android:adjustViewBounds="true"
-            android:padding="@dimen/timeline_item_padding"
-            style="@style/edit_button_style"
-            />
+            >         
+        	<!-- Purpose -->
+        	<TextView
+            	android:id="@+id/list_item_appt_purpose"
+            	android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"            
+            	android:padding="@dimen/timeline_item_padding"
+            	style="@style/timeline_appttitle_style"
+            	android:singleLine="false"
+            	android:layout_alignParentLeft="true"
+            	android:paddingRight="5dp" 
+            	/>
+        	<!--  Edit button -->
+        	<ImageButton
+            	android:id="@+id/list_item_appt_edit"
+            	android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:src="@drawable/ic_pencil_selector"
+            	android:contentDescription="@string/appt"
+            	android:adjustViewBounds="true"
+            	android:padding="@dimen/timeline_item_padding"
+            	style="@style/edit_button_style"
+            	android:layout_toLeftOf="@id/list_item_appt_delete"
+            	android:paddingLeft="10dp" 
+            	/>
+        	<!-- Delete button -->
+        	<ImageButton
+            	android:id="@+id/list_item_appt_delete"
+            	android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:src="@drawable/ic_delete_selector"
+            	android:contentDescription="@string/note"
+            	android:adjustViewBounds="true"
+            	android:padding="@dimen/timeline_item_padding"
+            	style="@style/edit_button_style"
+            	android:layout_alignParentRight="true" 
+            	/>        
+        </RelativeLayout>
     </TableRow>
     <TableRow
         android:layout_width="match_parent"
@@ -90,8 +100,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         android:background="@drawable/timeline"
         android:padding="0dip"
         android:gravity="center_vertical">
-        <TextView
-            
+        <TextView            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -108,13 +117,12 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
     </TableRow>
     <TableRow
         android:id="@+id/list_item_appt_doctor_div"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/timeline"
         android:padding="0dip"
         android:gravity="center_vertical">
-        <TextView
-            
+        <TextView            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -122,7 +130,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         <!-- Doctor -->
         <TextView
             android:id="@+id/list_item_appt_doctor"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_span="3"
             android:padding="@dimen/timeline_item_padding"
@@ -136,8 +144,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         android:background="@drawable/timeline"
         android:padding="0dip"
         android:gravity="center_vertical">
-        <TextView
-            
+        <TextView            
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -145,7 +152,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         <!-- Notes -->
         <TextView
             android:id="@+id/list_item_appt_notes"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_span="3"
             android:padding="@dimen/timeline_item_padding"
