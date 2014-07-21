@@ -32,7 +32,7 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        style="@style/edit_input_style"
-		        android:inputType="text" /> 
+		        /> 
 		        <requestFocus />
 		    <EditText
 		        android:id="@+id/appt_date"
@@ -56,21 +56,21 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        style="@style/edit_input_style"
-		        android:inputType="text" />
+		        />
 			<EditText
 		        android:id="@+id/appt_doctor"
 		        android:hint="@string/Appt_Doctor"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        style="@style/edit_input_style" 
-		        android:inputType="text" />
+		        />
 			<EditText
 		        android:id="@+id/appt_notes"
 		        android:hint="@string/Appt_Notes"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        style="@style/edit_input_style" 
-		        android:inputType="text" />	
+		        />	
 			<TextView
 		        android:id="@+id/appt_warning"
 		        android:layout_width="match_parent"

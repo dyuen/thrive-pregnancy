@@ -525,11 +525,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			if (event.getText() == null || event.getText().length()==0) 
 				apptnotes.setVisibility(View.GONE);
 			
-			// Since changing the layout of the appointment to use a RelativeLayout for the purpose
-			// and edit/delete buttons, clicking on delete brought up edit and vice-versa. Switching 
-			// the ids in findViewById solved it. Appears to be a serious Android bug 
-
-			ImageButton editAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_delete);
+			ImageButton editAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
 			final Integer eventId = event.getId();
 			editAppointment.setOnClickListener(new OnClickListener(){
 				@Override
@@ -541,7 +537,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				}				
 			});	
 			
-			ImageButton deleteAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_edit);
+			ImageButton deleteAppointment = (ImageButton)view.findViewById(R.id.list_item_appt_delete);
 			deleteAppointment.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
