@@ -64,10 +64,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	private int					firstTipWeek;
 	private static AudioPlayer	activeAudioPlayer;
 	private ViewGroup			player;
-	/**
-	 * Name of Preferences.
-	 */
-	public static final String PREFERENCES = "preferences";
+
 	/**
 	 * Preference index
 	 */
@@ -104,7 +101,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		mainActivity = (MainActivity)getActivity();
 		databaseHelper = mainActivity.getHelper();
 		eventDataHelper = new EventDataHelper(databaseHelper);
-    	SharedPreferences preferences = mainActivity.getSharedPreferences(StartupActivity.PREFERENCES, Activity.MODE_PRIVATE);
+    	SharedPreferences preferences = mainActivity.getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
     	firstTipWeek = preferences.getInt(StartupActivity.PREFERENCE_FIRST_WEEK, 1);
 	}
 	
@@ -148,7 +145,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
         View view = listView.getChildAt(0);
         int top = (view == null) ? 0 : view.getTop();
         
-        SharedPreferences preferences = getActivity().getSharedPreferences(PREFERENCES, 0);
+        SharedPreferences preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
     	editor.putInt(PREFERENCE_INDEX, index);
     	editor.putInt(PREFERENCE_TOP, top);
@@ -246,10 +243,10 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			int index = 0;
 			int top = 0;
 			
-			SharedPreferences preferences = getActivity().getSharedPreferences(PREFERENCES, 0);
+			SharedPreferences preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
 		
-	    	index = preferences.getInt(PREFERENCE_INDEX, 0);
-	    	top = preferences.getInt(PREFERENCE_TOP, 0);
+	    	index = preferences.getInt(PREFERENCE_INDEX, 0); // first visible list item = 0 at cold start
+	    	top = preferences.getInt(PREFERENCE_TOP, 0); // = 1 at cold start
 	    	
 	    	if (index ==0 && top == 0) {
 	    		int position = 0;
@@ -493,7 +490,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		}
 
 		/**
-		 * Executes scrolling to current week on the UI thread.
+		 * Executes scrolling to a specified position
 		 */
 		private class Scroller implements Runnable{
 			private int position;

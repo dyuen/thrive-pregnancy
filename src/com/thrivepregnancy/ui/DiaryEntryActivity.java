@@ -246,7 +246,7 @@ public class DiaryEntryActivity extends BaseActivity{
 				Log.e(MainActivity.DEBUG_TAG, "********** Can't delete " + m_audioFileName);
 			}
 		}
-		if (audioPlayer.isPlaying()){
+		if (audioPlayer != null && audioPlayer.isPlaying()){
 			audioPlayer.stop();
 		}
 		return super.SaveEvent();

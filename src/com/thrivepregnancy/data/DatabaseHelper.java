@@ -60,12 +60,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	
 	/** loads name and due date from user preferences */
 	public void ReadUserPreferences () {
-		/*
-		SharedPreferences preferences = m_context.getSharedPreferences(m_context.getResources().getString(R.string.PREFERENCES), 0);
-		
-		m_name = preferences.getString(m_context.getResources().getString(R.string.PREFERENCE_NAME), null);
-		long dateInMillis = preferences.getLong(m_context.getResources().getString(R.string.PREFERENCE_DUE_DATE), -1);
-		*/
 		SharedPreferences preferences = m_context.getSharedPreferences(StartupActivity.PREFERENCES, 0);
 		
 		m_name = preferences.getString(StartupActivity.PREFERENCE_NAME, null);

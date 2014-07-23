@@ -14,7 +14,9 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,7 +25,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ListView;
 
 /**
  * Contains the My Timeline, My Care and I Need screens ("pages")
@@ -393,7 +397,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			if (which == DialogInterface.BUTTON_POSITIVE){
 				try {
 					Dao<Event, Integer> dao = databaseHelper.getDao(Event.class);
-					Log.d(DEBUG_TAG, "Deleting event " + eventId);
+//					Log.d(DEBUG_TAG, "Deleting event " + eventId);
 					Event event = dao.queryForId(mainActivity.eventId);
 					dao.delete(event);
 					deleteMediaFile(event.getAudioFile());
@@ -410,7 +414,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     	private void deleteMediaFile(String fileName){
     		if (fileName != null && fileName.length() > 0){
     			File file = new File(fileName);
-    			Log.d(MainActivity.DEBUG_TAG, file.delete() ? "Deleted " + fileName : "********** Can't delete " + fileName);
+    			if (!file.delete()){
+    				Log.d(MainActivity.DEBUG_TAG, "********** Can't delete " + fileName);
+    			}
     		}
     	}
 	}

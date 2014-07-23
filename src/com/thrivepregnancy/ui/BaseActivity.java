@@ -205,7 +205,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         	
         //create new event
         } else if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_NEW)) {
-        	Log.d(MainActivity.DEBUG_TAG, "CreateEvent craeting new Event : mode = " + m_mode);
        		m_event = new Event();
         	
         	switch (m_eventType) {

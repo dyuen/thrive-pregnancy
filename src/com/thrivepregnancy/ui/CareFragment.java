@@ -27,7 +27,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -41,10 +43,10 @@ import android.widget.TextView;
  */
 public class CareFragment extends Fragment implements OnDateSetListener{
 	
-	private static SimpleDateFormat dueDateFormat = new SimpleDateFormat("MMM d", Locale.CANADA);
-	private static SimpleDateFormat debugDateFormat = new SimpleDateFormat("MMM d, yyyy ", Locale.CANADA);
-	private static SimpleDateFormat testDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d", Locale.CANADA);
-	private static SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa", Locale.CANADA);
+	private static final SimpleDateFormat dueDateFormat = new SimpleDateFormat("MMM d", Locale.CANADA);
+	private static final SimpleDateFormat debugDateFormat = new SimpleDateFormat("MMM d, yyyy ", Locale.CANADA);
+	private static final SimpleDateFormat testDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d", Locale.CANADA);
+	private static final SimpleDateFormat appointmentDateFormat = new SimpleDateFormat("EEEEEEEE MMMMMMMMM d, hh:mm aaa", Locale.CANADA);
 	
 	private View 				fragmentView;
 	private CareFragment 		fragment;
@@ -52,7 +54,6 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	private Dao<Event, Integer>	eventDao;
 	private MainActivity		mainActivity;
 	private CareListAdapter 	adapter;
-	private ListView 			listView;
 	private boolean				editingProviderContact;
 	private long				dueDate;
 	private SharedPreferences 	preferences;
@@ -60,10 +61,8 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	// Local preferences to store state during rotation. 
 	public static final String PREFERENCE_EDITING_PROVIDER = "editingProvider";
 	public static final String PREFERENCE_PENDING_DATE = 	 "pendingdate";
-	/**
-	 * Preference top
-	 */	
-	public static final String PREFERENCE_TOP = "top";
+	public static final String PREFERENCE_CARE_INDEX = "care-index";
+	public static final String PREFERENCE_CARE_OFFSET = "care-offset";
 	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -76,11 +75,11 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-		mainActivity = (MainActivity)getActivity();
+	    mainActivity = (MainActivity)getActivity();
 		DatabaseHelper databaseHelper = mainActivity.getHelper();
 		eventDao = databaseHelper.getEventDao();
 	    dataHelper = new EventDataHelper(databaseHelper);
-        preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, 0);
+        preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
         editingProviderContact = preferences.getBoolean(PREFERENCE_EDITING_PROVIDER, false);
         if (editingProviderContact && preferences.contains(PREFERENCE_PENDING_DATE)){
         	dueDate = preferences.getLong(PREFERENCE_PENDING_DATE, 0);
@@ -110,15 +109,19 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		SharedPreferences.Editor editor = preferences.edit();
     	editor.putBoolean(PREFERENCE_EDITING_PROVIDER, editingProviderContact);
     	if (editingProviderContact){
-    		Log.d(MainActivity.DEBUG_TAG, "onPause: editing = true pendingDate = " + debugDateFormat.format(new Date(dueDate)));
     		editor.putLong(PREFERENCE_PENDING_DATE, dueDate);
     	}
     	else {
-    		Log.d(MainActivity.DEBUG_TAG, "onPause: editing = false");
     		editor.remove(PREFERENCE_PENDING_DATE);
     	}
     	editor.commit();
+    	adapter.saveCurrentListPosition();
 	}
+	@Override
+    public void onDestroy(){
+        super.onDestroy();        
+        adapter.saveCurrentListPosition();        
+    }
 	
 	@Override
 	public void onResume() {
@@ -126,23 +129,17 @@ public class CareFragment extends Fragment implements OnDateSetListener{
         editingProviderContact = preferences.getBoolean(PREFERENCE_EDITING_PROVIDER, false);
         if (editingProviderContact){
         	dueDate = preferences.getLong(PREFERENCE_PENDING_DATE, 0);
-			Log.d(MainActivity.DEBUG_TAG, "onResume: editing = true pendingDate = " + debugDateFormat.format(new Date(dueDate)));
         }
-        else {
-        	Log.d(MainActivity.DEBUG_TAG, "onResume: editing = false" );
-		}
-		// Create and set the adapter with this list
-		listView = (ListView)getActivity().findViewById(R.id.lstCare);
-		listView.setAdapter(adapter);
+		adapter.updateList();
 	}
-	
 	/**
-	 * Called by the main activity when an appointment has been deleted. The backing list
+	 * Called by:
+	 * - MainACtivity when delete confirmation result is positive: MyCare visible behind popup,
+	 * - TimelineFragment when new appointment created: MyCAre not visible
 	 * must be refreshed
 	 */
 	void refresh(){
-		adapter.refresh();
-		listView.setAdapter(adapter);
+		adapter.refreshAdapter();
 	}
 	
     /**
@@ -156,7 +153,6 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		
         dueDate = date.getTimeInMillis();
         String strDueDate = dueDateFormat.format(dueDate);
-        Log.d(MainActivity.DEBUG_TAG, "New pendingDate = " + strDueDate);        
 		EditText dateView = (EditText)fragmentView.findViewById(R.id.delivery_date_edit);
 		dateView.setText(strDueDate);
     }
@@ -229,18 +225,62 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			}
 		}
 	}
+	
+	private void showKeyboard(View view){
+     	InputMethodManager inputManager = (InputMethodManager)mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+    	inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+	}
+	private void hideKeyboard(View view){
+     	InputMethodManager inputManager = (InputMethodManager)mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+    	inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+	}
     
 	public class CareListAdapter extends BaseAdapter{
 		private List<Event> 			appointmentEvents;
 		private List<Event> 			questionEvents;
 		private List<Event> 			testResultEvents;
 		private CareListAdapter			adapter;
+		private ListView 				listView;
 		
 		private String providerName;
 		private String providerLocation;
-		private String oncallPhone;		
+		private String oncallPhone;	
+		private boolean questionTextHasFocus;
 	    
 		private ArrayList<ElementBacker> elementBackers;
+		
+		void updateList(){
+			listView = (ListView)getActivity().findViewById(R.id.lstCare);
+			scrollToLastPosition();
+			listView.setAdapter(this);
+		}
+		
+		/*
+		* Saves current list position by its index in the list and the pixel offset
+		* from the top of the visible area of the list 
+		*/
+		private void saveCurrentListPosition() {
+	        int index = listView.getFirstVisiblePosition();
+	        View view = listView.getChildAt(0);
+	        // Top of this view, in pixels, relative to the top of the visible area of the list view
+	        int offset = (view == null) ? 0 : view.getTop();
+	        SharedPreferences preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor = preferences.edit();
+	    	editor.putInt(PREFERENCE_CARE_INDEX, index);
+	    	editor.putInt(PREFERENCE_CARE_OFFSET, offset);
+	    	editor.commit();
+		}
+
+		public void scrollToLastPosition() {
+			listView.post(new Runnable(){
+				public void run(){
+					SharedPreferences preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);	
+					int index = preferences.getInt(PREFERENCE_CARE_INDEX, 0); // first visible list item
+					int offset = preferences.getInt(PREFERENCE_CARE_OFFSET, 0); // 
+					((ListView)getActivity().findViewById(R.id.lstCare)).setSelectionFromTop(index, offset);
+				}
+			});
+		}
 		
 	    public CareListAdapter(View fragmentView) {	    	
 	    	adapter = this;
@@ -255,9 +295,11 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	    	elementBackers = createBackingList();
 	    }
 	    
-	    void refresh(){
+	    void refreshAdapter(){
 	    	// Create and fill list of element backers, one per element in the list
-	    	elementBackers = createBackingList();	    	
+	    	elementBackers = createBackingList();
+	    	updateList();
+	    	listView.setAdapter(this);
 	    }
 	    
 	    public ArrayList<ElementBacker> createBackingList(){
@@ -360,28 +402,51 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			public void onClick(View view){
 				View requestSection = parentView.findViewById(R.id.new_question_request);
 				View entrySection = parentView.findViewById(R.id.new_question_entry);
+				
 				if (requestSection.getVisibility() == View.VISIBLE){
+					saveCurrentListPosition();
+					// Prepare for question entry
 					requestSection.setVisibility(View.GONE);
-					((TextView)entrySection.findViewById(R.id.new_question_text)).setText("");
+					TextView questionView = (TextView)entrySection.findViewById(R.id.new_question_text); 
+					questionView.setText("");
+					questionView.requestFocus();
+					questionView.setOnFocusChangeListener(new OnFocusChangeListener(){
+						public void onFocusChange(View questionView, boolean hasFocus){
+							if (hasFocus){
+								if (!questionTextHasFocus){
+									showKeyboard(questionView);
+									questionTextHasFocus = true;
+									saveCurrentListPosition();
+								}
+							}
+						}
+					});
 					entrySection.setVisibility(View.VISIBLE);
+					showKeyboard(questionView);
 				}
 				else {
+					questionTextHasFocus = false;
+					// Switch question display
 					requestSection.setVisibility(View.VISIBLE);
 					entrySection.setVisibility(View.GONE);
 					String text = ((TextView)entrySection.findViewById(R.id.new_question_text)).getText().toString();
-					// Create the Question event
-					Event question = new Event();
-					question.setType(Event.Type.QUESTION);
-					question.setDate(new Date());
-					question.setText(text);
-					try {
-						eventDao.create(question);
+					if (text != null && text.length() > 0){
+						// Create the Question event
+						Event question = new Event();
+						question.setType(Event.Type.QUESTION);
+						question.setDate(new Date());
+						question.setText(text);
+						try {
+							eventDao.create(question);
+						}
+						catch (SQLException e){
+							Log.e(MainActivity.DEBUG_TAG, "Can't create question Event",  e);
+						}
 					}
-					catch (SQLException e){
-						Log.e(MainActivity.DEBUG_TAG, "Can't create question Event",  e);
-					}
-					adapter.createBackingList();
-					adapter.notifyDataSetChanged();
+					// Refresh the adapter and hide the keyboard
+					createBackingList();
+					notifyDataSetChanged();
+					hideKeyboard(view);
 				}
 			}			
 		}
@@ -389,6 +454,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		OnClickListener addNewAppointmentListener = new OnClickListener(){
 			@Override
 			public void onClick(View view){
+				saveCurrentListPosition();
 				Intent intent = new Intent(mainActivity.getApplicationContext(), AppointmentActivity.class);
 				intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_NEW);	        	
 				fragment.startActivityForResult(intent, MainActivity.REQUEST_CODE_APPOINTMENT);				
@@ -410,7 +476,6 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	    	((TextView)view.findViewById(R.id.user_name)).setText(userName);
 
 	    	String strDueDate = dueDateFormat.format(new Date(dueDate));
-	        Log.d(MainActivity.DEBUG_TAG, "Populating view: dueDate = " + debugDateFormat.format(new Date(dueDate)));
 	    	
 	    	if (editingProviderContact){
 				(view.findViewById(R.id.provider_contact)).setVisibility(View.GONE);
@@ -434,6 +499,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		    			getResources().getString(R.string.PersonalInfo_DrPhone) + ": " + oncallPhone);				
 		    	((ImageButton)view.findViewById(R.id.list_item_contact_edit)).setImageResource(R.drawable.ic_pencil);
 			}
+	    	
 	    	ImageButton editOrSaveButton = (ImageButton)view.findViewById(R.id.list_item_contact_edit);
 	    	editOrSaveButton.setOnClickListener(new OnClickListener(){
 				@Override
@@ -450,13 +516,15 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				    	editor.putString(StartupActivity.PREFERENCE_ONCALL_NUMBER, oncallPhone);
 				    	
 				    	// Due date may have changed: recalculate the timeline
-				    	Log.d(MainActivity.DEBUG_TAG, "******* Saving: pendingDate is " + debugDateFormat.format(dueDate));
 				    	editor.putLong(StartupActivity.PREFERENCE_DUE_DATE,  dueDate);
 				    	updateTimeline(dueDate);
 				    	mainActivity.getTimelineFragment().refreshOnTimelineChange();
-				    	editingProviderContact = false;				    	
+				    	editingProviderContact = false;	
+				    	
+				    	hideKeyboard(view);
 					}
 					else {
+						saveCurrentListPosition();
 						editingProviderContact = true;
 					}
 					editor.putBoolean(PREFERENCE_EDITING_PROVIDER, editingProviderContact);
@@ -541,6 +609,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			deleteAppointment.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
+					saveCurrentListPosition();
 					mainActivity.showConfirmationDialog(R.string.dlg_delete_appointment, 
 							new DeleteConfirmationListener(), event, MainActivity.DELETE_FROM_CARE);
 				}				
@@ -570,6 +639,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	    	deleteQuestion.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
+					saveCurrentListPosition();
 					mainActivity.showConfirmationDialog(R.string.dlg_delete_question, 
 							new DeleteConfirmationListener(), event, MainActivity.DELETE_FROM_CARE);
 				}				
@@ -585,6 +655,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			editTest.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
+					
 					Intent intent = new Intent(mainActivity.getApplicationContext(), TestResultActivity.class);
 					intent.putExtra(MainActivity.REQUEST_MODE, MainActivity.REQUEST_MODE_EDIT);	        	
 					intent.putExtra(MainActivity.REQUEST_PRIMARY_KEY, eventId);	        	
@@ -595,6 +666,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 			deleteTest.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
+					saveCurrentListPosition();
 					mainActivity.showConfirmationDialog(R.string.dlg_delete_test_result, 
 							new DeleteConfirmationListener(), event, MainActivity.DELETE_FROM_CARE);
 				}				
@@ -661,10 +733,6 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	}
     
     private class DeleteConfirmationListener implements DialogInterface.OnClickListener {
-//    	private final Event event;
-//    	DeleteConfirmationListener(final Event event){
-//    		this.event = event;
-//    	}
     	@Override
     	public void onClick(DialogInterface dialog, int which){
     		if (which == DialogInterface.BUTTON_POSITIVE){

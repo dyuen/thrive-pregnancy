@@ -28,7 +28,6 @@ public class DateDialogFragment extends DialogFragment{
 	private OnDateSetListener	dateListener;
 
 	public static DateDialogFragment newInstance(String fragmentNumber, int title, long earliestDate, long latestDate, long defaultDate) {
-		Log.d(MainActivity.DEBUG_TAG, "DateDialogFragment newInstance");
 		DateDialogFragment newInstance = new DateDialogFragment();
 
 		Bundle args = new Bundle();
@@ -48,13 +47,11 @@ public class DateDialogFragment extends DialogFragment{
 	 */
 	public void onAttach (Activity activity){
 		super.onAttach(activity);
-		Log.d(MainActivity.DEBUG_TAG, "DateDialogFragment onAttach");		
 		dateListener = (OnDateSetListener)activity;
 	}
 
 	@Override
 	public AlertDialog onCreateDialog(Bundle savedInstanceState) {
-		Log.d(MainActivity.DEBUG_TAG, "DateDialogFragment onCreateDialog");
 		Activity parentActivity = getActivity();	
 		datePicker = (DatePicker)parentActivity.getLayoutInflater().inflate(R.layout.date_picker, null);
 		AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
@@ -75,7 +72,6 @@ public class DateDialogFragment extends DialogFragment{
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState){
 		super.onActivityCreated(savedInstanceState);
-		Log.d(MainActivity.DEBUG_TAG, "DateDialogFragment onActivityCreated");
 		
 		Bundle args = getArguments();
 		long earliest = args.getLong("earliest");

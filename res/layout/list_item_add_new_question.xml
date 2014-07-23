@@ -77,7 +77,8 @@ Layout of the "Add new" line in Care list Questions
             android:layout_span="2"
             style="@style/mycare_input_style"
             android:hint="@string/MyCare_Question"
-            />            
+            />
+        	            
         <!-- Question save "Checkmark" image -->
         <ImageButton
             android:id="@+id/new_question_save"
