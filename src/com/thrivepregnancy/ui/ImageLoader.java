@@ -5,6 +5,8 @@ import java.io.File;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
@@ -46,9 +48,31 @@ public class ImageLoader {
 	
 	        // Decode bitmap with inSampleSize set
 	        options.inJustDecodeBounds = false;
-	        Bitmap bmp = BitmapFactory.decodeFile(path, options);
-	        return bmp;
+	        Bitmap bm = BitmapFactory.decodeFile(path, options);
+	        Bitmap bitmap;
+	        try {
+		        Matrix m = new Matrix();
+		        ExifInterface exif = new ExifInterface(path);
+		        
+		        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+		        
+		        if ((orientation == ExifInterface.ORIENTATION_ROTATE_180)) {
+		            m.postRotate(180);
+		        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+		            m.postRotate(90); 
+		        }
+		        else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+		            m.postRotate(270);     
+		        } 
+		        
+		        Log.d("in orientation", "" + orientation);
+		        bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),bm.getHeight(), m, true);
+		        
+	            return bitmap;
+	        } catch (Exception e) {
+	        	return null;
 	        }
+	    }
 	
 		private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
 	        final int height = options.outHeight;
