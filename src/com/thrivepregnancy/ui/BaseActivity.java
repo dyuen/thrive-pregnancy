@@ -364,7 +364,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
      */
     private boolean SetPhoto() {
         if (m_event.getPhotoFile() != null && (m_event.getPhotoFile().length() > 0)) {
-        	File filePhoto = new File(m_event.getPhotoFile());
+        	String photoFile = m_event.getPhotoFile();
         	
         	m_photoView.setVisibility(View.VISIBLE);
         	m_buttonDelete.setVisibility(View.VISIBLE);
@@ -372,10 +372,13 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         	m_buttonCreate.setVisibility(View.GONE);
     		m_photoText.setVisibility(View.GONE);
     		
-        	if (filePhoto.exists()) {
-        		Bitmap photoBit = BitmapFactory.decodeFile(filePhoto.getAbsolutePath());
-        		m_photoView.setImageBitmap(photoBit);
+        	if (photoFile != null && (photoFile.length()>0)) {
+        		//Bitmap photoBit = BitmapFactory.decodeFile(filePhoto.getAbsolutePath());
+        		//m_photoView.setImageBitmap(photoBit);
         		
+        		ImageLoader imageloader = new ImageLoader(photoFile,m_photoView);
+				imageloader.loadBitmap();
+				
         		return true;
         	} else {
         		Log.e(BaseActivity.class.getName(), "stored photo file does not exist");
