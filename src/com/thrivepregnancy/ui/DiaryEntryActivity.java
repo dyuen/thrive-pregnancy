@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.content.Context;
+import android.graphics.drawable.TransitionDrawable;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaRecorder;
 
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.thrivepregnancy.R;
 import com.thrivepregnancy.data.Event;
@@ -37,6 +40,8 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
 	// Keys for saved state
 	private static final String KEY_AUDIO_STATE 	= "audioState";
 	private static final String KEY_AUDIO_FILE_NAME = "audioFileName";
+
+	private static final String AnimationDrawable = null;
 	
 	private static MediaRecorder 	recorder;
 	private ViewGroup				areaNone;
@@ -136,6 +141,8 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
 			findViewById(R.id.diary_delete).setEnabled(false);
 			findViewById(R.id.diary_create).setEnabled(false);
 			findViewById(R.id.diary_create_text).setEnabled(false);
+			ImageView recordingInProgress = (ImageView) findViewById(R.id.recording_in_progress);
+			((AnimationDrawable)recordingInProgress.getDrawable()).start();
 		}
 		else {
 			findViewById(R.id.diary_date).setEnabled(true);
@@ -151,8 +158,9 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
 			}
 			else if (audioState.equals(AudioState.NONE)){
 				m_audioFileName = null;
-				Log.d(MainActivity.DEBUG_TAG, "Setting audio file NULL");
 			}
+			ImageView recordingInProgress = (ImageView) findViewById(R.id.recording_in_progress);
+			((AnimationDrawable)recordingInProgress.getDrawable()).stop();
 		}
 	}
 	

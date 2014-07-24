@@ -84,7 +84,7 @@ public class AudioPlayer {
 	
 	private void initializeStartStop(){
 		if (playing){
-			playStartStop.setImageResource(R.drawable.ic_pause);
+			playStartStop.setImageResource(R.drawable.ic_stop);
 		}
 		else {
 			playStartStop.setImageResource(R.drawable.ic_play);
@@ -100,7 +100,7 @@ public class AudioPlayer {
 					}
 				}
 				else{
-					playStartStop.setImageResource(R.drawable.ic_pause);
+					playStartStop.setImageResource(R.drawable.ic_stop);
 					start();
 					if (playerClient != null){
 						playerClient.playerStarted();

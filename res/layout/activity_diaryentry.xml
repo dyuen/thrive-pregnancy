@@ -83,15 +83,15 @@
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 android:visibility="gone"
-                >
-                <!-- Red microphone -->
+				>
+                <!--  Image alternating between red and grey microphone -->
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/edit_button_style" 
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_red_microphone"
-                    />
+    				android:id="@+id/recording_in_progress"
+    				android:layout_height="wrap_content"
+    				android:layout_width="wrap_content"
+    				android:src="@drawable/recording_in_progress"
+    				android:layout_gravity="center_horizontal"
+    				 />
                 <!-- "Recording"-->
                 <TextView
                     android:layout_width="wrap_content"
