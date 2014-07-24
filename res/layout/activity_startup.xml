@@ -23,7 +23,7 @@ Statup Activity layout
     	android:layout_marginTop="@dimen/welcome_large_spacing"
         android:textAppearance="?android:attr/textAppearanceMedium" 
         style="@style/welcome_input_style"
-        android:inputType="text" 
+        android:inputType="textCapWords"
         />
      <requestFocus />
     <EditText

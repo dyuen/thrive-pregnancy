@@ -31,8 +31,8 @@
 		        android:hint="@string/Appt_Purpose"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
+		        android:inputType="textCapSentences"
 		        style="@style/edit_input_style"
-
 		        /> 
 		        <requestFocus />
 		    <EditText
@@ -43,7 +43,6 @@
 		        style="@style/edit_input_style"
 		        android:focusable="false"
 		        android:inputType="date"
-
 		        /> 
 		     <EditText
 		        android:id="@+id/appt_time"
@@ -60,20 +59,23 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        style="@style/edit_input_style"
+		        android:inputType="textCapWords"
 		        />
 			<EditText
 		        android:id="@+id/appt_doctor"
 		        android:hint="@string/Appt_Doctor"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        style="@style/edit_input_style" 
+		        style="@style/edit_input_style"
+		        android:inputType="textCapWords"
 		        />
 			<EditText
 		        android:id="@+id/appt_notes"
 		        android:hint="@string/Appt_Notes"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        style="@style/edit_input_style" 
+		        style="@style/edit_input_style"
+		        android:inputType="textCapSentences"
 		        />	
 			<TextView
 		        android:id="@+id/appt_warning"

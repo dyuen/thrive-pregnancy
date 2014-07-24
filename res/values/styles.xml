@@ -46,8 +46,9 @@
     <!-- Welcome Screen Input Style -->
     <style name="welcome_input_style">
         <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/dark_grey</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:layout_marginLeft">32dp</item>
+        <item name="android:layout_marginRight">32dp</item>
     </style>
     
     <style name="welcome_title_style">
@@ -78,7 +79,6 @@
     
     <style name="edit_input_style">
         <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/dark_grey</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginLeft">16dp</item>

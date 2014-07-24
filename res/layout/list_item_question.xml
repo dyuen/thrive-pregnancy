@@ -38,6 +38,7 @@ The top level tag attribute is required in the Mycare list adapter
             android:src="@drawable/ic_delete_selector"
             android:adjustViewBounds="true"
             style="@style/edit_button_style"
+            android:paddingLeft="8dp"
             android:paddingRight="16dp"
             />
 	</TableRow>
