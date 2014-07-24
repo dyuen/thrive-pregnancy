@@ -69,7 +69,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         android:layout_height="wrap_content"
         android:background="@drawable/timeline"
         android:padding="0dip"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

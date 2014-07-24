@@ -196,7 +196,7 @@
     <style name="timeline_bubble_icon_style">
         <item name="android:scaleType">center</item>
 		<item name="android:paddingTop">8dp</item>
-		<item name="android:paddingBottom">8dp</item>
+		<item name="android:paddingBottom">0dp</item>
 		<item name="android:paddingLeft">0dp</item>
 		<item name="android:paddingRight">12dp</item>
     </style>
@@ -208,7 +208,7 @@
     </style>
 
     <style name="timeline_diarydate_style">
-        <item name="android:textSize">@dimen/font_small_size</item>
+        <item name="android:textSize">@dimen/font_large_size</item>
         <item name="android:textColor">@color/light_grey</item>
         <item name="android:textStyle">normal</item>
     </style>

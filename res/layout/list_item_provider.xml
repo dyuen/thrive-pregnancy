@@ -10,7 +10,9 @@ The top level tag attribute is required in the Mycare list adapters
     	android:shrinkColumns="0"
     	android:stretchColumns="1"
     	android:background="@drawable/white_rounded_bg_care"
-    	android:paddingBottom="16dp"
+    	android:paddingTop="16dp"
+    	android:paddingBottom="28dp"
+    	android:paddingRight="16dp"
 	    >
 	     <!-- Top line with user name and edit/save buttons -->
 	      <TableRow
@@ -36,7 +38,6 @@ The top level tag attribute is required in the Mycare list adapters
             <!-- This switches between the pencil and checkmark icons -->
             <ImageButton
                 android:id="@+id/list_item_contact_edit"
-                android:paddingRight="16dp"
                 android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content"
                 android:src="@drawable/ic_pencil_selector"
@@ -50,9 +51,10 @@ The top level tag attribute is required in the Mycare list adapters
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:id="@+id/provider_contact">
-        <!-- Provider details in "display" mode along with pencil icon--> 
+            
+        <!-- Provider details in "edit" mode--> 
         	<TextView
-	           	android:layout_width="wrap_content"
+	           	android:layout_width="5dp"
 		    	android:layout_height="wrap_content"
 		    	android:background="@android:color/transparent"
 	        	/>
@@ -62,7 +64,8 @@ The top level tag attribute is required in the Mycare list adapters
 				android:layout_height="wrap_content"
 				android:layout_span="2"
 				android:orientation="vertical"
-				android:paddingBottom="16dp">
+				
+				>
 	        	<TextView
 	            	android:id="@+id/delivery_date"
 	            	android:layout_width="match_parent"
@@ -102,9 +105,7 @@ The top level tag attribute is required in the Mycare list adapters
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:id="@+id/provider_contact_edit"
-            android:layout_marginBottom="28dp"
-            android:paddingBottom="16dp"
-            >
+                        >
         	<!-- Provider details in "display" mode along with pencil icon--> 
         	<TextView
 	           	android:layout_width="wrap_content"
