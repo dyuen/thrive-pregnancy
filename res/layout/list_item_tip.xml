@@ -8,7 +8,7 @@ The top level tag attribute is required in the Timeline list adapter
     android:tag="TIP" 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-   	android:background="@color/light_light_grey"
+   	android:background="@android:color/transparent"
     >
     <TableLayout
 	    android:layout_width="match_parent"
@@ -35,7 +35,6 @@ The top level tag attribute is required in the Timeline list adapter
 	        	android:paddingRight="@dimen/timeline_tipiconright_spacing"
 	        	android:paddingLeft="@dimen/timeline_icon_left"
 	        	style="@style/edit_button_style"
-	        	
 	        	/>   
 	   		
 	    	<!-- Week number -->
@@ -44,7 +43,6 @@ The top level tag attribute is required in the Timeline list adapter
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"
 	        	android:padding="@dimen/timeline_item_padding"
-	        	
 	        	style="@style/timeline_week_style"
 	        	/>
 	    	<!-- Week date range -->
@@ -53,7 +51,6 @@ The top level tag attribute is required in the Timeline list adapter
 	        	android:layout_width="match_parent"
 	        	android:layout_height="wrap_content"
 	        	android:padding="@dimen/timeline_item_padding"
-	        	
 	        	style="@style/timeline_date_style"
 	        	/>
 	   	</TableRow>
@@ -63,7 +60,7 @@ The top level tag attribute is required in the Timeline list adapter
 	    android:layout_height="wrap_content"
     	android:shrinkColumns="0"
     	android:stretchColumns="2"
-    	android:background="@color/white"
+    	android:background="@drawable/white_rounded_bg_timeline"
 	    >
 		<TableRow
             android:layout_width="match_parent"
@@ -75,14 +72,8 @@ The top level tag attribute is required in the Timeline list adapter
 	   		<ImageView
 	    		android:id="@+id/list_item_tip_timeline_2"
 	      		android:src="@drawable/ic_tips"
-	      		android:background="@android:color/transparent"
-	        	android:layout_width="@dimen/timeline_icon_width"
-			    android:layout_height="@dimen/timeline_icon_height"
-			    android:paddingLeft="@dimen/timeline_icon_left"
-	        	android:adjustViewBounds="true"
-	        	android:contentDescription="@string/icon"
-	        	android:paddingRight="@dimen/timeline_tipiconright_spacing"
-	        	style="@style/edit_button_style"
+	      		android:contentDescription="@string/icon"
+	        	style="@style/timeline_bubble_icon_style"
 	        	/>
 	        <!-- Tip text -->
 	        <TextView
@@ -92,6 +83,8 @@ The top level tag attribute is required in the Timeline list adapter
 	            android:padding="@dimen/timeline_item_padding"
 	            android:layout_span="2"
 	            style="@style/timeline_tip_style"
+		    	android:layout_marginRight="16dp"
+		    	android:gravity="top|left"
 	            />
         </TableRow>
         <TableRow
@@ -115,16 +108,15 @@ The top level tag attribute is required in the Timeline list adapter
 	           	android:adjustViewBounds="true"
 	           	android:padding="@dimen/timeline_item_padding"
 	           	android:layout_span="2"
-	           	android:visibility="gone"	
-	           	android:contentDescription="@string/photo"	   		
+	           	android:visibility="gone"
+	           	android:contentDescription="@string/photo"
+		    	android:layout_marginRight="16dp"
 	        	/>
        	</TableRow>
        	<TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"            
-            android:background="@color/light_light_grey"
-			android:padding="0dip"
             >
 	       	<ImageView
 	           	android:id="@+id/list_item_bottom"
@@ -133,6 +125,7 @@ The top level tag attribute is required in the Timeline list adapter
 		    	android:layout_height="@dimen/timeline_listitembottom_spacing"
 		    	android:background="@drawable/timeline"
 		    	android:contentDescription="@string/icon"
+		    	android:paddingRight="16dp"
 	        	/>
 	   	</TableRow>
  	</TableLayout>

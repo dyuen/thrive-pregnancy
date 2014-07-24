@@ -5,47 +5,38 @@ Layout of the "Add new" line in Care list Questions
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:tag="ADD_NEW_QUESTION"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="48dp"
     android:shrinkColumns="0"
     android:stretchColumns="2"
+    android:background="@drawable/white_bottom_rounded_bg"
     >
     <!-- My Questions area when not entering a question -->
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:id="@+id/new_question_request">
-            <!-- Questions icon -->
-            <ImageView
-                android:src="@drawable/ic_questions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="@dimen/care_iconright_spacing"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/icon"
-                style="@style/edit_button_style"
-                android:visibility="invisible"/>
-        
+        <!-- This acts as a placeholder for the first column -->
+        <View
+            android:layout_width="33dp"
+            />
             <!-- Add new "Plus" icon -->
-            <ImageButton
-                android:id="@+id/list_item_add_new"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_add_selector"
-                android:contentDescription="@string/note"
-                android:adjustViewBounds="true"
-                style="@style/edit_button_style"
-                android:padding="@dimen/care_item_padding"
-                />
+        <ImageButton
+            android:id="@+id/list_item_add_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_selector"
+            android:contentDescription="@string/note"
+            android:adjustViewBounds="true"
+            style="@style/mycare_plus_button_style"
+            />
             <!-- "Add new..." -->
-            <TextView
-                android:id="@+id/list_item_add_new_text"
-                android:text="@string/add_new"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/mycare_addnew_style"
-                android:padding="@dimen/care_item_padding"
-                />
+        <TextView
+            android:id="@+id/list_item_add_new_text"
+            android:text="@string/add_new"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/care_item_padding"
+            style="@style/mycare_addnew_style"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,16 +50,10 @@ Layout of the "Add new" line in Care list Questions
         android:gravity="center_vertical"
         android:id="@+id/new_question_entry"
         android:visibility="gone">
-        <!-- Questions icon -->
-        <ImageView
-            android:src="@drawable/ic_questions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="@dimen/care_iconright_spacing"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/icon"
-            style="@style/edit_button_style"
-            android:visibility="invisible"/>
+        <!-- This acts as a placeholder for the first column -->
+        <View
+            android:layout_width="33dp"
+            />
         <!--  Text entry, wraps around into multiple lines --> 
         <EditText
             android:id="@+id/new_question_text"

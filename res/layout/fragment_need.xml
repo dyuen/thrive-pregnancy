@@ -7,14 +7,15 @@ Layout of the I Need page
     android:layout_height="wrap_content"
     android:shrinkColumns="1,2"
     android:stretchColumns="0"
-    android:background="@color/light_light_grey"
+    android:background="@android:color/transparent"
      >
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:background="@color/white">
+            android:background="@android:color/transparent"
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:id="@+id/need_main_row"
@@ -50,7 +51,10 @@ Layout of the I Need page
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:background="@color/white">
+            android:background="@drawable/white_rounded_bg"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            >
 		    <ListView
 		       android:id="@+id/lst_need"
 		        android:layout_width="match_parent"

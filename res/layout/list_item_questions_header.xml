@@ -10,20 +10,8 @@ The top level tag attribute is required in the Care list adapter
 	    android:layout_height="wrap_content"
     	android:shrinkColumns="0"
     	android:stretchColumns="1"
+		android:background="@drawable/white_top_rounded_bg"
 	    >
-	    <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:background="@color/light_light_grey">
-        	<TextView
-                android:id="@+id/txt_placeholder"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/timeline_listitembottom_spacing"
-                android:layout_span="2"
-                android:visibility="invisible"
-                 />
-        </TableRow>
 	    <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,12 +19,8 @@ The top level tag attribute is required in the Care list adapter
 		    <ImageView
 		        android:id="@+id/icon"
 		        android:src="@drawable/ic_questions"
-		        android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-		        android:paddingRight="@dimen/care_iconright_spacing"
-		        android:adjustViewBounds="true"
 		        android:contentDescription="@string/icon"
-		        style="@style/edit_button_style"
+		        style="@style/care_bubble_style"
 		        />
 		    <TextView
 		        android:layout_width="wrap_content"

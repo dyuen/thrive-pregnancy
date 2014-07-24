@@ -9,21 +9,15 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
     android:layout_height="wrap_content"
     android:shrinkColumns="0"
     android:stretchColumns="1"
+    android:background="@drawable/white_bg_care"
     >
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
         <!-- This acts as a placeholder for the first column -->
-        <ImageView
-            android:id="@+id/icon"
-            android:src="@drawable/ic_appts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:paddingRight="@dimen/care_iconright_spacing"
-            style="@style/edit_button_style"
-            android:visibility="invisible"
+        <View
+            android:layout_width="55dp"
             />
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -47,7 +41,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
 	            android:src="@drawable/ic_delete_selector"
         	    android:adjustViewBounds="true"
             	style="@style/edit_button_style"
-	            android:padding="@dimen/care_item_padding"
+	            android:paddingRight="16dp"
+	            android:paddingLeft="12dp"
 	            android:layout_alignParentRight="true"
     	        />     
         	<!--  Edit button -->
@@ -58,7 +53,6 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
 	            android:src="@drawable/ic_pencil_selector"
         	    android:adjustViewBounds="true"
             	style="@style/edit_button_style"
-	            android:padding="@dimen/care_item_padding"
 	            android:layout_toLeftOf="@id/list_item_appt_delete"
     	        />
 	    </RelativeLayout>
@@ -76,7 +70,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_span="3"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
             <!-- Date/time -->
             <TextView
                 android:id="@+id/list_item_appt_time"
@@ -116,7 +111,8 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"     
                 android:contentDescription="@string/photo"  
-                android:padding="@dimen/care_item_padding"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
                 />
         </LinearLayout>
     </TableRow>

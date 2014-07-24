@@ -432,8 +432,9 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					});
 
 					final String audioFile = event.getAudioFile();
+					View audioView = (View)view.findViewById(R.id.list_item_entry_audio);
+					
 					if (audioFile != null && audioFile.length() > 0){
-						View audioView = (View)view.findViewById(R.id.list_item_entry_audio);
 						ViewGroup audioPlayerGroup = (ViewGroup)audioView.findViewById(R.id.list_item_entry_audio_player);
 						boolean isActivelyPlaying = false;
 						if (activeAudioPlayer != null){
@@ -446,6 +447,11 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 							new AudioPlayer(mainActivity, audioPlayerGroup, event.getAudioFile(), fragment);
 						}
 						audioView.setVisibility(View.VISIBLE);
+					}
+					
+					//orphaned recording fix
+					if (audioFile == null || audioFile.length()==0) {
+						audioView.setVisibility(View.GONE);
 					}
 					
 					photoView.setOnClickListener(new View.OnClickListener() {						
