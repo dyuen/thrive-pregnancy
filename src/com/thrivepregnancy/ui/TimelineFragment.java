@@ -493,7 +493,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 				
 				if (photoFile != null && photoFile.length() > 0){
 					ImageLoader imageloader = new ImageLoader(photoFile,photoView);
-					imageloader.loadBitmap();
+					imageloader.loadBitmap(event.getId());
 				}
 			}
 			return view;

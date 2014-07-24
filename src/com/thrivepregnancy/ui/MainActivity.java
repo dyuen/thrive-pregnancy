@@ -17,12 +17,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.util.LruCache;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -83,7 +85,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	private DatabaseHelper 		databaseHelper;	
 	private ActionBar 			actionBar;
 	private AudioPlayer			audioPlayer;
-
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
