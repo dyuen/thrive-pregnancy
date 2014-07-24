@@ -40,12 +40,15 @@
                 android:inputType="textCapSentences"
                 />
             <!--  Warning -->
+
             <TextView
                 android:id="@+id/diary_warning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/edit_warning_style" 
                 android:padding="@dimen/activity_item_padding"
+                android:paddingLeft="@dimen/event_activity_horizontal_margin"
+    			android:paddingRight="@dimen/event_activity_horizontal_margin"
                 />
             <!-- 
             Audio area contains three layouts, only one visible at a time 
@@ -159,6 +162,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/diary_group_top_margin"
+                android:paddingLeft="@dimen/event_activity_horizontal_margin"
+    			android:paddingRight="@dimen/event_activity_horizontal_margin"
+
                 >
 	            <ImageButton
     	            android:id="@+id/diary_delete"
