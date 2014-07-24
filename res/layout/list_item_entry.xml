@@ -34,7 +34,6 @@ The top level tag attribute is required in the Timeline list adapter
             android:id="@+id/list_item_entry_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/timeline_item_padding"
             style="@style/timeline_diarydate_style"
             />
 	    <!--  Edit button -->
@@ -45,7 +44,6 @@ The top level tag attribute is required in the Timeline list adapter
             android:src="@drawable/ic_pencil_selector"
             android:contentDescription="@string/appt"
             android:adjustViewBounds="true"
-            android:padding="@dimen/timeline_item_padding"
             style="@style/edit_button_style"
             />
         <!-- Delete button -->
@@ -56,7 +54,7 @@ The top level tag attribute is required in the Timeline list adapter
             android:src="@drawable/ic_delete_selector"
             android:contentDescription="@string/note"
             android:adjustViewBounds="true"
-            android:padding="@dimen/timeline_item_padding"
+            android:paddingLeft="12dp"
             style="@style/edit_button_style"
             />
           
@@ -79,7 +77,6 @@ The top level tag attribute is required in the Timeline list adapter
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_span="3"
-	        android:padding="@dimen/timeline_item_padding"
 	        style="@style/timeline_diarynotes_style"
 	        />
 	</TableRow>

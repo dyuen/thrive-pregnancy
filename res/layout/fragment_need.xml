@@ -8,6 +8,8 @@ Layout of the I Need page
     android:shrinkColumns="1,2"
     android:stretchColumns="0"
     android:background="@android:color/transparent"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
      >
 
         <TableRow

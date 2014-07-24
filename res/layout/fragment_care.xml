@@ -9,6 +9,8 @@ Layout of the My Care page
     android:orientation = "vertical"
     android:background="@android:color/transparent"
     tools:context=".MainActivity" 
+    android:paddingRight="16dp"
+    android:paddingLeft="8dp"
     >
 	<ListView
 	    android:id="@+id/lstCare"

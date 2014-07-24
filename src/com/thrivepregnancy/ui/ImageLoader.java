@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.AsyncTask;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,16 +22,29 @@ import android.widget.ImageView;
 public class ImageLoader {
 	private ImageView m_photoView;
 	private String m_photo;
-	
+	private Integer m_id;
+	 
 	public ImageLoader(String photo, ImageView photoView) {
 		m_photoView = photoView;
 		m_photo = photo;
+		BitmapCache.InitBitmapCache();
 	}
 	
-	public void loadBitmap() {
-		if (m_photo != null && !m_photo.equals("")) {
-            new ImageLoaderTask().execute(m_photo);
-        }
+	public void loadBitmap(Integer id) {
+		m_id = id;
+		Bitmap bitmap = null;
+		
+		bitmap = BitmapCache.getBitmapFromMemCache(m_id);
+	    
+		if (bitmap != null) {
+			Log.d("bitmap retrieved from cache: ", Integer.toString(m_id));
+			m_photoView.setVisibility(View.VISIBLE);
+	    	m_photoView.setImageBitmap(bitmap);
+		} else {
+			if (m_photo != null && !m_photo.equals("")) {
+		           new ImageLoaderTask().execute(m_photo);
+		    }
+		}
 	}
 	
 	private class ImageLoaderTask extends AsyncTask<String, String, Bitmap> {
@@ -95,6 +109,8 @@ public class ImageLoader {
 	        	File file = new File(param[0]);
 	
 				Bitmap bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
+				
+				BitmapCache.addBitmapToMemoryCache(m_id, bitmap);
 				
 	            return bitmap;
 	        } catch (Exception e) {

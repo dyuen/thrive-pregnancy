@@ -8,7 +8,6 @@
         <item name="android:windowBackground">@color/white</item>
         <item name="android:actionBarStyle">@style/Theme.Actionbarstyle</item>
     </style>
-
     
     <style name="action_text_style">
 	    <item name="android:textSize">@dimen/font_header_size</item>
@@ -47,20 +46,21 @@
     <!-- Welcome Screen Input Style -->
     <style name="welcome_input_style">
         <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/dark_grey</item>
         <item name="android:textStyle">normal</item>
-    </style>
-    
-    <style name="welcome_warning_style">
-        <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/red</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:layout_marginLeft">32dp</item>
+        <item name="android:layout_marginRight">32dp</item>
     </style>
     
     <style name="welcome_title_style">
         <item name="android:textSize">@dimen/font_header_size</item>
         <item name="android:textColor">@color/yellow</item>
         <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="welcome_warning_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">normal</item>
     </style>
     
      <!-- Edit Event StyleS  -->
@@ -79,7 +79,6 @@
     
     <style name="edit_input_style">
         <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/dark_grey</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginLeft">16dp</item>
@@ -96,6 +95,7 @@
         <item name="android:scaleType">centerInside</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
+
     
     <!-- I Need Styles -->
     <style name="ineed_title_style">
@@ -108,6 +108,13 @@
         <item name="android:textSize">@dimen/font_large_size</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="care_bubble_style">
+        <item name="android:scaleType">center</item>
+		<item name="android:paddingTop">8dp</item>
+		<item name="android:paddingLeft">0dp</item>
+		<item name="android:paddingRight">10dp</item>
     </style>
     
     <!-- My Care Text Styles -->
@@ -168,63 +175,6 @@
         <item name="android:background">@color/white</item>
     </style>
 
-    <style name="care_bubble_style">
-        <item name="android:scaleType">center</item>
-		<item name="android:paddingTop">8dp</item>
-		<item name="android:paddingLeft">0dp</item>
-		<item name="android:paddingRight">10dp</item>
-    </style>
-    
-    <style name="timeline_bubble_icon_style">
-        <item name="android:scaleType">center</item>
-		<item name="android:paddingTop">8dp</item>
-		<item name="android:paddingBottom">8dp</item>
-		<item name="android:paddingLeft">0dp</item>
-		<item name="android:paddingRight">0dp</item>
-    </style>
-
-    <style name="timeline_week_style">
-        <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/dark_grey</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-    
-    <style name="timeline_date_style">
-        <item name="android:textSize">@dimen/font_small_size</item>
-        <item name="android:textColor">@color/dark_grey</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-    
-    <style name="timeline_tip_style">
-        <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-    
-    <style name="timeline_diarydate_style">
-        <item name="android:textSize">@dimen/font_small_size</item>
-        <item name="android:textColor">@color/light_grey</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-    
-    <style name="timeline_voice_style">
-        <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/dark_grey</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-    
-    <style name="timeline_diarynotes_style">
-        <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-    
-    <style name="timeline_appttitle_style">
-        <item name="android:textSize">@dimen/font_large_size</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-    
     <style name="timeline_apptdetails_style">
         <item name="android:textSize">@dimen/font_large_size</item>
         <item name="android:textColor">@color/black</item>
@@ -237,8 +187,74 @@
         <item name="android:textStyle">normal</item>
     </style>
     
+    <style name="timeline_appttitle_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="timeline_bubble_icon_style">
+        <item name="android:scaleType">center</item>
+		<item name="android:paddingTop">8dp</item>
+		<item name="android:paddingBottom">0dp</item>
+		<item name="android:paddingLeft">0dp</item>
+		<item name="android:paddingRight">12dp</item>
+    </style>
+
+    <style name="timeline_date_style">
+        <item name="android:textSize">@dimen/font_small_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="timeline_diarydate_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/light_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+ 
+    <style name="timeline_diarynotes_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="timeline_tip_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
 	<style name="timeline_topbuttons_style">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:scaleType">centerInside</item>
+    </style>
+    
+	<style name="timeline_text_normal">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:paddingLeft">0dp</item>
+    </style>
+	
+	<style name="timeline_text_light">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:paddingLeft">0dp</item>
+    </style>
+	
+    <style name="timeline_voice_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    
+    <style name="timeline_week_style">
+        <item name="android:textSize">@dimen/font_large_size</item>
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textStyle">normal</item>
     </style>
 </resources>
