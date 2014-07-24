@@ -32,6 +32,7 @@
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        style="@style/edit_input_style"
+
 		        /> 
 		        <requestFocus />
 		    <EditText
@@ -41,7 +42,9 @@
 		        android:layout_height="wrap_content"
 		        style="@style/edit_input_style"
 		        android:focusable="false"
-		        android:inputType="date" /> 
+		        android:inputType="date"
+
+		        /> 
 		     <EditText
 		        android:id="@+id/appt_time"
 		        android:hint="@string/Appt_Time"
@@ -49,7 +52,8 @@
 		        android:layout_height="wrap_content"
 		        style="@style/edit_input_style"
 		        android:focusable="false"
-		        android:inputType="time" /> 
+		        android:inputType="time"
+		        /> 
 		    <EditText
 		        android:id="@+id/appt_address"
 		        android:hint="@string/Appt_Address"

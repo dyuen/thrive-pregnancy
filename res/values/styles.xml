@@ -8,8 +8,8 @@
         <item name="android:windowBackground">@color/white</item>
         <item name="android:actionBarStyle">@style/Theme.Actionbarstyle</item>
     </style>
-	
 
+    
     <style name="action_text_style">
 	    <item name="android:textSize">@dimen/font_header_size</item>
 	    <item name="android:textColor">@color/white</item>
@@ -81,6 +81,9 @@
         <item name="android:textSize">@dimen/font_large_size</item>
         <item name="android:textColor">@color/dark_grey</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
     </style>
     
     <style name="edit_photo_style">
@@ -91,7 +94,7 @@
     
     <style name="edit_button_style">
         <item name="android:scaleType">centerInside</item>
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
     
     <!-- I Need Styles -->
@@ -139,6 +142,13 @@
         <item name="android:textStyle">normal</item>
     </style>
     
+     <style name="mycare_plus_button_style">
+        <item name="android:paddingRight">6dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@android:color/transparent</item>
+     </style>
+    
      <style name="mycare_addnew_style">
         <item name="android:textSize">@dimen/font_large_size</item>
         <item name="android:textColor">@color/red</item>
@@ -152,12 +162,27 @@
     </style>
     
     <!-- Timeline Text Styles -->
-    
+
     <style name="timeline_icon_style">
         <item name="android:scaleType">center</item>
         <item name="android:background">@color/white</item>
     </style>
+
+    <style name="care_bubble_style">
+        <item name="android:scaleType">center</item>
+		<item name="android:paddingTop">8dp</item>
+		<item name="android:paddingLeft">0dp</item>
+		<item name="android:paddingRight">10dp</item>
+    </style>
     
+    <style name="timeline_bubble_icon_style">
+        <item name="android:scaleType">center</item>
+		<item name="android:paddingTop">8dp</item>
+		<item name="android:paddingBottom">8dp</item>
+		<item name="android:paddingLeft">0dp</item>
+		<item name="android:paddingRight">0dp</item>
+    </style>
+
     <style name="timeline_week_style">
         <item name="android:textSize">@dimen/font_large_size</item>
         <item name="android:textColor">@color/dark_grey</item>

@@ -3,12 +3,14 @@
 Layout of the PROVIDER list item in the care list
 The top level tag attribute is required in the Mycare list adapters
 -->
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:tag="PROVIDER"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
     	android:shrinkColumns="0"
     	android:stretchColumns="1"
+    	android:background="@drawable/white_rounded_bg_care"
+    	android:paddingBottom="16dp"
 	    >
 	     <!-- Top line with user name and edit/save buttons -->
 	      <TableRow
@@ -19,12 +21,8 @@ The top level tag attribute is required in the Mycare list adapters
 		    <ImageView
 		        android:id="@+id/icon"
 		        android:src="@drawable/ic_contact"
-		        android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-		        android:adjustViewBounds="true"
 		        android:contentDescription="@string/icon"
-		        android:paddingRight="@dimen/care_iconright_spacing"
-		        style="@style/edit_button_style"
+		        style="@style/care_bubble_style"
 		        />
        
             <TextView
@@ -38,7 +36,7 @@ The top level tag attribute is required in the Mycare list adapters
             <!-- This switches between the pencil and checkmark icons -->
             <ImageButton
                 android:id="@+id/list_item_contact_edit"
-                android:padding="@dimen/care_item_padding"
+                android:paddingRight="16dp"
                 android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content"
                 android:src="@drawable/ic_pencil_selector"
@@ -63,7 +61,8 @@ The top level tag attribute is required in the Mycare list adapters
 			    android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_span="2"
-				android:orientation="vertical">
+				android:orientation="vertical"
+				android:paddingBottom="16dp">
 	        	<TextView
 	            	android:id="@+id/delivery_date"
 	            	android:layout_width="match_parent"
@@ -102,7 +101,10 @@ The top level tag attribute is required in the Mycare list adapters
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:id="@+id/provider_contact_edit">
+            android:id="@+id/provider_contact_edit"
+            android:layout_marginBottom="28dp"
+            android:paddingBottom="16dp"
+            >
         	<!-- Provider details in "display" mode along with pencil icon--> 
         	<TextView
 	           	android:layout_width="wrap_content"
@@ -151,7 +153,7 @@ The top level tag attribute is required in the Mycare list adapters
 	            	style="@style/mycare_input_style"
 	            	android:inputType="phone"
 	            	android:padding="@dimen/care_item_padding"
-	            	/>            
+	            	/>
     		</LinearLayout>
     	</TableRow>
 </TableLayout>

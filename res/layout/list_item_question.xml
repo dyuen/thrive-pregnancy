@@ -9,20 +9,16 @@ The top level tag attribute is required in the Mycare list adapter
 	android:layout_height="wrap_content"
     android:shrinkColumns="0"
     android:stretchColumns="2"
+    android:background="@drawable/white_bg_care"
 	> 
 	<TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
 	    <!-- This acts as a placeholder for the first column -->
-        <ImageView
-		    android:src="@drawable/ic_questions"
-		    android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-		    android:paddingRight="@dimen/care_iconright_spacing"
-		    android:adjustViewBounds="true"
-		    style="@style/edit_button_style"
-		    android:visibility="invisible"/>
+        <View
+            android:layout_width="33dp"
+            />
 		<!-- Question text-->
         <TextView
             android:id="@+id/list_item_question_text"
@@ -38,10 +34,9 @@ The top level tag attribute is required in the Mycare list adapter
             android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
             android:src="@drawable/ic_delete_selector"
-            android:layout_gravity="right"
             android:adjustViewBounds="true"
             style="@style/edit_button_style"
-            android:padding="@dimen/care_item_padding"
+            android:paddingRight="16dp"
             />
 	</TableRow>
 </TableLayout>

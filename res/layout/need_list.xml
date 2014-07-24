@@ -19,7 +19,7 @@ Defines the layout of individual items in the I Need list
 	            android:id="@+id/txt_needtitle"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
-	            android:padding="@dimen/ineed_item_padding"
+	            android:paddingLeft="24dp"
 	            style="@style/ineed_list_style"	/>	
 		<RadioGroup
 		    android:layout_width="wrap_content"
@@ -49,10 +49,11 @@ Defines the layout of individual items in the I Need list
                 android:id="@+id/img_needresource"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/ineed_item_padding"
+                android:paddingRight="24dp"
                 android:src="@drawable/ic_info_selector"
                 style="@style/edit_button_style"
                 android:adjustViewBounds="true"
-                android:contentDescription="@string/INeed_Resources_Title"/>
+                android:contentDescription="@string/INeed_Resources_Title"
+                />
 	</TableRow>
 </TableLayout>

@@ -8,14 +8,14 @@ Layout of the My Timeline page
     android:layout_height="match_parent"
     android:orientation = "vertical"
     android:background="@android:color/transparent"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity">
 	 <ListView
 	     android:id="@+id/lstTimeline"
 	     android:layout_width="match_parent"
 	     android:layout_height="match_parent"
 	     android:layout_alignParentTop="true"
-	     android:background="@color/white"
-	     android:divider="@color/light_light_grey"
+	     android:background="@android:color/transparent"
+	     android:divider="@android:color/transparent"
 	     />
 	  <RelativeLayout
         android:layout_width="match_parent"
@@ -23,6 +23,7 @@ Layout of the My Timeline page
         android:orientation="horizontal" 
         android:background="@android:color/transparent"
         android:layout_alignParentTop="true"
+        android:paddingTop="16dp"
         >        
         <ImageButton
 	        android:id="@+id/btnNote"
@@ -33,6 +34,7 @@ Layout of the My Timeline page
         	android:contentDescription="@string/note"
         	android:layout_alignParentRight="true"
         	android:adjustViewBounds="true"
+        	android:layout_marginLeft="10dp"
 	        />
         <ImageButton
 	        android:id="@+id/btnAppt"

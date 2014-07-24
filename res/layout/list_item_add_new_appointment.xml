@@ -5,25 +5,18 @@ Layout of the "Add new" line in Care list Appointments
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:tag="ADD_NEW_APPOINTMENT"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="48dp"
     android:shrinkColumns="0"
     android:stretchColumns="2"
+    android:background="@drawable/white_bottom_rounded_bg"
     >
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        >
         <!-- This acts as a placeholder for the first column -->
-        <ImageView
-            android:id="@+id/icon"
-            android:src="@drawable/ic_appts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/icon"
-            android:paddingRight="@dimen/care_iconright_spacing"
-            style="@style/edit_button_style"
-            android:visibility="invisible"
+        <View
+            android:layout_width="33dp"
             />
         <!-- "Plus" image -->
         <ImageButton
@@ -33,8 +26,7 @@ Layout of the "Add new" line in Care list Appointments
             android:src="@drawable/ic_add_selector"
             android:contentDescription="@string/note"
             android:adjustViewBounds="true"
-            android:padding="@dimen/care_item_padding"
-            style="@style/edit_button_style"
+            style="@style/mycare_plus_button_style"
             />
         <TextView
             android:id="@+id/list_item_add_new_text"

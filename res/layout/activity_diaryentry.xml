@@ -28,7 +28,8 @@
                 android:layout_height="wrap_content"
                 style="@style/edit_input_style"
                 android:focusable="false"
-                android:inputType="date" />
+                android:inputType="date"
+		        />
             <!--  Notes --> 
             <EditText
                 android:id="@+id/diary_notes"
