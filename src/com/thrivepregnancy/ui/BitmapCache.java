@@ -30,9 +30,9 @@ public class BitmapCache {
 	}
 	
 	public static void addBitmapToMemoryCache(Integer key, Bitmap bitmap) {
-	    //if (getBitmapFromMemCache(key) == null) {
+	    if (getBitmapFromMemCache(key) == null) {
 	    	MemoryCache.put(key, bitmap);
-	    //}
+	    }
 	}
 
 	public static Bitmap getBitmapFromMemCache(Integer key) {

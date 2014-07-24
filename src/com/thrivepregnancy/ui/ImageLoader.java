@@ -34,10 +34,10 @@ public class ImageLoader {
 		m_id = id;
 		Bitmap bitmap = null;
 		
-		bitmap = BitmapCache.getBitmapFromMemCache(m_id);
+		if (m_id != null) bitmap = BitmapCache.getBitmapFromMemCache(m_id);
 	    
 		if (bitmap != null) {
-			Log.d("bitmap retrieved from cache: ", Integer.toString(m_id));
+			//Log.d("bitmap retrieved from cache: ", Integer.toString(m_id));
 			m_photoView.setVisibility(View.VISIBLE);
 	    	m_photoView.setImageBitmap(bitmap);
 		} else {
@@ -110,7 +110,7 @@ public class ImageLoader {
 	
 				Bitmap bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
 				
-				BitmapCache.addBitmapToMemoryCache(m_id, bitmap);
+				if (m_id != null) BitmapCache.addBitmapToMemoryCache(m_id, bitmap);
 				
 	            return bitmap;
 	        } catch (Exception e) {
