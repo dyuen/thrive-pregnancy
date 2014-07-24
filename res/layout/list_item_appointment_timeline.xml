@@ -81,7 +81,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_span="3"
-            style="@style/timeline_apptdetails_style"
+            style="@style/timeline_text_normal"
             />
     </TableRow>
     <TableRow
@@ -92,7 +92,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
         android:padding="0dip"
         android:gravity="center_vertical">
         <TextView            
-            android:layout_width="wrap_content"
+            android:layout_width="8dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             />
@@ -102,8 +102,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_span="3"
-            android:padding="@dimen/timeline_item_padding"
-            style="@style/timeline_apptdetails_style"
+            style="@style/timeline_text_normal"
             />
     </TableRow>
     <TableRow
@@ -124,8 +123,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_span="3"
-            android:padding="@dimen/timeline_item_padding"
-            style="@style/timeline_apptdetails_style"
+            style="@style/timeline_text_normal"
             />
     </TableRow>
     <TableRow
@@ -146,8 +144,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_span="3"
-            android:padding="@dimen/timeline_item_padding"
-            style="@style/timeline_apptnotes_style"
+            style="@style/timeline_text_light"
             />
     </TableRow>
     <TableRow

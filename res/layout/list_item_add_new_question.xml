@@ -47,12 +47,11 @@ Layout of the "Add new" line in Care list Questions
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:id="@+id/new_question_entry"
         android:visibility="gone">
         <!-- This acts as a placeholder for the first column -->
         <View
-            android:layout_width="33dp"
+            android:layout_width="55dp"
             />
         <!--  Text entry, wraps around into multiple lines --> 
         <EditText
@@ -73,7 +72,9 @@ Layout of the "Add new" line in Care list Questions
             android:adjustViewBounds="true"
             style="@style/edit_button_style"
             android:contentDescription="@string/icon"
-            android:padding="@dimen/care_item_padding"
+            android:paddingTop="3dp"
+            android:paddingRight="16dp"
+            
             />
     </TableRow>
 </TableLayout>

@@ -14,10 +14,12 @@ The top level tag attribute is required in the Mycare list adapter
 	<TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingBottom="5dp"
+        >
 	    <!-- This acts as a placeholder for the first column -->
         <View
-            android:layout_width="33dp"
+            android:layout_width="55dp"
             />
 		<!-- Question text-->
         <TextView
