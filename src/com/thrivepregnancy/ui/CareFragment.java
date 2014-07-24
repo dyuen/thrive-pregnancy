@@ -383,7 +383,7 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				
 				if (photoFile != null && photoFile.length() > 0){
 					ImageLoader imageloader = new ImageLoader(photoFile,photoView);
-					imageloader.loadBitmap();
+					imageloader.loadBitmap(event.getId());
 				} else if (photoView != null) {
 					photoView.setVisibility(View.GONE);
 				}
