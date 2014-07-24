@@ -87,13 +87,13 @@ public class AudioPlayer {
 			playStartStop.setImageResource(R.drawable.ic_stop);
 		}
 		else {
-			playStartStop.setImageResource(R.drawable.ic_play);
+			playStartStop.setImageResource(R.drawable.ic_play_big);
 		}
 		playStartStop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (playing){
-					playStartStop.setImageResource(R.drawable.ic_play);
+					playStartStop.setImageResource(R.drawable.ic_play_big);
 					stop();
 					if (playerClient != null){
 						playerClient.playerStopped();
@@ -133,7 +133,7 @@ public class AudioPlayer {
 		secondsPlayed = 0;
 		progressBar.setProgress(0);
 		elapsed.setText("");
-		playStartStop.setImageResource(R.drawable.ic_play);
+		playStartStop.setImageResource(R.drawable.ic_play_big);
 		playing = false;
 		if (playerClient != null){
 			playerClient.setActiveAudioPlayer(null);

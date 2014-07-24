@@ -15,6 +15,7 @@ Audio player - Start/Stop button, progress bar and playback time
         android:layout_alignParentTop="true"
         android:paddingRight="10dp"
         android:background="@android:color/transparent"
+        android:layout_centerVertical="true"
         />
     <ProgressBar
         android:id="@+id/audio_playback_progress"
@@ -28,6 +29,7 @@ Audio player - Start/Stop button, progress bar and playback time
         android:layout_toRightOf="@+id/audio_playback_start_stop" 
         android:layout_toLeftOf="@+id/audio_playback_time"
         android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
         />
     <TextView
         android:id="@+id/audio_playback_time"
@@ -36,5 +38,6 @@ Audio player - Start/Stop button, progress bar and playback time
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:ems="10"
+        android:layout_centerVertical="true"
         />
 </RelativeLayout>
