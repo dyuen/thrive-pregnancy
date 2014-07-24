@@ -115,12 +115,16 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		mainActivity.setTimelineListAdapter(adapter);
 	}
 	
+	/*  AudioPlayer.PlayerClient methods *****************************/
 	public void setActiveAudioPlayer(AudioPlayer audioPlayer){
 		activeAudioPlayer = audioPlayer;
 	}
 	public AudioPlayer getActiveAudioPlayer(){
 		return activeAudioPlayer;
 	}
+	public void playerStarted(){}
+	public void playerStopped(){}
+	/*****************************************************************/
 	
 	@Override
     public void onDestroy()

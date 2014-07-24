@@ -39,14 +39,17 @@ public class AudioPlayer {
 	private Activity 		activity;
 	private int 			secondsPlayed;
 	private PlayerClient 	playerClient;
-	
+	private boolean			rotating;
+
 	/**
 	 * Optional interface for a client object. It allows an AudioPlayer to stop another
-	 * instance from playing (e.g. multiple recordings on the timeline) 
+	 * instance from playing (e.g. multiple recordings on the timeline)
 	 */
 	public interface PlayerClient {
 		public AudioPlayer getActiveAudioPlayer();
 		public void setActiveAudioPlayer(AudioPlayer player);
+		public void playerStarted();
+		public void playerStopped();
 	}	
 	
 	/**
@@ -92,10 +95,16 @@ public class AudioPlayer {
 				if (playing){
 					playStartStop.setImageResource(R.drawable.ic_play);
 					stop();
+					if (playerClient != null){
+						playerClient.playerStopped();
+					}
 				}
 				else{
 					playStartStop.setImageResource(R.drawable.ic_pause);
 					start();
+					if (playerClient != null){
+						playerClient.playerStarted();
+					}
 				}
 			}
 		});
@@ -141,6 +150,7 @@ public class AudioPlayer {
 		initializeStartStop();
 		progressBar = (ProgressBar)playerView.findViewById(R.id.audio_playback_progress);
 		elapsed = (TextView)playerView.findViewById(R.id.audio_playback_time);
+		rotating = true;
 	}
 	
 	/**
@@ -169,6 +179,10 @@ public class AudioPlayer {
 				@Override
 				public void onCompletion(MediaPlayer mp){
 					stop();
+					if (playerClient != null){
+						playerClient.playerStopped();
+					}
+
 				}
 			});
 			mediaPlayer.setOnErrorListener(new OnErrorListener(){
@@ -192,7 +206,7 @@ public class AudioPlayer {
 			mediaPlayer.setOnPreparedListener(new OnPreparedListener(){
 				@Override
 				public void onPrepared(MediaPlayer mp){
-					int duration = mp.getDuration() / 1000;
+					final int duration = mp.getDuration() / 1000;
 					Log.d(MainActivity.DEBUG_TAG, "Duration = " + duration);
 					progressBar.setMax(duration);
 					
@@ -210,6 +224,10 @@ public class AudioPlayer {
 					timelineThread = new Thread(new Runnable(){
 						public void run(){
 							while (playing){
+								if (rotating){
+									rotating = false;
+									progressBar.setMax(duration);
+								}
 								activity.runOnUiThread(new Runnable(){
 									public void run(){
 										elapsed.setText(formatter.format(counter.getTime()));

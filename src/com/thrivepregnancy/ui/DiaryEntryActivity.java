@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import android.content.Context;
 import android.media.MediaRecorder;
 
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,7 +29,7 @@ import com.thrivepregnancy.data.Event;
 /**
  * Activity for creating or editing a DIARY_ENTRY event
  */
-public class DiaryEntryActivity extends BaseActivity{
+public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.PlayerClient{
 	
 	// Audio file name format
 	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CANADA);
@@ -46,6 +48,7 @@ public class DiaryEntryActivity extends BaseActivity{
 	private Button					cancel;
 	private AudioPlayer				audioPlayer;
 	private File					audioFile;
+	private LinearLayout 			layout;
 	
 	private enum AudioState {
 		NONE,		// No recording or playback underway 
@@ -59,7 +62,7 @@ public class DiaryEntryActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         Log.d(MainActivity.DEBUG_TAG, "*** onCreate");
     	LayoutInflater inflater = getLayoutInflater();
-    	LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.activity_diaryentry, null);
+    	layout = (LinearLayout)inflater.inflate(R.layout.activity_diaryentry, null);
     	setContentView(layout);
     	StartUp(Event.Type.DIARY_ENTRY);
     	SetViews();
@@ -143,7 +146,7 @@ public class DiaryEntryActivity extends BaseActivity{
 			if (audioState.equals(AudioState.FINISHED)){
 				Log.d(MainActivity.DEBUG_TAG, "Creating new AudioPlayer");
 				if (audioPlayer == null){
-					audioPlayer = new AudioPlayer(this, areaFinished, m_audioFileName);
+					audioPlayer = new AudioPlayer(this, areaFinished, m_audioFileName, this);
 				}
 			}
 			else if (audioState.equals(AudioState.NONE)){
@@ -236,6 +239,26 @@ public class DiaryEntryActivity extends BaseActivity{
         	Log.e(MainActivity.DEBUG_TAG, "Can't record audio", e);
         }
 	}
+	/** Methods of the AudioPlayer.PlayerClient interface ***********/
+	public AudioPlayer getActiveAudioPlayer(){return null;}
+	public void setActiveAudioPlayer(AudioPlayer player){}
+	public void playerStarted(){
+		findViewById(R.id.diary_date).setEnabled(false);
+		findViewById(R.id.diary_notes).setEnabled(false);
+		findViewById(R.id.diary_delete).setEnabled(false);
+		findViewById(R.id.diary_create).setEnabled(false);
+		findViewById(R.id.diary_create_text).setEnabled(false);		
+	}
+	public void playerStopped(){
+		findViewById(R.id.diary_date).setEnabled(true);
+		findViewById(R.id.diary_notes).setEnabled(true);
+		findViewById(R.id.diary_delete).setEnabled(true);
+		findViewById(R.id.diary_create).setEnabled(true);
+		findViewById(R.id.diary_create_text).setEnabled(true);		
+     	InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    	inputManager.showSoftInput(layout, InputMethodManager.SHOW_IMPLICIT);
+	}
+	/****************************************************************/
 	
 	protected boolean SaveEvent(){
 		Log.d(MainActivity.DEBUG_TAG, "Saving event: audio file = " + m_audioFileName);
