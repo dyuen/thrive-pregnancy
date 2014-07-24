@@ -34,7 +34,6 @@ The top level tag attribute is required in the Timeline list adapter
             android:id="@+id/list_item_entry_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/timeline_item_padding"
             style="@style/timeline_diarydate_style"
             />
 	    <!--  Edit button -->
@@ -78,7 +77,6 @@ The top level tag attribute is required in the Timeline list adapter
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_span="3"
-	        android:padding="@dimen/timeline_item_padding"
 	        style="@style/timeline_diarynotes_style"
 	        />
 	</TableRow>

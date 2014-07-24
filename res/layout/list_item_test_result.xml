@@ -49,7 +49,7 @@ The top level tag attribute is required in the Care list adapter
                 android:contentDescription="@string/note"
                 android:adjustViewBounds="true"
                 style="@style/edit_button_style"
-                android:padding="@dimen/care_item_padding"
+                android:paddingLeft="12dp"
                 android:layout_alignParentRight="true"
                 /> 
             <!--  Edit button -->

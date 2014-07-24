@@ -9,6 +9,7 @@ The top level tag attribute is required in the Timeline list adapter
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
    	android:background="@android:color/transparent"
+   	android:paddingRight="16dp"
     >
     <TableLayout
 	    android:layout_width="match_parent"
@@ -43,7 +44,7 @@ The top level tag attribute is required in the Timeline list adapter
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="wrap_content"
 	        	android:padding="@dimen/timeline_item_padding"
-	        	android:layout_marginLeft="8dp"
+	        	android:layout_marginLeft="4dp"
 	        	style="@style/timeline_week_style"
 	        	/>
 	    	<!-- Week date range -->
@@ -130,7 +131,6 @@ The top level tag attribute is required in the Timeline list adapter
 		    	android:layout_height="@dimen/timeline_listitembottom_spacing"
 		    	android:background="@drawable/timeline"
 		    	android:contentDescription="@string/icon"
-		    	android:paddingRight="16dp"
 	        	/>
 	   	</TableRow>
  	</TableLayout>

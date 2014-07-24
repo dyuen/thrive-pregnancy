@@ -36,7 +36,6 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
             	android:id="@+id/list_item_appt_purpose"
             	android:layout_width="wrap_content"
             	android:layout_height="wrap_content"
-            	android:padding="@dimen/timeline_item_padding"
             	style="@style/timeline_appttitle_style"
             	android:singleLine="false"
             	android:layout_alignParentLeft="true"
