@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.j256.ormlite.dao.Dao;
@@ -41,7 +40,7 @@ import android.widget.TextView;
 /**
  * Implements the "My Care" fragment in the {@link MainActivity} page
  */
-public class CareFragment extends Fragment implements OnDateSetListener{
+public class CareFragment extends Fragment implements OnDateSetListener, MainActivity.InstanceSaver{
 	
 	private static final SimpleDateFormat dueDateFormat = new SimpleDateFormat("MMM d", Locale.CANADA);
 	private static final SimpleDateFormat debugDateFormat = new SimpleDateFormat("MMM d, yyyy ", Locale.CANADA);
@@ -58,11 +57,14 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	private long				dueDate;
 	private SharedPreferences 	preferences;
 	
-	// Local preferences to store state during rotation. 
-	public static final String PREFERENCE_EDITING_PROVIDER = "editingProvider";
-	public static final String PREFERENCE_PENDING_DATE = 	 "pendingdate";
-	public static final String PREFERENCE_CARE_INDEX = "care-index";
-	public static final String PREFERENCE_CARE_OFFSET = "care-offset";
+	private int					listCurrentIndex;
+	private int					listCurrentOffset;
+	
+	// Budle keys to store state during rotation.	
+	public static final String KEY_EDITING_PROVIDER = "editingProvider";
+	public static final String KEY_PENDING_DATE = 	 "pendingdate";
+	public static final String KEY_CARE_INDEX = "care-index";
+	public static final String KEY_CARE_OFFSET = "care-offset";
 	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -79,12 +81,9 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		DatabaseHelper databaseHelper = mainActivity.getHelper();
 		eventDao = databaseHelper.getEventDao();
 	    dataHelper = new EventDataHelper(databaseHelper);
-        preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
-        editingProviderContact = preferences.getBoolean(PREFERENCE_EDITING_PROVIDER, false);
-        if (editingProviderContact && preferences.contains(PREFERENCE_PENDING_DATE)){
-        	dueDate = preferences.getLong(PREFERENCE_PENDING_DATE, 0);
-        }
-        else {
+	    preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
+
+	    if (savedInstanceState == null){
         	dueDate = preferences.getLong(StartupActivity.PREFERENCE_DUE_DATE, 0);
         }
 	}
@@ -106,17 +105,30 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	@Override
 	public void onPause(){
 		super.onPause();
-		SharedPreferences.Editor editor = preferences.edit();
-    	editor.putBoolean(PREFERENCE_EDITING_PROVIDER, editingProviderContact);
-    	if (editingProviderContact){
-    		editor.putLong(PREFERENCE_PENDING_DATE, dueDate);
-    	}
-    	else {
-    		editor.remove(PREFERENCE_PENDING_DATE);
-    	}
-    	editor.commit();
     	adapter.saveCurrentListPosition();
 	}
+	
+    // Implementation of InstanceSaver
+   	public Bundle saveInstanceData(){
+   		Bundle data = new Bundle();
+   		data.putBoolean(KEY_EDITING_PROVIDER, editingProviderContact);
+   		data.putLong(KEY_PENDING_DATE, dueDate);
+   		data.putInt(KEY_CARE_INDEX, listCurrentIndex);
+   		data.putInt(KEY_CARE_OFFSET, listCurrentOffset);
+   		return data;
+   	}
+   	public void restoreInstanceData(Bundle data){
+   		if (data != null){
+   			editingProviderContact = data.getBoolean(KEY_EDITING_PROVIDER);
+   			if (editingProviderContact){
+   				dueDate = data.getLong(KEY_PENDING_DATE);
+   			}
+   			listCurrentIndex = data.getInt(KEY_CARE_INDEX);
+   			listCurrentOffset = data.getInt(KEY_CARE_OFFSET);
+   		}
+   	}
+
+	
 	@Override
     public void onDestroy(){
         super.onDestroy();        
@@ -126,10 +138,6 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	@Override
 	public void onResume() {
 		super.onResume();
-        editingProviderContact = preferences.getBoolean(PREFERENCE_EDITING_PROVIDER, false);
-        if (editingProviderContact){
-        	dueDate = preferences.getLong(PREFERENCE_PENDING_DATE, 0);
-        }
 		adapter.updateList();
 	}
 	/**
@@ -152,9 +160,14 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		date.set(Calendar.DAY_OF_MONTH, day);
 		
         dueDate = date.getTimeInMillis();
-        String strDueDate = dueDateFormat.format(dueDate);
-		EditText dateView = (EditText)fragmentView.findViewById(R.id.delivery_date_edit);
-		dateView.setText(strDueDate);
+        final String strDueDate = dueDateFormat.format(dueDate);        
+		final EditText dateView = (EditText)fragmentView.findViewById(R.id.delivery_date_edit);
+		dateView.post(new Runnable(){
+			public void run(){
+				dateView.setText(strDueDate);
+				adapter.notifyDataSetChanged();
+			}
+		});
     }
 	
 	// These correspond to the tag attribute of the element's root layout 
@@ -260,23 +273,17 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 		* from the top of the visible area of the list 
 		*/
 		private void saveCurrentListPosition() {
-	        int index = listView.getFirstVisiblePosition();
+			listCurrentIndex = listView.getFirstVisiblePosition();
 	        View view = listView.getChildAt(0);
 	        // Top of this view, in pixels, relative to the top of the visible area of the list view
-	        int offset = (view == null) ? 0 : view.getTop();
-	        SharedPreferences preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);
-			SharedPreferences.Editor editor = preferences.edit();
-	    	editor.putInt(PREFERENCE_CARE_INDEX, index);
-	    	editor.putInt(PREFERENCE_CARE_OFFSET, offset);
-	    	editor.commit();
+	        listCurrentOffset = (view == null) ? 0 : view.getTop();
 		}
 
 		public void scrollToLastPosition() {
+			final int index = listCurrentIndex;
+			final int offset = listCurrentOffset;
 			listView.post(new Runnable(){
 				public void run(){
-					SharedPreferences preferences = getActivity().getSharedPreferences(StartupActivity.PREFERENCES, Context.MODE_PRIVATE);	
-					int index = preferences.getInt(PREFERENCE_CARE_INDEX, 0); // first visible list item
-					int offset = preferences.getInt(PREFERENCE_CARE_OFFSET, 0); // 
 					((ListView)getActivity().findViewById(R.id.lstCare)).setSelectionFromTop(index, offset);
 				}
 			});
@@ -504,8 +511,8 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 	    	editOrSaveButton.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-					SharedPreferences.Editor editor = preferences.edit();
 					if (editingProviderContact){
+						SharedPreferences.Editor editor = preferences.edit();
 						// Update the "cached" values and store them in preferences
 				    	providerName = ((EditText)fragmentView.findViewById(R.id.provider_name_edit)).getText().toString();
 				    	providerLocation = ((EditText)fragmentView.findViewById(R.id.provider_location_edit)).getText().toString();
@@ -517,6 +524,8 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 				    	
 				    	// Due date may have changed: recalculate the timeline
 				    	editor.putLong(StartupActivity.PREFERENCE_DUE_DATE,  dueDate);
+				    	editor.commit();
+
 				    	updateTimeline(dueDate);
 				    	mainActivity.getTimelineFragment().refreshOnTimelineChange();
 				    	editingProviderContact = false;	
@@ -527,8 +536,6 @@ public class CareFragment extends Fragment implements OnDateSetListener{
 						saveCurrentListPosition();
 						editingProviderContact = true;
 					}
-					editor.putBoolean(PREFERENCE_EDITING_PROVIDER, editingProviderContact);
-			    	editor.commit();
 					adapter.notifyDataSetChanged();
 				}
 			});

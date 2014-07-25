@@ -14,22 +14,18 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.util.LruCache;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ListView;
 
 /**
  * Contains the My Timeline, My Care and I Need screens ("pages")
@@ -84,7 +80,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private MainActivity		mainActivity;
 	private DatabaseHelper 		databaseHelper;	
 	private ActionBar 			actionBar;
-	private AudioPlayer			audioPlayer;
+	
+	private Bundle				careFragmentBundle;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,8 +103,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		MainActivity previousInstance = (MainActivity)getLastCustomNonConfigurationInstance();
 		if (previousInstance != null){
 			this.datePicker = previousInstance.datePicker;
+			if (datePicker != null){
+				Log.d(DEBUG_TAG, "datePicker previous instance " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
+			}
 			this.dateSetListener = previousInstance.dateSetListener;
-			this.audioPlayer = audioPlayer;
+			this.careFragmentBundle = previousInstance.careFragmentBundle;
 			previousInstance = null;
 		}
 		
@@ -153,7 +153,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onResume(){
     	super.onResume();
     	rotating = false;
-    	actionBar.setSelectedNavigationItem(currentTab);    	
+    	actionBar.setSelectedNavigationItem(currentTab);
+    	
     }
     
 	@Override
@@ -171,7 +172,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			dialogVisible = true;
 			dialogTitleId = savedState.getInt(KEY_DIALOG_TITLE);
 			eventId = savedState.getInt("eventId");
-			deletingFrom= savedState.getInt("deletingFrom");
+			deletingFrom = savedState.getInt("deletingFrom");
 		}
 	}
     /**
@@ -232,12 +233,25 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     /**
+     * Interface allowing child fragments to save state in ConfigurationInstance
+     */
+    interface InstanceSaver {
+    	public Bundle saveInstanceData();
+    	public void restoreInstanceData(Bundle data);
+    }
+    Bundle getCareFragmentBundle(){
+    	return careFragmentBundle;
+    }
+    /**
      * Called when screen rotates
      */
     @Override
     public Object onRetainCustomNonConfigurationInstance(){
-//    	Log.d(DEBUG_TAG, "onRetainCustomNonConfigurationInstance set rotate=true");
+    	if (datePicker != null){
+    		Log.d(DEBUG_TAG, "datePicker onRetainCustomNonConfigurationInstance " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
+    	}
     	rotating = true;
+    	careFragmentBundle = ((InstanceSaver)careFragment).saveInstanceData();
     	return this;
     }    
  
@@ -263,12 +277,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     		switch (i) {
     		case 0:
     			timelineFragment = new TimelineFragment();
-    			if (audioPlayer != null){
-//    				timelineFragment.setAudioPlayer(audioPlayer);
-    			}
     			return timelineFragment;
     		case 1:
     			careFragment = new CareFragment();
+    			((InstanceSaver)careFragment).restoreInstanceData(careFragmentBundle);
     			return careFragment;
     		default:
     			return new NeedFragment();
@@ -339,7 +351,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     	if (defaultDate != -1){
     		params.putLong(KEY_DATE_DEFAULT, defaultDate);
     	}
-//    	datePicker = (DatePicker)getLayoutInflater().inflate(R.layout.date_picker, null);
 		showDialog(this.DIALOG_ID_DATE, params);
 		return datePicker;
 	}
@@ -358,26 +369,38 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             builder.setNegativeButton(getString(R.string.dlg_no), new DialogButtonListener());
         }
         else {
+        	// Dialog is a DatePickerDialog
+        	builder.setPositiveButton(R.string.save, null);
+        	/*
         	builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener(){
         		public void onClick(DialogInterface dialog, int which){
+        			Log.d(DEBUG_TAG, "datePicker onDateSet " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
         			dateSetListener.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
         		}
         	});
+        	*/
+        	DatePicker oldDatePicker = datePicker;
         	datePicker = (DatePicker)getLayoutInflater().inflate(R.layout.date_picker, null);
-        	long param = params.getLong(KEY_DATE_EARLIEST, 0);
-        	if (param != 0){
-        		datePicker.setMinDate(params.getLong(KEY_DATE_EARLIEST, 0));
-        	}
-        	param = params.getLong(KEY_DATE_LATEST, 0);
-        	if (param != 0){
-        		datePicker.setMaxDate(params.getLong(KEY_DATE_LATEST, 0));
-        	}
-        	param = params.getLong(KEY_DATE_DEFAULT, 0);
+    		long param = params.getLong(KEY_DATE_EARLIEST, 0);
     		if (param != 0){
-    			Calendar calendar = Calendar.getInstance();
-    			calendar.setTimeInMillis(param);
-    			datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+    			datePicker.setMinDate(params.getLong(KEY_DATE_EARLIEST, 0));
     		}
+    		param = params.getLong(KEY_DATE_LATEST, 0);
+    		if (param != 0){
+    			datePicker.setMaxDate(params.getLong(KEY_DATE_LATEST, 0));
+    		}
+        	if (oldDatePicker == null){
+        		param = params.getLong(KEY_DATE_DEFAULT, 0);
+        		if (param != 0){
+        			Calendar calendar = Calendar.getInstance();
+        			calendar.setTimeInMillis(param);
+        			datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        		}
+        	}
+        	else {
+        		datePicker.updateDate(oldDatePicker.getYear(), oldDatePicker.getMonth(), oldDatePicker.getDayOfMonth());
+        	}
+    		Log.d(DEBUG_TAG, "datePicker onCreateDialog " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
          	builder.setView(datePicker);
         }
         // Create the AlertDialog object and return it
@@ -385,13 +408,24 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 	
 	@Override
-	protected void onPrepareDialog (int id, Dialog dialog, Bundle params){
+	protected void onPrepareDialog (int id, final Dialog dialog, Bundle params){
         if (id == this.DIALOG_ID_CONFIRM){
         	((AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dlg_yes), new DialogButtonListener());
         	((AlertDialog)dialog).setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dlg_no), new DialogButtonListener());
         	((AlertDialog)dialog).setTitle(params.getString(KEY_DIALOG_TITLE));
         }
-	}
+        else {
+        	Button button = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+        	button.setText(getString(R.string.save));
+        	button.setOnClickListener(new View.OnClickListener(){
+        		public void onClick(View v){
+        			Log.d(DEBUG_TAG, "datePicker onDateSet " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
+        			dateSetListener.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+        			dialog.dismiss();
+        		}
+        	});
+        }
+ 	}
 	
 	private class DialogButtonListener implements DialogInterface.OnClickListener {
 		@Override
