@@ -9,7 +9,6 @@ Layout of the My Timeline page
     android:orientation = "vertical"
     android:background="@android:color/transparent"
     tools:context=".MainActivity"
-    android:paddingRight="16dp"
     android:paddingLeft="16dp"
     >
 	 <ListView
@@ -27,6 +26,7 @@ Layout of the My Timeline page
         android:background="@android:color/transparent"
         android:layout_alignParentTop="true"
         android:paddingTop="16dp"
+        android:paddingRight="16dp"
         >        
         <ImageButton
 	        android:id="@+id/btnNote"

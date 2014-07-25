@@ -10,7 +10,7 @@ The top level tag attribute is required in the Care list adapter
     android:shrinkColumns="0"
     android:stretchColumns="1"
     android:background="@drawable/white_bg_care"
-    android:paddingRight="16dp"
+    android:paddingRight="32dp"
     > 
     <TableRow
         android:layout_width="match_parent"

@@ -11,6 +11,7 @@ The top level tag attribute is required in the Care list adapter
     	android:shrinkColumns="0"
     	android:stretchColumns="1"
 		android:background="@drawable/white_top_rounded_bg"
+		android:paddingRight="16dp"
 	    >
 	    <TableRow
             android:layout_width="wrap_content"

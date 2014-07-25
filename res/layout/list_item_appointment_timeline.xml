@@ -10,7 +10,7 @@ The top level tag attribute is required in the Timeline and Mycare list adapters
     android:layout_height="wrap_content"
     android:stretchColumns="1"
     android:background="@drawable/white_rounded_bg_timeline"
-    android:paddingRight="16dp"
+    android:paddingRight="32dp"
     >
     <!--  Appointment icon, purpose, edit/delete buttons -->
     <TableRow
