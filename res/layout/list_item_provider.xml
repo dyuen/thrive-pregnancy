@@ -12,7 +12,7 @@ The top level tag attribute is required in the Mycare list adapters
     	android:background="@drawable/white_rounded_bg_care"
     	android:paddingTop="16dp"
     	android:paddingBottom="28dp"
-    	android:paddingRight="16dp"
+    	android:paddingRight="32dp"
 	    >
 	     <!-- Top line with user name and edit/save buttons -->
 	      <TableRow
