@@ -103,9 +103,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		MainActivity previousInstance = (MainActivity)getLastCustomNonConfigurationInstance();
 		if (previousInstance != null){
 			this.datePicker = previousInstance.datePicker;
-			if (datePicker != null){
-				Log.d(DEBUG_TAG, "datePicker previous instance " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
-			}
 			this.dateSetListener = previousInstance.dateSetListener;
 			this.careFragmentBundle = previousInstance.careFragmentBundle;
 			previousInstance = null;
@@ -224,13 +221,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
     
     @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft){
-//    	Log.d(DEBUG_TAG, "onTabReSelected : " + tab.getPosition());
-    }
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft){}
     @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft){
-//    	Log.d(DEBUG_TAG, "onTabUnSelected : " + tab.getPosition());
-    }
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft){}
 
     /**
      * Interface allowing child fragments to save state in ConfigurationInstance
@@ -247,9 +240,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      */
     @Override
     public Object onRetainCustomNonConfigurationInstance(){
-    	if (datePicker != null){
-    		Log.d(DEBUG_TAG, "datePicker onRetainCustomNonConfigurationInstance " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
-    	}
     	rotating = true;
     	careFragmentBundle = ((InstanceSaver)careFragment).saveInstanceData();
     	return this;
@@ -371,14 +361,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         else {
         	// Dialog is a DatePickerDialog
         	builder.setPositiveButton(R.string.save, null);
-        	/*
-        	builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener(){
-        		public void onClick(DialogInterface dialog, int which){
-        			Log.d(DEBUG_TAG, "datePicker onDateSet " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
-        			dateSetListener.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-        		}
-        	});
-        	*/
         	DatePicker oldDatePicker = datePicker;
         	datePicker = (DatePicker)getLayoutInflater().inflate(R.layout.date_picker, null);
     		long param = params.getLong(KEY_DATE_EARLIEST, 0);
@@ -400,7 +382,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         	else {
         		datePicker.updateDate(oldDatePicker.getYear(), oldDatePicker.getMonth(), oldDatePicker.getDayOfMonth());
         	}
-    		Log.d(DEBUG_TAG, "datePicker onCreateDialog " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
          	builder.setView(datePicker);
         }
         // Create the AlertDialog object and return it
@@ -415,11 +396,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         	((AlertDialog)dialog).setTitle(params.getString(KEY_DIALOG_TITLE));
         }
         else {
+        	// Dialog is DatePickerDialog
         	Button button = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
         	button.setText(getString(R.string.save));
         	button.setOnClickListener(new View.OnClickListener(){
         		public void onClick(View v){
-        			Log.d(DEBUG_TAG, "datePicker onDateSet " + datePicker.getMonth() + " " + datePicker.getDayOfMonth());
         			dateSetListener.onDateSet(datePicker, datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
         			dialog.dismiss();
         		}
@@ -433,7 +414,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			if (which == DialogInterface.BUTTON_POSITIVE){
 				try {
 					Dao<Event, Integer> dao = databaseHelper.getDao(Event.class);
-//					Log.d(DEBUG_TAG, "Deleting event " + eventId);
 					Event event = dao.queryForId(mainActivity.eventId);
 					dao.delete(event);
 					deleteMediaFile(event.getAudioFile());
