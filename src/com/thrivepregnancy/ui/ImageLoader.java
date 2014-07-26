@@ -66,16 +66,23 @@ public class ImageLoader {
 	}
 	
 	private class ImageLoaderTask extends AsyncTask<String, String, Bitmap> {
+		Context context;
+		String photo;
+		Event.Type type;
+		Integer id;
+		TextView divider;
+		ImageView photoView;
+		
 		private Bitmap decodeSampledBitmapFromAssets(int reqWidth, int reqHeight) {
 			Bitmap bitmap;
-			AssetManager assetManager = m_context.getAssets();
+			AssetManager assetManager = context.getAssets();
     		InputStream in;
 
 			try {
 				BitmapFactory.Options options = new BitmapFactory.Options();
 				options.inJustDecodeBounds = true;
 				
-				in = assetManager.open(m_photo);
+				in = assetManager.open(photo);
 				
 				BitmapFactory.decodeStream(in, null, options);
 				
@@ -84,7 +91,7 @@ public class ImageLoader {
 				BitmapFactory.Options options1 = new BitmapFactory.Options();
 				options1.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 				
-				in = assetManager.open(m_photo);
+				in = assetManager.open(photo);
 				
 				bitmap = BitmapFactory.decodeStream(in, null, options1);
 				
@@ -152,9 +159,12 @@ public class ImageLoader {
 		@Override
 		protected void onPreExecute()
 		{
-			if (m_type.equals(Event.Type.TIP)){
-			   
-			}
+			context = m_context;
+			photo = m_photo;
+			type = m_type;
+			id = m_id;
+			divider = m_divider;
+			photoView = m_photoView;
 		}
 		
 		@Override
@@ -162,7 +172,7 @@ public class ImageLoader {
 			Bitmap bitmap = null;
 			
 	        try {
-	        	if (m_type.equals(Event.Type.TIP)){
+	        	if (type.equals(Event.Type.TIP)){
 	 				bitmap = decodeSampledBitmapFromAssets(200,200);	
 				} else {
 		        	File file = new File(param[0]);
@@ -170,7 +180,7 @@ public class ImageLoader {
 					bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
 				}
 	        	
-	        	if (m_id != null) BitmapCache.addBitmapToMemoryCache(m_id, bitmap);
+	        	if (id != null) BitmapCache.addBitmapToMemoryCache(id, bitmap);
 	        	
 	            return bitmap;
 	        } catch (Exception e) {
@@ -181,10 +191,10 @@ public class ImageLoader {
 		
 		protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-            	m_photoView.setVisibility(View.VISIBLE);
-            	m_photoView.setImageBitmap(bitmap);
+            	photoView.setVisibility(View.VISIBLE);
+            	photoView.setImageBitmap(bitmap);
             	
-            	if (m_divider!=null) m_divider.setVisibility(View.VISIBLE);
+            	if (divider!=null) divider.setVisibility(View.VISIBLE);
             } else {
                 Log.e("ImageLoaderTask", "failed to load image");
             }
