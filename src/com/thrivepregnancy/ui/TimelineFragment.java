@@ -375,6 +375,9 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 							String imagePath = event.getPhotoFile();
 							String activityTitle = "Appointment Photo";
 							
+							Integer eventId = event.getId();
+							
+							parentBundle.putInt("eventid", eventId);
 							parentBundle.putString("imagepath", imagePath);
 							parentBundle.putString("imagetitle", activityTitle);
 							
@@ -447,7 +450,9 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 							Bundle parentBundle = new Bundle();
 							String imagePath = event.getPhotoFile();
 							String activityTitle = "Diary Photo";
+							Integer eventId = event.getId();
 							
+							parentBundle.putInt("eventid", eventId);
 							parentBundle.putString("imagepath", imagePath);
 							parentBundle.putString("imagetitle", activityTitle);
 							
@@ -477,7 +482,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 				
 				if (divider!= null)imageloader.setDivider(divider);
 				
-				imageloader.loadBitmap(event.getId());
+				imageloader.loadBitmap(event.getId(),position);
 			} 
 				
 			return view;

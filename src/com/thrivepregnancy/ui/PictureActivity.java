@@ -30,15 +30,16 @@ public class PictureActivity extends Activity {
 	    
 	    String imagePath = parentBundle.getString("imagepath");
 	    String activityTitle = parentBundle.getString("imagetitle");
+	    Integer eventId = parentBundle.getInt("eventid");
 	    
 	    m_imageView = (ImageView) findViewById(R.id.image_view);
-	    
-	    File filePhoto = new File(imagePath);
-	    
-	    if (filePhoto.exists()) {
-    		Bitmap photoBit = BitmapFactory.decodeFile(filePhoto.getAbsolutePath());
-    		m_imageView.setImageBitmap(photoBit);
-    		
+	    	
+	    	ImageLoader imageloader = new ImageLoader(imagePath,m_imageView,this, null);
+	    	
+	    	imageloader.setQuality(true);
+	    	
+			imageloader.loadBitmap(eventId,0);
+			
     		ActionBar actionBar = getActionBar();
     	    actionBar.setLogo(R.drawable.ic_logo_arrow);
     	    actionBar.setTitle(activityTitle);
@@ -49,10 +50,6 @@ public class PictureActivity extends Activity {
              * Use Simple ImageView
              */
             usingSimpleImage(m_imageView);
-    	} else {
-    		Log.e(BaseActivity.class.getName(), "stored photo file does not exist");
-    		this.finish();
-    	}
     }
 
     public void usingSimpleImage(ImageView imageView) {

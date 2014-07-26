@@ -390,7 +390,7 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 				
 				if (photoFile != null && photoFile.length() > 0){
 					ImageLoader imageloader = new ImageLoader(photoFile,photoView, getActivity(),event.getType());
-					imageloader.loadBitmap(event.getId());
+					imageloader.loadBitmap(event.getId(),position);
 				} else if (photoView != null) {
 					photoView.setVisibility(View.GONE);
 				}
@@ -631,7 +631,9 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 					Bundle parentBundle = new Bundle();
 					String imagePath = event.getPhotoFile();
 					String activityTitle = "Appointment Photo";
+					Integer eventId = event.getId();
 					
+					parentBundle.putInt("eventid", eventId);
 					parentBundle.putString("imagepath", imagePath);
 					parentBundle.putString("imagetitle", activityTitle);
 					
@@ -688,7 +690,9 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 					Bundle parentBundle = new Bundle();
 					String imagePath = event.getPhotoFile();
 					String activityTitle = "Test Result";
+					Integer eventId = event.getId();
 					
+					parentBundle.putInt("eventid", eventId);
 					parentBundle.putString("imagepath", imagePath);
 					parentBundle.putString("imagetitle", activityTitle);
 					

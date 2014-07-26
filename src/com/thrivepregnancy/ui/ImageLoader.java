@@ -1,7 +1,6 @@
 package com.thrivepregnancy.ui;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 import com.thrivepregnancy.data.Event;
@@ -29,6 +28,7 @@ public class ImageLoader {
 	private ImageView m_photoView;
 	private String m_photo;
 	private Integer m_id;
+	private Boolean m_quality = false;
 	private Event.Type m_type;
 	private Context m_context;
 	private TextView m_divider = null;
@@ -46,7 +46,11 @@ public class ImageLoader {
 		m_divider = divider;
 	}
 	
-	public void loadBitmap(Integer id) {
+	public void setQuality(Boolean quality) {
+		m_quality = quality;
+	}
+	
+	public void loadBitmap(Integer id, Integer position) {
 		m_id = id;
 		
 		Bitmap bitmap = null;
@@ -60,18 +64,27 @@ public class ImageLoader {
 	    	if (m_divider!=null) m_divider.setVisibility(View.VISIBLE);
 		} else {
 			if (m_photo != null && !m_photo.equals("")) {
-		           new ImageLoaderTask().execute(m_photo);
+				ViewHolder.position = position;
+				ViewHolder.picture = m_photoView;
+						
+		        new ImageLoaderTask().execute(position);
 		    }
 		}
 	}
 	
-	private class ImageLoaderTask extends AsyncTask<String, String, Bitmap> {
+	private static class ViewHolder {
+	    public static ImageView picture;
+	    public static int position;
+	}
+	
+	private class ImageLoaderTask extends AsyncTask<Integer, String, Bitmap> {
 		Context context;
 		String photo;
 		Event.Type type;
-		Integer id;
+		Integer id , position;
 		TextView divider;
 		ImageView photoView;
+		Boolean quality;
 		
 		private Bitmap decodeSampledBitmapFromAssets(int reqWidth, int reqHeight) {
 			Bitmap bitmap;
@@ -165,19 +178,30 @@ public class ImageLoader {
 			id = m_id;
 			divider = m_divider;
 			photoView = m_photoView;
+			quality = m_quality;
 		}
 		
 		@Override
-		protected Bitmap doInBackground(String... param) {
+		protected Bitmap doInBackground(Integer... param) {
 			Bitmap bitmap = null;
+			position = param[0];
+			Integer a,b;
+			
+			if (quality) {
+				a = 2;
+				b = 2;
+			} else {
+				a = 200;
+				b = 200;
+			}
 			
 	        try {
 	        	if (type.equals(Event.Type.TIP)){
-	 				bitmap = decodeSampledBitmapFromAssets(200,200);	
+	 				bitmap = decodeSampledBitmapFromAssets(a,b);	
 				} else {
-		        	File file = new File(param[0]);
+		        	File file = new File(photo);
 		
-					bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
+					bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),a,b);
 				}
 	        	
 	        	if (id != null) BitmapCache.addBitmapToMemoryCache(id, bitmap);
@@ -191,10 +215,12 @@ public class ImageLoader {
 		
 		protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-            	photoView.setVisibility(View.VISIBLE);
-            	photoView.setImageBitmap(bitmap);
-            	
-            	if (divider!=null) divider.setVisibility(View.VISIBLE);
+            	//if (ViewHolder.position==position) {
+            		photoView.setVisibility(View.VISIBLE);
+            		photoView.setImageBitmap(bitmap);
+	            	
+	            	if (divider!=null) divider.setVisibility(View.VISIBLE);
+            	//}
             } else {
                 Log.e("ImageLoaderTask", "failed to load image");
             }
