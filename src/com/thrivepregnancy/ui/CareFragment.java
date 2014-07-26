@@ -25,6 +25,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
@@ -65,6 +66,12 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 	public static final String KEY_PENDING_DATE = 	 "pendingdate";
 	public static final String KEY_CARE_INDEX = "care-index";
 	public static final String KEY_CARE_OFFSET = "care-offset";
+	
+	/**
+	 * Scroll speed
+	 */
+	
+	public static final Integer FRICTION_SCALE_FACTOR = 10;
 	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation
@@ -264,6 +271,7 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 		
 		void updateList(){
 			listView = (ListView)getActivity().findViewById(R.id.lstCare);
+			listView.setFriction(ViewConfiguration.getScrollFriction() * FRICTION_SCALE_FACTOR);
 			scrollToLastPosition();
 			listView.setAdapter(this);
 		}

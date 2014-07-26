@@ -66,7 +66,7 @@ public class ImageLoader {
 			if (m_photo != null && !m_photo.equals("")) {
 				ViewHolder.position = position;
 				ViewHolder.picture = m_photoView;
-						
+				if (m_divider!=null) ViewHolder.text = m_divider;
 		        new ImageLoaderTask().execute(position);
 		    }
 		}
@@ -74,6 +74,7 @@ public class ImageLoader {
 	
 	private static class ViewHolder {
 	    public static ImageView picture;
+	    public static TextView text;
 	    public static int position;
 	}
 	
@@ -215,12 +216,24 @@ public class ImageLoader {
 		
 		protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-            	//if (ViewHolder.position==position) {
+            	/*
+            	if (type.equals(Event.Type.TIP)){
+            		if (ViewHolder.position==position) {
+            			ViewHolder.picture.setVisibility(View.VISIBLE);
+            			ViewHolder.picture.setImageBitmap(bitmap);
+            			if (ViewHolder.text!=null) ViewHolder.text.setVisibility(View.VISIBLE);
+            		} else {
+            			ViewHolder.picture.setVisibility(View.GONE);
+            			if (ViewHolder.text!=null) ViewHolder.text.setVisibility(View.GONE);
+            		}
+            	} else {
             		photoView.setVisibility(View.VISIBLE);
             		photoView.setImageBitmap(bitmap);
-	            	
-	            	if (divider!=null) divider.setVisibility(View.VISIBLE);
-            	//}
+            	}
+            	*/
+            	photoView.setVisibility(View.VISIBLE);
+        		photoView.setImageBitmap(bitmap);
+        		if (divider!=null) divider.setVisibility(View.VISIBLE);
             } else {
                 Log.e("ImageLoaderTask", "failed to load image");
             }

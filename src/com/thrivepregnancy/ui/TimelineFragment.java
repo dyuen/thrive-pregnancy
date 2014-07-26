@@ -33,6 +33,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
@@ -64,7 +65,13 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	private int					firstTipWeek;
 	private static AudioPlayer	activeAudioPlayer;
 	private ViewGroup			player;
-
+	
+	/**
+	 * Scroll speed
+	 */
+	
+	public static final Integer FRICTION_SCALE_FACTOR = 10;
+	
 	/**
 	 * Preference index
 	 */
@@ -163,6 +170,8 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 		super.onResume();
 
 		listView = (ListView)getActivity().findViewById(R.id.lstTimeline);
+		listView.setFriction(ViewConfiguration.getScrollFriction() * FRICTION_SCALE_FACTOR);
+		
 		listView.setAdapter(adapter);
 		adapter.scrollToThisWeek(listView);
 
