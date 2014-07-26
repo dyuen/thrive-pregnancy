@@ -192,9 +192,9 @@ public class ImageLoader {
 			position = param[0];
 			Integer a,b;
 			
-			if (quality) {
-				a = 2;
-				b = 2;
+			if (quality==true) {
+				a = 1000;
+				b = 1000;
 			} else {
 				a = 200;
 				b = 200;
@@ -205,7 +205,7 @@ public class ImageLoader {
 	 				bitmap = decodeSampledBitmapFromAssets(a,b);	
 				} else {
 		        	File file = new File(photo);
-		
+		        	Log.d("file: ",file.getAbsolutePath());
 					bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),a,b);
 				}
 	        	

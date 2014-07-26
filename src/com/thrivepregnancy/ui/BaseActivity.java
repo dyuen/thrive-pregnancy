@@ -17,6 +17,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -359,6 +361,60 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         m_dateView.setText(m_dateFormat.format(date.getTime()));
     }
     
+	  /**
+		 * Scales image to fix out of memory crash
+		 */
+		private Bitmap decodeSampledBitmapFromPath(String path, int reqWidth, int reqHeight) {
+
+	        final BitmapFactory.Options options = new BitmapFactory.Options();
+	        options.inJustDecodeBounds = true;
+	        BitmapFactory.decodeFile(path, options);
+
+	        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+	        // Decode bitmap with inSampleSize set
+	        options.inJustDecodeBounds = false;
+	        Bitmap bm = BitmapFactory.decodeFile(path, options);
+	        Bitmap bitmap;
+	        try {
+		        Matrix m = new Matrix();
+		        ExifInterface exif = new ExifInterface(path);
+		        
+		        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+		        
+		        if ((orientation == ExifInterface.ORIENTATION_ROTATE_180)) {
+		            m.postRotate(180);
+		        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+		            m.postRotate(90); 
+		        }
+		        else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+		            m.postRotate(270);     
+		        } 
+		        
+		        Log.d("in orientation", "" + orientation);
+		        bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),bm.getHeight(), m, true);
+		        
+	            return bitmap;
+	        } catch (Exception e) {
+	        	return null;
+	        }
+	    }
+
+		private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+	        final int height = options.outHeight;
+	        final int width = options.outWidth;
+	        int inSampleSize = 1;
+
+	        if (height > reqHeight || width > reqWidth) {
+	            if (width > height) {
+	                inSampleSize = Math.round((float) height / (float) reqHeight);
+	            } else {
+	                inSampleSize = Math.round((float) width / (float) reqWidth);
+	             }
+	         }
+	         return inSampleSize;
+	      }
+		
     /**
      * Sets photo or add photo icon
      */
@@ -373,11 +429,10 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
     		m_photoText.setVisibility(View.GONE);
     		
         	if (photoFile != null && (photoFile.length()>0)) {
-        		//Bitmap photoBit = BitmapFactory.decodeFile(filePhoto.getAbsolutePath());
-        		//m_photoView.setImageBitmap(photoBit);
+        		File file = new File(photoFile);
+        	    Bitmap bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),1000,1000);
         		
-        		ImageLoader imageloader = new ImageLoader(photoFile,m_photoView,this, m_event.getType());
-				imageloader.loadBitmap(m_event.getId(),0);
+        	    m_photoView.setImageBitmap(bitmap);
 				
         		return true;
         	} else {
@@ -467,6 +522,18 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	        	m_eventDao.create(m_event);
 	        }
 	        
+	        //update cache
+	        if (m_event.getPhotoFile() != null && (m_event.getPhotoFile().length()>0)) {
+        		File file = new File(m_event.getPhotoFile());
+        	    Bitmap bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
+        		
+        	    BitmapCache.InitBitmapCache();
+        	    BitmapCache.addBitmapToMemoryCache(m_event.getId(), bitmap);
+        	    
+        		return true;
+        	} else {
+        		Log.e(BaseActivity.class.getName(), "stored photo file does not exist");
+        	}
 	        return true;
     	} catch (SQLException e) {
     		Log.e(BaseActivity.class.getName(), "Unable to save event", e);

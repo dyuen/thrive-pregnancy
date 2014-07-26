@@ -6,7 +6,9 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -17,10 +19,65 @@ import com.imagezoom.ImageAttacher;
 import com.imagezoom.ImageAttacher.OnMatrixChangedListener;
 import com.imagezoom.ImageAttacher.OnPhotoTapListener;
 import com.thrivepregnancy.R;
+import com.thrivepregnancy.data.Event;
 
 public class PictureActivity extends Activity {
     ImageView m_imageView;
+    
+    /**
+	 * Scales image to fix out of memory crash
+	 */
+	private Bitmap decodeSampledBitmapFromPath(String path, int reqWidth, int reqHeight) {
 
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        Bitmap bm = BitmapFactory.decodeFile(path, options);
+        Bitmap bitmap;
+        try {
+	        Matrix m = new Matrix();
+	        ExifInterface exif = new ExifInterface(path);
+	        
+	        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+	        
+	        if ((orientation == ExifInterface.ORIENTATION_ROTATE_180)) {
+	            m.postRotate(180);
+	        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+	            m.postRotate(90); 
+	        }
+	        else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+	            m.postRotate(270);     
+	        } 
+	        
+	        Log.d("in orientation", "" + orientation);
+	        bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),bm.getHeight(), m, true);
+	        
+            return bitmap;
+        } catch (Exception e) {
+        	return null;
+        }
+    }
+
+	private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            if (width > height) {
+                inSampleSize = Math.round((float) height / (float) reqHeight);
+            } else {
+                inSampleSize = Math.round((float) width / (float) reqWidth);
+             }
+         }
+         return inSampleSize;
+      }
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +90,12 @@ public class PictureActivity extends Activity {
 	    Integer eventId = parentBundle.getInt("eventid");
 	    
 	    m_imageView = (ImageView) findViewById(R.id.image_view);
-	    	
-	    	ImageLoader imageloader = new ImageLoader(imagePath,m_imageView,this, null);
-	    	
-	    	imageloader.setQuality(true);
-	    	
-			imageloader.loadBitmap(eventId,0);
-			
+	    
+	    File file = new File(imagePath);
+	    Bitmap bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),1000,1000);
+		
+	    m_imageView.setImageBitmap(bitmap);
+	    
     		ActionBar actionBar = getActionBar();
     	    actionBar.setLogo(R.drawable.ic_logo_arrow);
     	    actionBar.setTitle(activityTitle);
@@ -50,6 +106,7 @@ public class PictureActivity extends Activity {
              * Use Simple ImageView
              */
             usingSimpleImage(m_imageView);
+           
     }
 
     public void usingSimpleImage(ImageView imageView) {
