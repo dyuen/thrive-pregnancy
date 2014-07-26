@@ -276,24 +276,10 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
-			ImageView 	photoView = null;
-			Bitmap 		bitmap = null;			
+			ImageView 	photoView = null;			
 			
 			final Event event = events.get(position);
 			String photoFile = event.getPhotoFile();
-
-			if (photoFile != null && photoFile.length() > 0){
-				if (event.getType().equals(Event.Type.TIP)){
-					AssetManager assetManager = getActivity().getAssets();
-
-					try {
-						InputStream inputS = assetManager.open(photoFile);
-						bitmap = BitmapFactory.decodeStream(inputS);
-					} catch (IOException e) {
-						Log.e(MainActivity.DEBUG_TAG, "Can't load image from assets", e);
-					}
-				}
-			}
 
 			switch (event.getType()){
 
@@ -480,22 +466,20 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			}
 			
 			TextView divider = (TextView)view.findViewById(R.id.list_item_tip_divider);
+			if (divider!= null) divider.setVisibility(View.GONE);
+			photoView.setVisibility(View.GONE);
 			
-			if (bitmap != null){
-				if (divider!= null) divider.setVisibility(View.VISIBLE);
-				photoView.setVisibility(View.VISIBLE);
+			//Log.d("event id: ", Integer.toString(event.getId()));
+			
+			if (photoFile != null && photoFile.length() > 0){
 				
-				photoView.setImageBitmap(bitmap);
+				ImageLoader imageloader = new ImageLoader(photoFile,photoView,getActivity(),event.getType());
+				
+				if (divider!= null)imageloader.setDivider(divider);
+				
+				imageloader.loadBitmap(event.getId());
 			} 
-			else {
-				if (divider!= null) divider.setVisibility(View.GONE);
-				photoView.setVisibility(View.GONE);
 				
-				if (photoFile != null && photoFile.length() > 0){
-					ImageLoader imageloader = new ImageLoader(photoFile,photoView);
-					imageloader.loadBitmap(event.getId());
-				}
-			}
 			return view;
 		}
 

@@ -1,17 +1,23 @@
 package com.thrivepregnancy.ui;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import com.thrivepregnancy.data.Event;
 
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.AsyncTask;
-import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * Methods for setting the content of an ImageView. The image is pre-scaled before
@@ -23,15 +29,26 @@ public class ImageLoader {
 	private ImageView m_photoView;
 	private String m_photo;
 	private Integer m_id;
-	 
-	public ImageLoader(String photo, ImageView photoView) {
+	private Event.Type m_type;
+	private Context m_context;
+	private TextView m_divider = null;
+	
+	public ImageLoader(String photo, ImageView photoView, Context context, Event.Type type) {
 		m_photoView = photoView;
 		m_photo = photo;
+		m_type = type;
+		m_context = context;
+		
 		BitmapCache.InitBitmapCache();
+	}
+	
+	public void setDivider(TextView divider) {
+		m_divider = divider;
 	}
 	
 	public void loadBitmap(Integer id) {
 		m_id = id;
+		
 		Bitmap bitmap = null;
 		
 		if (m_id != null) bitmap = BitmapCache.getBitmapFromMemCache(m_id);
@@ -40,6 +57,7 @@ public class ImageLoader {
 			//Log.d("bitmap retrieved from cache: ", Integer.toString(m_id));
 			m_photoView.setVisibility(View.VISIBLE);
 	    	m_photoView.setImageBitmap(bitmap);
+	    	if (m_divider!=null) m_divider.setVisibility(View.VISIBLE);
 		} else {
 			if (m_photo != null && !m_photo.equals("")) {
 		           new ImageLoaderTask().execute(m_photo);
@@ -48,7 +66,35 @@ public class ImageLoader {
 	}
 	
 	private class ImageLoaderTask extends AsyncTask<String, String, Bitmap> {
+		private Bitmap decodeSampledBitmapFromAssets(int reqWidth, int reqHeight) {
+			Bitmap bitmap;
+			AssetManager assetManager = m_context.getAssets();
+    		InputStream in;
 
+			try {
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inJustDecodeBounds = true;
+				
+				in = assetManager.open(m_photo);
+				
+				BitmapFactory.decodeStream(in, null, options);
+				
+				in.close();
+				
+				BitmapFactory.Options options1 = new BitmapFactory.Options();
+				options1.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+				
+				in = assetManager.open(m_photo);
+				
+				bitmap = BitmapFactory.decodeStream(in, null, options1);
+				
+				in.close();
+				
+				return bitmap;
+			} catch (Exception e) {
+	        	return null;
+	        }
+		}
 		/**
 		 * Scales image to fix out of memory crash
 		 */
@@ -102,19 +148,33 @@ public class ImageLoader {
 	         }
 	         return inSampleSize;
 	      }
-	
+		
+		@Override
+		protected void onPreExecute()
+		{
+			if (m_type.equals(Event.Type.TIP)){
+			   
+			}
+		}
+		
 		@Override
 		protected Bitmap doInBackground(String... param) {
+			Bitmap bitmap = null;
+			
 	        try {
-	        	File file = new File(param[0]);
-	
-				Bitmap bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
-				
-				if (m_id != null) BitmapCache.addBitmapToMemoryCache(m_id, bitmap);
-				
+	        	if (m_type.equals(Event.Type.TIP)){
+	 				bitmap = decodeSampledBitmapFromAssets(200,200);	
+				} else {
+		        	File file = new File(param[0]);
+		
+					bitmap = decodeSampledBitmapFromPath(file.getAbsolutePath(),200,200);
+				}
+	        	
+	        	if (m_id != null) BitmapCache.addBitmapToMemoryCache(m_id, bitmap);
+	        	
 	            return bitmap;
 	        } catch (Exception e) {
-	            e.printStackTrace();
+	            Log.e(MainActivity.DEBUG_TAG,e.toString());
 	            return null;
 	        }
 		}
@@ -123,6 +183,8 @@ public class ImageLoader {
             if (bitmap != null) {
             	m_photoView.setVisibility(View.VISIBLE);
             	m_photoView.setImageBitmap(bitmap);
+            	
+            	if (m_divider!=null) m_divider.setVisibility(View.VISIBLE);
             } else {
                 Log.e("ImageLoaderTask", "failed to load image");
             }

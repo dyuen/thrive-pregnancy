@@ -376,7 +376,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         		//Bitmap photoBit = BitmapFactory.decodeFile(filePhoto.getAbsolutePath());
         		//m_photoView.setImageBitmap(photoBit);
         		
-        		ImageLoader imageloader = new ImageLoader(photoFile,m_photoView);
+        		ImageLoader imageloader = new ImageLoader(photoFile,m_photoView,this, m_event.getType());
 				imageloader.loadBitmap(m_event.getId());
 				
         		return true;
