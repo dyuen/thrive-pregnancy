@@ -42,6 +42,10 @@ public class ImageLoader {
 		BitmapCache.InitBitmapCache();
 	}
 	
+	public ImageLoader(Event[] events) {
+		BitmapCache.InitBitmapCache();
+	}
+	
 	public void setDivider(TextView divider) {
 		m_divider = divider;
 	}
