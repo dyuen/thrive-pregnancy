@@ -405,10 +405,11 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 			
 			if (event != null){		
 				String photoFile = event.getPhotoFile();
+				holder.picture = photoView;
 				
 				if (photoFile != null && photoFile.length() > 0){
 					ImageLoader imageloader = new ImageLoader(photoFile,photoView, getActivity(),event.getType());
-					imageloader.loadBitmap(event.getId(),position,null);
+					imageloader.loadBitmap(event.getId(),position,holder);
 				} else if (photoView != null) {
 					photoView.setVisibility(View.GONE);
 				}
