@@ -13,6 +13,7 @@ import com.thrivepregnancy.R;
 import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
+import com.thrivepregnancy.ui.TimelineFragment.ViewHolder;
 
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
@@ -254,7 +255,7 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
      	InputMethodManager inputManager = (InputMethodManager)mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
     	inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
-    
+
 	public class CareListAdapter extends BaseAdapter{
 		private List<Event> 			appointmentEvents;
 		private List<Event> 			questionEvents;
@@ -316,6 +317,7 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 	    	updateList();
 	    	listView.setAdapter(this);
 	    }
+
 	    
 	    public ArrayList<ElementBacker> createBackingList(){
 	    	elementBackers = new ArrayList<ElementBacker>();	    	
@@ -345,13 +347,21 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 			return elementBackers;
 	    }
 	    
+
+	    
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
 			ImageView 	photoView = null;
+			ViewHolder holder;
 			
 			ElementBacker backer = elementBackers.get(position);
 			if(view == null || !view.getTag().equals(backer.tag)) {
 				view = LayoutInflater.from(mainActivity).inflate(backer.resourceId, parent, false);
+				holder = new ViewHolder();
+				holder.position = position;
+				view.setTag(holder);
+			} else {
+				holder = (ViewHolder) view.getTag();
 			}
 		
 			Event event = backer.event;
@@ -398,7 +408,7 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 				
 				if (photoFile != null && photoFile.length() > 0){
 					ImageLoader imageloader = new ImageLoader(photoFile,photoView, getActivity(),event.getType());
-					imageloader.loadBitmap(event.getId(),position);
+					imageloader.loadBitmap(event.getId(),position,null);
 				} else if (photoView != null) {
 					photoView.setVisibility(View.GONE);
 				}

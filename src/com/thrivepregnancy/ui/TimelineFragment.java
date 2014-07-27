@@ -215,7 +215,13 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	void refreshOnTimelineChange(){
 		adapter.refresh(RefreshType.ON_TIMELINE_CHANGE);
 	}
-
+	
+	public static class ViewHolder {
+	    public ImageView picture;
+	    public TextView text;
+	    public int position;
+	}
+	
 	public class TimelineListAdapter extends BaseAdapter{
 		private final Context 	context;
 		private List<Event> 	events;
@@ -282,11 +288,12 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	    		listView.setSelectionFromTop(index, top);
 	    	}
 		}
-
+		
 		@Override
 		public View getView(int position, View view, ViewGroup parent) {
 			ImageView 	photoView = null;			
-			
+			ViewHolder holder = null;
+
 			final Event event = events.get(position);
 			String photoFile = event.getPhotoFile();
 
@@ -295,6 +302,11 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 				case TIP:
 					if(view == null || !view.getTag().equals(Event.Type.TIP.name())) {
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_tip, parent, false);
+						holder = new ViewHolder();
+						holder.position = position;
+						view.setTag(holder);
+					} else {
+						holder = (ViewHolder) view.getTag();
 					}
 					
 					view.setEnabled(false);
@@ -328,6 +340,11 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 				case APPOINTMENT:
 					if(view == null || !view.getTag().equals(Event.Type.APPOINTMENT.name())) {
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_appointment_timeline, parent, false);
+						holder = new ViewHolder();
+						holder.position = position;
+						view.setTag(holder);
+					} else {
+						holder = (ViewHolder) view.getTag();
 					}
 					((TextView)view.findViewById(R.id.list_item_appt_purpose)).setText(event.getPurpose());
 					((TextView)view.findViewById(R.id.list_item_appt_time)).setText(appointmentDateFormat.format(event.getDate()));
@@ -401,6 +418,11 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 
 					if(view == null  || !view.getTag().equals(Event.Type.DIARY_ENTRY.name())) {
 						view = LayoutInflater.from(context).inflate(R.layout.list_item_entry, parent, false);
+						holder = new ViewHolder();
+						holder.position = position;
+						view.setTag(holder);
+					} else {
+						holder = (ViewHolder) view.getTag();
 					}
 					TextView notes = (TextView)view.findViewById(R.id.list_item_entry_notes);
 					TextView date = (TextView)view.findViewById(R.id.list_item_entry_date);
@@ -484,6 +506,8 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			photoView.setVisibility(View.GONE);
 			
 			//Log.d("event id: ", Integer.toString(event.getId()));
+			holder.picture = photoView;
+			holder.text = divider;
 			
 			if (photoFile != null && photoFile.length() > 0){
 				
@@ -491,7 +515,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 				
 				if (divider!= null)imageloader.setDivider(divider);
 				
-				imageloader.loadBitmap(event.getId(),position);
+				imageloader.loadBitmap(event.getId(),position, holder);
 			} 
 				
 			return view;

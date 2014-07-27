@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 
 import com.thrivepregnancy.data.Event;
-
+import com.thrivepregnancy.ui.TimelineFragment.ViewHolder;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -54,7 +54,7 @@ public class ImageLoader {
 		m_quality = quality;
 	}
 	
-	public void loadBitmap(Integer id, Integer position) {
+	public void loadBitmap(Integer id, Integer position, ViewHolder holder) {
 		m_id = id;
 		
 		Bitmap bitmap = null;
@@ -68,28 +68,27 @@ public class ImageLoader {
 	    	if (m_divider!=null) m_divider.setVisibility(View.VISIBLE);
 		} else {
 			if (m_photo != null && !m_photo.equals("")) {
-				ViewHolder.position = position;
-				ViewHolder.picture = m_photoView;
-				if (m_divider!=null) ViewHolder.text = m_divider;
-		        new ImageLoaderTask().execute(position);
+		        new ImageLoaderTask(position, holder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
 		    }
 		}
 	}
 	
-	private static class ViewHolder {
-	    public static ImageView picture;
-	    public static TextView text;
-	    public static int position;
-	}
+	
 	
 	private class ImageLoaderTask extends AsyncTask<Integer, String, Bitmap> {
 		Context context;
 		String photo;
 		Event.Type type;
-		Integer id , position;
-		TextView divider;
-		ImageView photoView;
+		Integer id;
 		Boolean quality;
+		
+		Integer t_position;
+		ViewHolder t_holder;
+		
+		public ImageLoaderTask(int position, ViewHolder holder) {
+			t_position = position;
+			t_holder = holder;
+		}
 		
 		private Bitmap decodeSampledBitmapFromAssets(int reqWidth, int reqHeight) {
 			Bitmap bitmap;
@@ -181,15 +180,13 @@ public class ImageLoader {
 			photo = m_photo;
 			type = m_type;
 			id = m_id;
-			divider = m_divider;
-			photoView = m_photoView;
 			quality = m_quality;
 		}
 		
 		@Override
 		protected Bitmap doInBackground(Integer... param) {
 			Bitmap bitmap = null;
-			position = param[0];
+
 			Integer a,b;
 			
 			if (quality==true) {
@@ -220,24 +217,19 @@ public class ImageLoader {
 		
 		protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-            	/*
-            	if (type.equals(Event.Type.TIP)){
-            		if (ViewHolder.position==position) {
-            			ViewHolder.picture.setVisibility(View.VISIBLE);
-            			ViewHolder.picture.setImageBitmap(bitmap);
-            			if (ViewHolder.text!=null) ViewHolder.text.setVisibility(View.VISIBLE);
-            		} else {
-            			ViewHolder.picture.setVisibility(View.GONE);
-            			if (ViewHolder.text!=null) ViewHolder.text.setVisibility(View.GONE);
-            		}
+            	if (t_holder == null) {
+            		m_photoView.setVisibility(View.VISIBLE);
+            		m_photoView.setImageBitmap(bitmap);
+            		if (m_divider!=null) m_divider.setVisibility(View.VISIBLE);
             	} else {
-            		photoView.setVisibility(View.VISIBLE);
-            		photoView.setImageBitmap(bitmap);
+            		if (t_holder.position == t_position) {
+	            		if (t_holder.picture!=null) {
+	            			t_holder.picture.setVisibility(View.VISIBLE);
+	            			t_holder.picture.setImageBitmap(bitmap);
+	            		}
+	            		if (t_holder.text!=null) t_holder.text.setVisibility(View.VISIBLE);
+	                }
             	}
-            	*/
-            	photoView.setVisibility(View.VISIBLE);
-        		photoView.setImageBitmap(bitmap);
-        		if (divider!=null) divider.setVisibility(View.VISIBLE);
             } else {
                 Log.e("ImageLoaderTask", "failed to load image");
             }
