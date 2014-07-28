@@ -70,7 +70,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	 * Scroll speed
 	 */
 	
-	public static final Integer FRICTION_SCALE_FACTOR = 10;
+	public static final Integer FRICTION_SCALE_FACTOR = 5;
 	
 	/**
 	 * Preference index

@@ -72,7 +72,7 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 	 * Scroll speed
 	 */
 	
-	public static final Integer FRICTION_SCALE_FACTOR = 10;
+	public static final Integer FRICTION_SCALE_FACTOR = 5;
 	
 	/**
 	 * Empty public constructor required per the {@link Fragment} API documentation

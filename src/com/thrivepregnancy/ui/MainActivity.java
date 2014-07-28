@@ -364,6 +364,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         	DatePicker oldDatePicker = datePicker;
         	datePicker = (DatePicker)getLayoutInflater().inflate(R.layout.date_picker, null);
     		long param = params.getLong(KEY_DATE_EARLIEST, 0);
+    		/***** Minimum and maximum date setting removed due to bug in Android Galaxy 3 (API level 15)
     		if (param != 0){
     			datePicker.setMinDate(params.getLong(KEY_DATE_EARLIEST, 0));
     		}
@@ -371,6 +372,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     		if (param != 0){
     			datePicker.setMaxDate(params.getLong(KEY_DATE_LATEST, 0));
     		}
+    		*****/
         	if (oldDatePicker == null){
         		param = params.getLong(KEY_DATE_DEFAULT, 0);
         		if (param != 0){

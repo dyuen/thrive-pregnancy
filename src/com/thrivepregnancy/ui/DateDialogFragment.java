@@ -32,8 +32,13 @@ public class DateDialogFragment extends DialogFragment{
 
 		Bundle args = new Bundle();
 		args.putString("fragnum", fragmentNumber);
+		/***** Minimum and maximum date setting removed due to bug in Android Galaxy 3 (API level 15)		
 		args.putLong("earliest", earliestDate);
 		args.putLong("latest", latestDate);
+    	*****/
+		args.putLong("earliest", UNSPECIFIED);
+		args.putLong("latest", UNSPECIFIED);
+
 		args.putLong("default", defaultDate);
 		args.putInt("title", title);
 		newInstance.setArguments(args);
