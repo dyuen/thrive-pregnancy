@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -177,8 +176,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	    m_currentPhotoPath = savedInstanceState.getString(IMAGE_PATH);
 	    
 	    if (m_currentPhotoPath != null) {
-	    	Log.d("onRestoreInstanceState", m_currentPhotoPath);
-	    	
 	    	if(m_currentPhotoPath.equalsIgnoreCase(DELETED)) {
 	    		m_event.setPhotoFile(null);
 	    	} else {
@@ -202,7 +199,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         		m_event = m_eventDao.queryForId(getIntent().getIntExtra(MainActivity.REQUEST_PRIMARY_KEY,0));
         		m_date.setTime(m_event.getDate());
         	} catch (SQLException e) {
-    			Log.e(BaseActivity.class.getName(), "Unable to query event", e);
+    			//Log.e(BaseActivity.class.getName(), "Unable to query event", e);
     		}
         	
         //create new event
@@ -391,7 +388,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 		            m.postRotate(270);     
 		        } 
 		        
-		        Log.d("in orientation", "" + orientation);
 		        bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),bm.getHeight(), m, true);
 		        
 	            return bitmap;
@@ -436,7 +432,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 				
         		return true;
         	} else {
-        		Log.e(BaseActivity.class.getName(), "stored photo file does not exist");
+        		//Log.e(BaseActivity.class.getName(), "stored photo file does not exist");
         	}
         } else {
         	m_photoView.setVisibility(View.GONE);
@@ -464,12 +460,11 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
                 photoFile = CreateImageFile();
             } catch (IOException e) {
                 // Error occurred while creating the File
-            	Log.e(BaseActivity.class.getName(), "error creating photo file", e);
+            	//Log.e(BaseActivity.class.getName(), "error creating photo file", e);
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(photoFile));
-                Log.d("DispatchTakePictureIntent", Uri.fromFile(photoFile).toString());
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
@@ -487,8 +482,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 
         m_currentPhotoPath = image.getAbsolutePath();
         
-        Log.d("CreateImageFile", image.getAbsolutePath());
-        
         return image;
     }
     
@@ -498,8 +491,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	if (resultCode == RESULT_OK) {
-    		Log.d("onActivityResult", "OK");
-    		
     		if (m_currentPhotoPath != null && (m_currentPhotoPath.length() > 0)) m_event.setPhotoFile(m_currentPhotoPath);
     		
     		if (SetPhoto()) {
@@ -507,7 +498,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
             }
     		
     	} else if (resultCode == RESULT_CANCELED) {
-    		Log.d("onActivityResult", "Cancelled");
     	}
     }
     
@@ -532,11 +522,11 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         	    
         		return true;
         	} else {
-        		Log.e(BaseActivity.class.getName(), "stored photo file does not exist");
+        		//Log.e(BaseActivity.class.getName(), "stored photo file does not exist");
         	}
 	        return true;
     	} catch (SQLException e) {
-    		Log.e(BaseActivity.class.getName(), "Unable to save event", e);
+    		//Log.e(BaseActivity.class.getName(), "Unable to save event", e);
     		return false;
     	}
     }
@@ -583,7 +573,7 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 					}
 				} catch (ParseException e) {
 					m_date = null;
-					Log.e(BaseActivity.class.getName(), "Unable to parse date", e);
+					//Log.e(BaseActivity.class.getName(), "Unable to parse date", e);
 				}
 	        	
 				switch(m_eventType) {

@@ -22,7 +22,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -67,7 +66,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	
     private MainPagerAdapter 						mainPageAdapter;
     private TimelineFragment.TimelineListAdapter 	timelineListAdapter;
-    private CareFragment.CareListAdapter 			careListAdapter;
     /**
      * The {@link ViewPager} implements the page swipe animation
      */
@@ -424,7 +422,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					careFragment.refresh();
 				}
 				catch (SQLException e){
-					Log.e(DEBUG_TAG, "Can't delete event", e);
+					//Log.e(DEBUG_TAG, "Can't delete event", e);
 				}
 			}
 			dialogVisible = false;	
@@ -433,7 +431,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     		if (fileName != null && fileName.length() > 0){
     			File file = new File(fileName);
     			if (!file.delete()){
-    				Log.d(MainActivity.DEBUG_TAG, "********** Can't delete " + fileName);
+    				//Log.e(MainActivity.DEBUG_TAG, "********** Can't delete " + fileName);
     			}
     		}
     	}

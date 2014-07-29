@@ -23,7 +23,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -466,7 +465,7 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 							eventDao.create(question);
 						}
 						catch (SQLException e){
-							Log.e(MainActivity.DEBUG_TAG, "Can't create question Event",  e);
+							//Log.e(MainActivity.DEBUG_TAG, "Can't create question Event",  e);
 						}
 					}
 					// Refresh the adapter and hide the keyboard
@@ -591,7 +590,7 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 					eventDao.update(tip);
 				}
 				catch (SQLException e){
-					Log.e(MainActivity.DEBUG_TAG, "Can't update event", e);
+					//Log.e(MainActivity.DEBUG_TAG, "Can't update event", e);
 				}
 				week++;
 			}

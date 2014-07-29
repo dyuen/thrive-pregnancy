@@ -1,17 +1,13 @@
 package com.thrivepregnancy.ui;
 
 import java.sql.SQLException;
-import java.util.List;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.thrivepregnancy.R;
-import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 import com.thrivepregnancy.data.Need;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +63,6 @@ public class NeedFragment extends Fragment {
 		private Context context;
 		
 		public NeedAdapter(Context context) {
-			Log.i("NeedAdapter","constructor");
 			this.context = context;
 		}
 		
@@ -100,8 +95,6 @@ public class NeedFragment extends Fragment {
 					
 					if (htmlfile == null || htmlfile.length() == 0) htmlfile = "empty.html";
 					
-					Log.d("NeedFragment.getView", "htmlfile: " + htmlfile);
-					
 					parentBundle.putString("htmlfile", htmlfile);
 					parentBundle.putString("needtitle", needTitle);
 					
@@ -119,8 +112,6 @@ public class NeedFragment extends Fragment {
 					boolean checked = current.isChecked();
 					
 					try {
-						Log.d("NeedFragment.getView", "position: " + position);
-						
 						if (checked) {
 							need.setNeedit(true);
 							need.setGotit(false);
@@ -131,7 +122,7 @@ public class NeedFragment extends Fragment {
 						
 						needDao.update(need);
 					} catch (SQLException e) {
-						Log.e(NeedAdapter.class.getName(), "Unable to set need it flag", e);
+						//Log.e(NeedAdapter.class.getName(), "Unable to set need it flag", e);
 					}
 				}
 			});
@@ -145,9 +136,6 @@ public class NeedFragment extends Fragment {
 					boolean checked = current.isChecked();
 					
 					try {
-						Log.d("NeedFragment.getView", "position: " + position);
-						
-						
 						if (checked) {
 							need.setGotit(true);
 							need.setNeedit(false);
@@ -158,7 +146,7 @@ public class NeedFragment extends Fragment {
 						
 						needDao.update(need);
 					} catch (SQLException e) {
-						Log.e(NeedAdapter.class.getName(), "Unable to set got it flag", e);
+						//Log.e(NeedAdapter.class.getName(), "Unable to set got it flag", e);
 					}
 				}
 			});

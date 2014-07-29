@@ -9,7 +9,6 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 
@@ -33,9 +32,6 @@ public class TimeDialogFragment extends DialogFragment{
 		args.putString("fragnum", fragmentNumber);
 		args.putInt("hour", h);
 		args.putInt("min", m);
-		
-		Log.d("hour",Integer.toString(h));
-		Log.d("min",Integer.toString(m));
 		
 		m_hour = h;
 		m_min = m;

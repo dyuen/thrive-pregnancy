@@ -2,8 +2,6 @@ package com.thrivepregnancy.ui;
 
 import com.thrivepregnancy.R;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,21 +13,17 @@ import com.thrivepregnancy.data.DatabaseHelper;
 import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+//import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,7 +58,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	private ListView 			listView;
 	private int					firstTipWeek;
 	private static AudioPlayer	activeAudioPlayer;
-	private ViewGroup			player;
 	
 	/**
 	 * Scroll speed
@@ -505,7 +498,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			if (divider!= null) divider.setVisibility(View.GONE);
 			photoView.setVisibility(View.GONE);
 			
-			//Log.d("event id: ", Integer.toString(event.getId()));
 			holder.picture = photoView;
 			holder.text = divider;
 			
@@ -578,7 +570,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			return 0;
 		}
 		//*****************************************
-
+		
 		private int determineItemLayout(Event event){
 			if (event.getType().equals(Event.Type.APPOINTMENT)){
 				return R.layout.list_item_appointment_timeline;
@@ -603,7 +595,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
     	    1 MEDIA_ERROR_UNKNOWN
 		-1010 MEDIA_ERROR_UNSUPPORTED Added in API level 17
 		*/
-		Log.e(MainActivity.DEBUG_TAG, "MediaPlayer error = " + what + " : " + extra);
+		//Log.e(MainActivity.DEBUG_TAG, "MediaPlayer error = " + what + " : " + extra);
 		// Report errors back to PlayerActivity
 		mp.release();
 		return true;

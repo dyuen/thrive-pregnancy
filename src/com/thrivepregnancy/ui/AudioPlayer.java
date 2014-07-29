@@ -12,7 +12,6 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -73,8 +72,7 @@ public class AudioPlayer {
 		this.audioFile = audioFile;
 		this.activity = activity;
 		this.playerClient = playerClient;
-		
-//		Log.d(MainActivity.DEBUG_TAG, "New AudioPlayer for " + audioFile);
+
 		playStartStop = (ImageButton)playerView.findViewById(R.id.audio_playback_start_stop);
 		progressBar = (ProgressBar)playerView.findViewById(R.id.audio_playback_progress);
 		elapsed = (TextView)playerView.findViewById(R.id.audio_playback_time);
@@ -128,7 +126,6 @@ public class AudioPlayer {
 			}
 			mediaPlayer.release();
 			mediaPlayer = null;
-			Log.d(MainActivity.DEBUG_TAG, "Destroyed MediaPlayer");
 		}
 		secondsPlayed = 0;
 		progressBar.setProgress(0);
@@ -172,7 +169,7 @@ public class AudioPlayer {
 		}
 		
 		mediaPlayer = new MediaPlayer ();
-//		Log.d(MainActivity.DEBUG_TAG, "Created MediaPlayer");
+		
 		try {
 			mediaPlayer.setDataSource(audioFile);
 			mediaPlayer.setOnCompletionListener(new OnCompletionListener(){
@@ -197,7 +194,7 @@ public class AudioPlayer {
 			    	    1 MEDIA_ERROR_UNKNOWN
 					-1010 MEDIA_ERROR_UNSUPPORTED Added in API level 17
 					*/
-					Log.e(MainActivity.DEBUG_TAG, "MediaPlayer error = " + what + " : " + extra);
+					//Log.e(MainActivity.DEBUG_TAG, "MediaPlayer error = " + what + " : " + extra);
 					// TODO: Report errors back to PlayerActivity?
 					mp.release();
 					return true;
@@ -207,7 +204,6 @@ public class AudioPlayer {
 				@Override
 				public void onPrepared(MediaPlayer mp){
 					final int duration = mp.getDuration() / 1000;
-					Log.d(MainActivity.DEBUG_TAG, "Duration = " + duration);
 					progressBar.setMax(duration);
 					
 					//volume control
@@ -250,7 +246,7 @@ public class AudioPlayer {
 			mediaPlayer.prepareAsync();
 		}
 		catch (IOException e){
-			Log.e(MainActivity.DEBUG_TAG, "Error preparing audio playback", e);
+			//Log.e(MainActivity.DEBUG_TAG, "Error preparing audio playback", e);
 		}
 	}
 	

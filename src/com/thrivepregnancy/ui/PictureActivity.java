@@ -10,7 +10,6 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.media.ExifInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +18,6 @@ import com.imagezoom.ImageAttacher;
 import com.imagezoom.ImageAttacher.OnMatrixChangedListener;
 import com.imagezoom.ImageAttacher.OnPhotoTapListener;
 import com.thrivepregnancy.R;
-import com.thrivepregnancy.data.Event;
 
 public class PictureActivity extends Activity {
     ImageView m_imageView;
@@ -53,8 +51,7 @@ public class PictureActivity extends Activity {
 	        else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
 	            m.postRotate(270);     
 	        } 
-	        
-	        Log.d("in orientation", "" + orientation);
+
 	        bitmap = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(),bm.getHeight(), m, true);
 	        
             return bitmap;

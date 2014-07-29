@@ -2,7 +2,6 @@ package com.thrivepregnancy.ui;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 
 public class BitmapCache {
 	private static LruCache<Integer, Bitmap> MemoryCache = null;
@@ -13,7 +12,6 @@ public class BitmapCache {
 	    // int in its constructor.
 		if (MemoryCache==null) {
 		    final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-		    Log.d("maxMemory",Integer.toString(maxMemory));
 		    
 		    // Use 1/4th of the available memory for this memory cache.
 		    final int cacheSize = maxMemory / 4;

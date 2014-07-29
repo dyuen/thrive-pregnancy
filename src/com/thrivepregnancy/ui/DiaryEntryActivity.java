@@ -7,12 +7,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.content.Context;
-import android.graphics.drawable.TransitionDrawable;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaRecorder;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,7 +22,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import com.thrivepregnancy.R;
 import com.thrivepregnancy.data.Event;
@@ -65,7 +62,6 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(MainActivity.DEBUG_TAG, "*** onCreate");
     	LayoutInflater inflater = getLayoutInflater();
     	layout = (LinearLayout)inflater.inflate(R.layout.activity_diaryentry, null);
     	setContentView(layout);
@@ -104,8 +100,7 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
 		if (savedInstanceState == null){
 			m_audioFileName = m_event.getAudioFile();
     		if (m_audioFileName != null && m_audioFileName.length() > 0){
-    			Log.d(MainActivity.DEBUG_TAG, "Existing audio file " + m_audioFileName);
-				setState(AudioState.FINISHED);
+    			setState(AudioState.FINISHED);
 			}
 			else {
 				setState(AudioState.NONE);	
@@ -114,14 +109,12 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
 		else {
 			setState(AudioState.valueOf(savedInstanceState.getString(KEY_AUDIO_STATE)));
 			if (audioState.equals(AudioState.FINISHED)){
-				Log.d(MainActivity.DEBUG_TAG, "Restoring previous AudioPlayer");
 				if (audioPlayer != null){
 					audioPlayer.restore(this, areaFinished);
 				}
 			}
 			if (savedInstanceState.containsKey(KEY_AUDIO_FILE_NAME)){
 				m_audioFileName = savedInstanceState.getString(KEY_AUDIO_FILE_NAME);
-    			Log.d(MainActivity.DEBUG_TAG, "Saved state audio file " + m_audioFileName);
 			}
 		}
     	setupAudioButtons();
@@ -151,7 +144,6 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
 			findViewById(R.id.diary_create).setEnabled(true);
 			findViewById(R.id.diary_create_text).setEnabled(true);
 			if (audioState.equals(AudioState.FINISHED)){
-				Log.d(MainActivity.DEBUG_TAG, "Creating new AudioPlayer");
 				if (audioPlayer == null){
 					audioPlayer = new AudioPlayer(this, areaFinished, m_audioFileName, this);
 				}
@@ -190,7 +182,6 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
 				if (temporaryFile.exists()){
 					if (temporaryFile.renameTo(audioFile)){
 						m_audioFileName = audioFile.getAbsolutePath();
-		    			Log.d(MainActivity.DEBUG_TAG, "Setting audio file to " + m_audioFileName);
 					}
 				}
 				setState(AudioState.FINISHED);
@@ -205,7 +196,7 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
 				File temporaryFile = getTemporaryAudioFile();
 				if (temporaryFile.exists()){
 					if (!temporaryFile.delete()){
-						Log.e(MainActivity.DEBUG_TAG, "********** Can't delete " + temporaryFile.getAbsolutePath());
+						//Log.e(MainActivity.DEBUG_TAG, "********** Can't delete " + temporaryFile.getAbsolutePath());
 					}
 				}
 				setState(AudioState.NONE);
@@ -244,7 +235,7 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
         	recorder.start();
         }
         catch (IOException e){
-        	Log.e(MainActivity.DEBUG_TAG, "Can't record audio", e);
+        	//Log.e(MainActivity.DEBUG_TAG, "Can't record audio", e);
         }
 	}
 	/** Methods of the AudioPlayer.PlayerClient interface ***********/
@@ -269,12 +260,10 @@ public class DiaryEntryActivity extends BaseActivity implements AudioPlayer.Play
 	/****************************************************************/
 	
 	protected boolean SaveEvent(){
-		Log.d(MainActivity.DEBUG_TAG, "Saving event: audio file = " + m_audioFileName);
 		m_event.setAudioFile(m_audioFileName);
 		if (m_audioFileName == null && audioFile != null){
-			Log.d(MainActivity.DEBUG_TAG, "Deleting (real) audio file " + m_audioFileName);
 			if (!audioFile.delete()){ 
-				Log.e(MainActivity.DEBUG_TAG, "********** Can't delete " + m_audioFileName);
+				//Log.e(MainActivity.DEBUG_TAG, "********** Can't delete " + m_audioFileName);
 			}
 		}
 		if (audioPlayer != null && audioPlayer.isPlaying()){
