@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -509,7 +510,8 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 		    	((EditText)view.findViewById(R.id.provider_name_edit)).setText(providerName);
 		    	((EditText)view.findViewById(R.id.provider_location_edit)).setText(providerLocation);
 		    	((EditText)view.findViewById(R.id.provider_oncall_phone_edit)).setText(oncallPhone);
-		    	((ImageButton)view.findViewById(R.id.list_item_contact_edit)).setImageResource(R.drawable.ic_checkmark);
+		    	((ImageButton)view.findViewById(R.id.list_item_contact_open_edit)).setVisibility(View.GONE);
+		    	((ImageButton)view.findViewById(R.id.list_item_contact_close_edit)).setVisibility(View.VISIBLE);
 			}
 			else {
 				(view.findViewById(R.id.provider_contact_edit)).setVisibility(View.GONE);
@@ -522,43 +524,49 @@ public class CareFragment extends Fragment implements OnDateSetListener, MainAct
 		    			getResources().getString(R.string.PersonalInfo_Hospital) + ": " + providerLocation);
 		    	((TextView)view.findViewById(R.id.provider_oncall_phone)).setText(
 		    			getResources().getString(R.string.PersonalInfo_DrPhone) + ": " + oncallPhone);				
-		    	((ImageButton)view.findViewById(R.id.list_item_contact_edit)).setImageResource(R.drawable.ic_pencil);
+		    	((ImageButton)view.findViewById(R.id.list_item_contact_open_edit)).setVisibility(View.VISIBLE);
+		    	((ImageButton)view.findViewById(R.id.list_item_contact_close_edit)).setVisibility(View.GONE);
 			}
 	    	
-	    	ImageButton editOrSaveButton = (ImageButton)view.findViewById(R.id.list_item_contact_edit);
-	    	editOrSaveButton.setOnClickListener(new OnClickListener(){
+	    	ImageButton editButton = (ImageButton)view.findViewById(R.id.list_item_contact_open_edit);
+	    	editButton.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View view){
-					if (editingProviderContact){
-						SharedPreferences.Editor editor = preferences.edit();
-						// Update the "cached" values and store them in preferences
-				    	providerName = ((EditText)fragmentView.findViewById(R.id.provider_name_edit)).getText().toString();
-				    	providerLocation = ((EditText)fragmentView.findViewById(R.id.provider_location_edit)).getText().toString();
-				    	oncallPhone = ((EditText)fragmentView.findViewById(R.id.provider_oncall_phone_edit)).getText().toString();				
-				    	
-				    	editor.putString(StartupActivity.PREFERENCE_PROVIDER_NAME, providerName);
-				    	editor.putString(StartupActivity.PREFERENCE_PROVIDER_LOCATION, providerLocation);
-				    	editor.putString(StartupActivity.PREFERENCE_ONCALL_NUMBER, oncallPhone);
-				    	
-				    	// Due date may have changed: recalculate the timeline
-				    	editor.putLong(StartupActivity.PREFERENCE_DUE_DATE,  dueDate);
-				    	editor.commit();
-
-				    	updateTimeline(dueDate);
-				    	mainActivity.getTimelineFragment().refreshOnTimelineChange();
-				    	editingProviderContact = false;	
-				    	
-				    	hideKeyboard(view);
-					}
-					else {
-						saveCurrentListPosition();
-						editingProviderContact = true;
-					}
+					saveCurrentListPosition();
+					editingProviderContact = true;
 					adapter.notifyDataSetChanged();
 				}
 			});
 	    	
-		    EditText dateView = (EditText)view.findViewById(R.id.delivery_date_edit);		    
+	    	ImageButton saveButton = (ImageButton)view.findViewById(R.id.list_item_contact_close_edit);
+	    	saveButton.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view){
+					SharedPreferences.Editor editor = preferences.edit();
+					// Update the "cached" values and store them in preferences
+					providerName = ((EditText)fragmentView.findViewById(R.id.provider_name_edit)).getText().toString();
+					providerLocation = ((EditText)fragmentView.findViewById(R.id.provider_location_edit)).getText().toString();
+					oncallPhone = ((EditText)fragmentView.findViewById(R.id.provider_oncall_phone_edit)).getText().toString();				
+
+					editor.putString(StartupActivity.PREFERENCE_PROVIDER_NAME, providerName);
+					editor.putString(StartupActivity.PREFERENCE_PROVIDER_LOCATION, providerLocation);
+					editor.putString(StartupActivity.PREFERENCE_ONCALL_NUMBER, oncallPhone);
+
+					// Due date may have changed: recalculate the timeline
+					editor.putLong(StartupActivity.PREFERENCE_DUE_DATE,  dueDate);
+					editor.commit();
+
+					updateTimeline(dueDate);
+					mainActivity.getTimelineFragment().refreshOnTimelineChange();
+					editingProviderContact = false;	
+
+					hideKeyboard(view);
+					adapter.notifyDataSetChanged();
+				}
+			});
+	    	
+
+	    	EditText dateView = (EditText)view.findViewById(R.id.delivery_date_edit);		    
 	    	if (dateView != null) {
 		    	dateView.setOnClickListener(new OnClickListener() {        
 		            public void onClick(View v) {

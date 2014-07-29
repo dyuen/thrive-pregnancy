@@ -35,9 +35,9 @@ The top level tag attribute is required in the Mycare list adapters
                 style="@style/mycare_header_style"
                 />
             
-            <!-- This switches between the pencil and checkmark icons -->
+            <!-- Only one of pencil and checkmark buttons visible -->
             <ImageButton
-                android:id="@+id/list_item_contact_edit"
+                android:id="@+id/list_item_contact_open_edit"
                 android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content"
                 android:src="@drawable/ic_pencil_selector"
@@ -45,7 +45,17 @@ The top level tag attribute is required in the Mycare list adapters
                 android:contentDescription="@string/icon"
                 style="@style/edit_button_style"
                 />
-        </TableRow>
+            <ImageButton
+                android:id="@+id/list_item_contact_close_edit"
+                android:layout_width="wrap_content"
+	    		android:layout_height="wrap_content"
+                android:src="@drawable/ic_checkmark"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/icon"
+                style="@style/edit_button_style"
+                android:visibility="gone"
+                />
+            </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
