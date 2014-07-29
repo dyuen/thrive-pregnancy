@@ -130,7 +130,7 @@ public class TimeDialogFragment extends DialogFragment{
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
 		
-		builder.setTitle("Select time");		
+		builder.setTitle("Appointment Time");		
 		builder.setView(timePicker);
 		
 		// Pass the selected date back to the activity only when Save is clicked
