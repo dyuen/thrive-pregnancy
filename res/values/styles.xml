@@ -92,6 +92,8 @@
     </style>
     
     <style name="edit_button_style">
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingBottom">10dp</item>
         <item name="android:scaleType">centerInside</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
