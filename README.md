@@ -1,4 +1,12 @@
 thrive-pregnancy
 ================
 
-A smartphone app could serve as a “pregnancy passport” that would allow women to coordinate their care and access needed resources. Many of these women have chaotic lives and face multiple challenges that would make a paper-based pregnancy passport difficult to retain. These challenges include homelessness or frequent housing moves, drug and alcohol issues, mental health and cognitive issues, and a history of emotional trauma that creates distrust of caregivers.
+Thrive Pregnancy serves as a “pregnancy passport” allowing women to coordinate their care and access needed resources.
+
+Thrive Pregnancy “passport” smartphone app includes:
+
+- Information for women to think about and discuss with their care provider relating to their prenatal care choices;
+- Information for women to think about their needs for their pregnancy;
+- Information about the care women can expect during pregnancy;
+- A place to keep notes and a record of appointments, tests and results;
+- A list of resources in Vancouver.
