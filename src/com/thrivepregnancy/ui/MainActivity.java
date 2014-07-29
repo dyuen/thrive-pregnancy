@@ -66,6 +66,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	
     private MainPagerAdapter 						mainPageAdapter;
     private TimelineFragment.TimelineListAdapter 	timelineListAdapter;
+    private CareFragment.CareListAdapter careListAdapter;
     /**
      * The {@link ViewPager} implements the page swipe animation
      */
