@@ -482,13 +482,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			else if (dialogId == DIALOG_ID_QUESTION){
 				// Create a new question event
 				try {
-					Dao<Event, Integer> dao = databaseHelper.getDao(Event.class);
-					Event question = new Event();
-					question.setType(Event.Type.QUESTION);
-					question.setDate(new Date());
-					question.setText(newQuestion.getText().toString());
-					dao.create(question);
-					careFragment.refresh();
+					String text = newQuestion.getText().toString();
+					if (text != null && text.length() > 0){
+						Dao<Event, Integer> dao = databaseHelper.getDao(Event.class);
+						Event question = new Event();
+						question.setType(Event.Type.QUESTION);
+						question.setDate(new Date());
+						question.setText(text);
+						dao.create(question);
+						careFragment.refresh();
+					}
 				}
 				catch (SQLException e){
 					//Log.e(MainActivity.DEBUG_TAG, "Can't create question Event",  e);
