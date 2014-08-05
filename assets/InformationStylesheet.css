@@ -2,7 +2,7 @@ html { font-size: 100%; }
 
 body {
 	font-size: 1em;
-	background-color: #FAF9F8;
+	background-color: #EDEDED;
 }
 
 @media (max-width: 300px) {
@@ -55,18 +55,20 @@ h2 {
 h3 {
     font-family: "Roboto";
     font-style:bold;
+    margin-bottom: 0.5em;
 }
 
 p.icon {
     position: relative;
-    display:inline;
+	color: #666666;
 }
 
 p.besideicon{
     position: relative;
-    padding-left: .5em;
+    text-indent: 1em;
+    padding-left: 0.5em;
 	padding-right: 0px;
-    display:inline;
+	color: red;
 }
 
 p.noheader {
@@ -80,10 +82,22 @@ p {
     font-family: "Roboto";
     position: relative;
     font-size:1.2em;
+    padding-left: 1.5em;
+    margin-top: 0em;
+    margin-bottom: 0.5em;
+    word-wrap: break-word;
+}
+
+li {
+    font-family: "Roboto";
+    position: relative;
+    font-size:1.2em;
     padding-left: 1em;
 }
 
 img {
+	position: absolute;
+	left: 0em;
 	height: 1.2em;
 	width: 1.2em;
 }
@@ -145,7 +159,7 @@ color: #3E7F81;
  
 @font-face {
     font-family: 'Roboto';
-    src: url('Roboto-ThinItalic-webfont.ttf') format('truetype'),
+    src: url('roboto/Roboto-ThinItalic-webfont.ttf') format('truetype'),
     font-weight: 200;
     font-style: italic;
 }
