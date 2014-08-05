@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Layout of the CareProviderActivity
+-->
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    >
+    <EditText
+        android:id="@+id/delivery_date_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/PersonalInfo_Due_Date" 
+        android:inputType="date"
+        android:focusable="false"
+        style="@style/edit_input_style"
+        />          
+    <EditText
+        android:id="@+id/provider_name_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"    
+        android:hint="@string/PersonalInfo_Primary_Doctor"
+        android:scrollHorizontally="false" 
+        android:inputType="textCapWords"
+        style="@style/edit_input_style"
+        />          
+        <requestFocus />
+    <EditText
+        android:id="@+id/provider_location_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/PersonalInfo_Hospital" 
+        android:scrollHorizontally="false"
+        android:inputType="textCapWords"
+        style="@style/edit_input_style"
+        />         
+    <EditText
+        android:id="@+id/provider_oncall_phone_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/PersonalInfo_DrPhone" 
+        style="@style/edit_input_style"
+        android:inputType="phone"
+        />
+</LinearLayout>
+    

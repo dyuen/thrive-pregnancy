@@ -14,7 +14,6 @@ import com.thrivepregnancy.data.Event;
 import com.thrivepregnancy.data.EventDataHelper;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -61,8 +60,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	
 	/**
 	 * Scroll speed
-	 */
-	
+	 */	
 	public static final Integer FRICTION_SCALE_FACTOR = 5;
 	
 	/**
@@ -381,8 +379,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					deleteAppointment.setOnClickListener(new OnClickListener(){
 						@Override
 						public void onClick(View view){
-							mainActivity.showConfirmationDialog(R.string.dlg_delete_appointment, 
-									new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_TIMELINE);
+							mainActivity.showConfirmationDialog(R.string.dlg_delete_appointment, event);
 						}				
 					});		
 					
@@ -439,8 +436,7 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 					deleteEntry.setOnClickListener(new OnClickListener(){
 						@Override
 						public void onClick(View view){
-							mainActivity.showConfirmationDialog(R.string.dlg_delete_diary_entry,
-									new DeleteConfirmationListener(event), event, MainActivity.DELETE_FROM_TIMELINE);
+							mainActivity.showConfirmationDialog(R.string.dlg_delete_diary_entry, event);
 						}
 					});
 
@@ -570,15 +566,6 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 			return 0;
 		}
 		//*****************************************
-		
-		private int determineItemLayout(Event event){
-			if (event.getType().equals(Event.Type.APPOINTMENT)){
-				return R.layout.list_item_appointment_timeline;
-			}
-			else {
-				return R.layout.list_item_entry;
-			}
-		}
 	}
 	/**
 	 * Listener methods for the MediaPlayer
@@ -604,22 +591,4 @@ public class TimelineFragment extends Fragment implements OnCompletionListener, 
 	public void onPrepared(MediaPlayer mp){
 		mp.start();
 	}
-	
-	/**
-	 * Listener class for delete dialog
-	 */
-    private class DeleteConfirmationListener implements DialogInterface.OnClickListener {
-    	private final Event event;
-    	DeleteConfirmationListener(final Event event){
-    		this.event = event;
-    	}
-    	@Override
-    	public void onClick(DialogInterface dialog, int which){
-    		if (which == DialogInterface.BUTTON_POSITIVE){
-    			adapter.refresh(RefreshType.ON_DELETE);
-    			adapter.notifyDataSetChanged();
-    		}
-    	}
-    }
-    
 }

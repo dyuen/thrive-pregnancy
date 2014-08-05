@@ -13,7 +13,7 @@
     <string name="save">Save</string>
     <string name="add_photo">Add Photo</string>
     <string name="add_new">Add new&#8230;</string>
-
+    
 <!-- Confirmation dialogs -->
     <string name="dlg_delete_appointment">Delete Appointment</string>
     <string name="dlg_delete_diary_entry">Delete Diary Entry</string>
@@ -39,8 +39,11 @@
 <!--'Questions'-->
 
     <string name="Question_Title">My Questions</string>
-
+    <string name="Question_New">New Question</string>
+    
 <!--'Diary Entries'-->
+	<string name="Diary_New">New Diary Entry</string>
+	<string name="Diary_Edit">Edit Diary Entry</string>
 	<string name="Diary_Action">Diary Entry</string>
     <string name="Diary_Notes">Notes</string>
     <string name="Diary_Date">Date</string>
@@ -59,6 +62,8 @@
     <string name="Diary_Audio_Heading">Voice Note</string>
     
 <!--'Appointments'-->
+	<string name="Appt_New">New Appointment</string>
+	<string name="Appt_Edit">Edit Appointment</string>
 	<string name="Appointment_Title">My Appointments</string>
 	<string name="Appt_Action">Appointment</string>
     <string name="Appt_Purpose">Appointment For</string>
@@ -75,6 +80,8 @@
     <string name="Appt_Warning">Please enter notes and date</string>
 
 <!--'Test Results'-->
+	<string name="Test_New">New Test Result</string>
+	<string name="Test_Edit">Edit Test Result</string>
 	<string name="TestResults_Title">My Test Results</string>
 	<string name="Test_Action">Test Result</string>
     <string name="Test_Date">Date</string>
@@ -97,7 +104,7 @@
 
 <!--'Personal Info'-->
 
-    <string name="PersonalInfo_Title">Personal Info</string>
+    <string name="PersonalInfo_Provider_Edit">Basic Information</string>
     <string name="PersonalInfo_Mother_Name">Name</string>
     <string name="PersonalInfo_Delivery_Date">Est. Delivery Date</string>
     <string name="PersonalInfo_Due_Date">Estimated Due Date</string>

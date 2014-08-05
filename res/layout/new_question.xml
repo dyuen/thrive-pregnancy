@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+The content view in the New Question popup. The enclosing layout
+is required for the margin settings in edit_inputStyle to take effect
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+	android:layout_height="wrap_content">    
+	<EditText
+    	android:id="@+id/new_question_text"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	style="@style/edit_input_style"
+    	android:hint="@string/MyCare_Question"
+    	android:inputType="textCapSentences|textMultiLine"
+    	android:maxLines="10"
+    	/>
+</LinearLayout>

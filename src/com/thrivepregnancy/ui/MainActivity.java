@@ -3,6 +3,7 @@ package com.thrivepregnancy.ui;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Date;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -14,6 +15,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
@@ -22,9 +24,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 
 /**
  * Contains the My Timeline, My Care and I Need screens ("pages")
@@ -38,35 +43,39 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public static final String	REQUEST_MODE_EDIT 	= "edit";
 	public static final String	REQUEST_PRIMARY_KEY = "pk";
 	
-	public static final int REQUEST_CODE_DIARY_ENTRY = 1;
-	public static final int REQUEST_CODE_APPOINTMENT = 2;
-	public static final int REQUEST_CODE_TEST_RESULT = 3;
+	// Request codes passed to activities by startActivityForResult()
+	public static final int REQUEST_CODE_DIARY_ENTRY 	= 1;
+	public static final int REQUEST_CODE_APPOINTMENT 	= 2;
+	public static final int REQUEST_CODE_TEST_RESULT 	= 3;
+	public static final int REQUEST_CODE_PROVIDER_EDIT 	= 4;
 	
 	private static final int DIALOG_ID_CONFIRM 	= 0;
 	private static final int DIALOG_ID_DATE 	= 1;
+	private static final int DIALOG_ID_QUESTION	= 2;
 	
 	private static String	KEY_DIALOG_TITLE 		= "DIALOG_TITLE";
+	private static String	KEY_DIALOG_ID 			= "DIALOG_ID";
+	private static String	KEY_DIALOG_BUTTON 		= "DIALOG_BUTTON";
+	private static String	KEY_DIALOG_VIEW 		= "DIALOG_VIEW";
 	private static String	KEY_DIALOG_VISIBLE		= "DIALOG_VISIBLE";	
 	private static String	KEY_DATE_EARLIEST		= "EARLIEST";	
 	private static String	KEY_DATE_LATEST			= "LATEST";	
 	private static String	KEY_DATE_DEFAULT		= "DEFAULT";	
-	
-	static final int	DELETE_FROM_TIMELINE = 0;
-	static final int	DELETE_FROM_CARE = 1;
 	
 	private static int  	currentTab;
 	private static boolean	rotating;
 	
 	private boolean		dialogVisible;
 	private int 		dialogTitleId;
-	private int 		deletingFrom;
+	private int 		dialogId;
 	private DatePicker	datePicker;
+	private EditText 	newQuestion;
 	
 	private Integer 	eventId;
 	
     private MainPagerAdapter 						mainPageAdapter;
     private TimelineFragment.TimelineListAdapter 	timelineListAdapter;
-    private CareFragment.CareListAdapter careListAdapter;
+    private CareFragment.CareListAdapter 			careListAdapter;
     /**
      * The {@link ViewPager} implements the page swipe animation
      */
@@ -94,7 +103,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 				if (dialogVisible){
 					dialogTitleId = savedInstanceState.getInt(KEY_DIALOG_TITLE);
 					eventId = savedInstanceState.getInt("eventId");
-					deletingFrom= savedInstanceState.getInt("deletingFrom");
 				}
 			}
 		}
@@ -158,8 +166,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		if (dialogVisible){
 			outState.putBoolean(KEY_DIALOG_VISIBLE, true);
 			outState.putInt(KEY_DIALOG_TITLE, dialogTitleId);
-			outState.putInt("eventId", eventId);
-			outState.putInt("deletingFrom", deletingFrom);
+			if (eventId != null){
+				outState.putInt("eventId", eventId);
+			}
 		}
 	}
 	@Override
@@ -168,7 +177,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			dialogVisible = true;
 			dialogTitleId = savedState.getInt(KEY_DIALOG_TITLE);
 			eventId = savedState.getInt("eventId");
-			deletingFrom = savedState.getInt("deletingFrom");
 		}
 	}
     /**
@@ -300,22 +308,34 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     	}
     }
     
-	private DialogInterface.OnClickListener dialogListener;
-
 	/**
 	 * Displays a delete confirmation popup
-	 * @param dialogTitleId resource id of the dialog title string, also used as the dialog id
+	 * @param dialogTitleId resource id of the dialog title string
 	 * @param dialogListener listener for the positive and negative dialog buttons
 	 */
-    void showConfirmationDialog(int dialogTitleId, DialogInterface.OnClickListener dialogListener, Event event, int deletingFrom){
-    	this.dialogListener = dialogListener;
+    void showConfirmationDialog(int dialogTitleId, Event event){
 		this.eventId = event.getId();
-		this.deletingFrom = deletingFrom;
     	
     	Bundle params = new Bundle();
     	params.putString(KEY_DIALOG_TITLE, getString(dialogTitleId));
 		dialogVisible = true;
     	showDialog(DIALOG_ID_CONFIRM, params);
+    }
+    
+	/**
+	 * Displays a single button dialog containing an arbitrary View as the content
+	 * @param dialogTitleId resource id of the dialog title string
+	 * @param dialogListener listener for the button press
+	 * @param contentViewId the view to be displayed in the dialog
+	 * @param buttonTextId resource id of the button text. 
+	 */
+    void showQuestionDialog(int dialogTitleId, int contentViewId, int buttonTextId){
+    	Bundle params = new Bundle();
+    	params.putString(KEY_DIALOG_TITLE, getString(dialogTitleId));
+    	params.putString(KEY_DIALOG_BUTTON, getString(buttonTextId));
+    	params.putInt(KEY_DIALOG_VIEW, contentViewId);
+		dialogVisible = true;
+    	showDialog(DIALOG_ID_QUESTION, params);
     }
     
 	/**
@@ -351,11 +371,27 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(params.getString(KEY_DIALOG_TITLE));
         
-        if (id == this.DIALOG_ID_CONFIRM){
+        if (id == DIALOG_ID_CONFIRM){
             // If title and message not set here, no title or message area will be generated
             builder.setMessage(getString(R.string.dlg_prompt));
-            builder.setPositiveButton(getString(R.string.dlg_yes), new DialogButtonListener());
-            builder.setNegativeButton(getString(R.string.dlg_no), new DialogButtonListener());
+            builder.setPositiveButton(getString(R.string.dlg_yes), new DialogButtonListener(DIALOG_ID_CONFIRM));
+            builder.setNegativeButton(getString(R.string.dlg_no), new DialogButtonListener(DIALOG_ID_CONFIRM));
+        }
+        else  if (id == DIALOG_ID_QUESTION){
+        	builder.setPositiveButton(params.getString(KEY_DIALOG_BUTTON), new DialogButtonListener(DIALOG_ID_QUESTION));
+        	LayoutInflater inflater = getLayoutInflater();
+        	View layout = (View)inflater.inflate(params.getInt(KEY_DIALOG_VIEW), null);
+        	newQuestion = (EditText)layout.findViewById(R.id.new_question_text);
+            builder.setView(layout);
+            Dialog dialog = builder.create();
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+				@Override
+				public void onShow(DialogInterface dialog) {
+					newQuestion.setText("");
+					showKeyboard(newQuestion);
+				}
+			});
+            return dialog;
         }
         else {
         	// Dialog is a DatePickerDialog
@@ -391,12 +427,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	
 	@Override
 	protected void onPrepareDialog (int id, final Dialog dialog, Bundle params){
-        if (id == this.DIALOG_ID_CONFIRM){
-        	((AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dlg_yes), new DialogButtonListener());
-        	((AlertDialog)dialog).setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dlg_no), new DialogButtonListener());
+        if (id == DIALOG_ID_CONFIRM){
+        	((AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dlg_yes), new DialogButtonListener(DIALOG_ID_CONFIRM));
+        	((AlertDialog)dialog).setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dlg_no), new DialogButtonListener(DIALOG_ID_CONFIRM));
         	((AlertDialog)dialog).setTitle(params.getString(KEY_DIALOG_TITLE));
         }
-        else {
+        else if (id == DIALOG_ID_DATE){
         	// Dialog is DatePickerDialog
         	Button button = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
         	button.setText(getString(R.string.save));
@@ -407,23 +443,55 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         		}
         	});
         }
+        else if (id == DIALOG_ID_QUESTION){
+        	
+ //       	((AlertDialog)dialog).setContentView(params.getInt(KEY_DIALOG_VIEW));
+        }
  	}
 	
+	/**
+	 * A listener for dialog button clicks. It stores the id of the dialog to
+	 * allow its use by multiple dialog types
+	 */
 	private class DialogButtonListener implements DialogInterface.OnClickListener {
+		private int dialogId;
+		
+		DialogButtonListener(int dialogId){
+			this.dialogId = dialogId;
+		}
+		
 		@Override
 		public void onClick(DialogInterface dialog, int which){
-			if (which == DialogInterface.BUTTON_POSITIVE){
+			if (dialogId == DIALOG_ID_CONFIRM){
+				if (which == DialogInterface.BUTTON_POSITIVE){
+					// Delete the event
+					try {
+						Dao<Event, Integer> dao = databaseHelper.getDao(Event.class);
+						Event event = dao.queryForId(mainActivity.eventId);
+						dao.delete(event);
+						deleteMediaFile(event.getAudioFile());
+						deleteMediaFile(event.getPhotoFile());
+						mainActivity.timelineListAdapter.refresh(TimelineFragment.RefreshType.ON_DELETE);
+						careFragment.refresh();
+					}
+					catch (SQLException e){
+						//Log.e(DEBUG_TAG, "Can't delete event", e);
+					}
+				}
+			}
+			else if (dialogId == DIALOG_ID_QUESTION){
+				// Create a new question event
 				try {
 					Dao<Event, Integer> dao = databaseHelper.getDao(Event.class);
-					Event event = dao.queryForId(mainActivity.eventId);
-					dao.delete(event);
-					deleteMediaFile(event.getAudioFile());
-					deleteMediaFile(event.getPhotoFile());
-					mainActivity.timelineListAdapter.refresh(TimelineFragment.RefreshType.ON_DELETE);
+					Event question = new Event();
+					question.setType(Event.Type.QUESTION);
+					question.setDate(new Date());
+					question.setText(newQuestion.getText().toString());
+					dao.create(question);
 					careFragment.refresh();
 				}
 				catch (SQLException e){
-					//Log.e(DEBUG_TAG, "Can't delete event", e);
+					//Log.e(MainActivity.DEBUG_TAG, "Can't create question Event",  e);
 				}
 			}
 			dialogVisible = false;	
@@ -444,4 +512,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public void onDateSet(DatePicker view, int year, int month, int day) {
 		careFragment.onDateSet(view, year, month, day);
 	}
+	private void showKeyboard(View view){
+     	InputMethodManager inputManager = (InputMethodManager)mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+    	inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+	}
+
 }

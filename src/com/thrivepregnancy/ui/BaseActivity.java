@@ -106,7 +106,6 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
 	protected void StartUp(Event.Type type) {
         // Mode will be one of MainActivity.REQUEST_MODE_NEW or MainActivity.REQUEST_MODE_EDIT
         // If mode is edit, then REQUEST_PRIMARY_KEY will contain the primary key of the Event
-		String activityTitle;
 		SharedPreferences preferences =  getSharedPreferences(StartupActivity.PREFERENCES, MODE_PRIVATE);
 		m_dueDate = preferences.getLong(StartupActivity.PREFERENCE_DUE_DATE, 0);
 		m_CalFirstWeek = Calendar.getInstance();
@@ -122,22 +121,32 @@ public class BaseActivity extends FragmentActivity implements OnDateSetListener,
         
         m_timeListener = this;
         
+		String activityTitle = null;
         if (m_mode.equalsIgnoreCase(MainActivity.REQUEST_MODE_EDIT)) {
-        	activityTitle = "Edit ";
-        } else {
-        	activityTitle = "New ";
-        }
-        
-        switch(m_eventType) {
-        case DIARY_ENTRY:
-        	activityTitle += getString(R.string.Diary_Action);
-        	break;
-        case APPOINTMENT:
-        	activityTitle += getString(R.string.Appt_Action);
-        	break;
-        case TEST_RESULT:
-        	activityTitle += getString(R.string.Test_Action);
-        	break;	
+            switch(m_eventType) {
+            case DIARY_ENTRY:
+            	activityTitle = getString(R.string.Diary_Edit);
+            	break;
+            case APPOINTMENT:
+            	activityTitle = getString(R.string.Appt_Edit);
+            	break;
+            case TEST_RESULT:
+            	activityTitle = getString(R.string.Test_Edit);
+            	break;	
+            }
+        } 
+        else {
+            switch(m_eventType) {
+            case DIARY_ENTRY:
+            	activityTitle = getString(R.string.Diary_New);
+            	break;
+            case APPOINTMENT:
+            	activityTitle = getString(R.string.Appt_New);
+            	break;
+            case TEST_RESULT:
+            	activityTitle = getString(R.string.Test_New);
+            	break;	
+            }
         }
         
         m_actionBar = getActionBar();

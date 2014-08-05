@@ -46,40 +46,4 @@ Layout of the "Add new" line in Care list Questions
                 android:background="@android:color/transparent"
             />
     </TableRow>
-    <!-- My Questions area when entering a question -->
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/new_question_entry"
-        android:visibility="gone">
-        <!-- This acts as a placeholder for the first column -->
-        <View
-            android:layout_width="43dp"
-            />
-        <!--  Text entry, wraps around into multiple lines --> 
-        <EditText
-            android:id="@+id/new_question_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_span="2"
-            style="@style/mycare_input_style"
-            android:hint="@string/MyCare_Question"
-            android:inputType="textCapSentences"
-            android:layout_marginBottom="18dp"
-            android:paddingTop="0dp"
-            />
-        	            
-        <!-- Question save "Checkmark" image -->
-        <ImageButton
-            android:id="@+id/new_question_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_checkmark"
-            android:adjustViewBounds="true"
-            style="@style/edit_button_style"
-            android:contentDescription="@string/icon"
-            android:paddingTop="4dp"
-            android:paddingRight="16dp"
-            />
-    </TableRow>
 </TableLayout>
