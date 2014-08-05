@@ -31,15 +31,15 @@ The top level tag attribute is required in the Care list adapter
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_span="3">
-            <!-- Description -->
+            <!-- Date -->
             <TextView
-                android:id="@+id/list_item_test_result_description"
-                android:layout_width="match_parent"
+                android:id="@+id/list_item_test_result_date"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/mycare_infouser_style"
                 android:padding="@dimen/care_item_padding"
                 android:layout_alignParentLeft="true"
-                /> 
+                />
             <!-- Delete button -->
             <ImageButton
                 android:id="@+id/list_item_test_delete"
@@ -84,14 +84,14 @@ The top level tag attribute is required in the Care list adapter
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_span="3">
-                <!-- Date -->
-                <TextView
-                    android:id="@+id/list_item_test_result_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/mycare_infouser_style"
-                    android:padding="@dimen/care_item_padding"
-                    />
+                <!-- Description -->
+            	<TextView
+                	android:id="@+id/list_item_test_result_description"
+                	android:layout_width="match_parent"
+                	android:layout_height="wrap_content"
+                	style="@style/mycare_infouser_style"
+                	android:padding="@dimen/care_item_padding"
+                	/> 
                 <!-- Photo -->  
                 <ImageView
                     android:id="@+id/list_item_test_result_photo"
