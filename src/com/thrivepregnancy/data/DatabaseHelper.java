@@ -6,25 +6,21 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
 import au.com.bytecode.opencsv.CSVReader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.table.TableUtils;
-import com.thrivepregnancy.ui.MainActivity;
 import com.thrivepregnancy.ui.StartupActivity;
 
 /**
@@ -55,7 +51,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		m_context = context;
-		Log.d("DatabaseHelper.DatabaseHelper", "database helper constructor");
 	}
 	
 	/** loads name and due date from user preferences */
@@ -74,11 +69,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 
         Calendar date = (Calendar)m_duedate.clone();
         date.add(Calendar.DAY_OF_YEAR, 7 * (week - 41));
-        /*
-        for (int i=41; i>week; i--) {
-        	date.add(Calendar.DATE, -7);
-        }
-*/       
         return date.getTime();
     }
     
@@ -102,7 +92,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 			}
 			csvReader.close();
 		} catch (IOException e) {
-			Log.e(DatabaseHelper.class.getName(), "Unable to read input file", e);
+//			Log.e(DatabaseHelper.class.getName(), "Unable to read input file", e);
 		}
 		
 		return returnList;
@@ -112,7 +102,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 	private void createEvents(List<String[]> eventList) {
 		String[] eventString;
 		Event event;
-// Log.d(MainActivity.DEBUG_TAG, "*** Creating Tip Events");
 		boolean firstTip = true;
 		try {
 			for (int i=0; i<eventList.size(); i++) {
@@ -129,11 +118,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper{
 				
 				event.setType(Event.Type.TIP);
 				event.setDate(ReturnDate(Integer.parseInt(eventString[0])));
-/*
-SimpleDateFormat format = new SimpleDateFormat("MMMMMMMMM d, yyyy", Locale.CANADA);
-String d = format.format(event.getDate());
-Log.d(MainActivity.DEBUG_TAG, "***** " + "Week " + (i+1) + " " + d);
-*/
 				event.setText(eventString[1].replace("\"","\\\""));
 				event.setPhotoFile(eventString[2]);
 				event.setAudioFile(eventString[3]);
@@ -141,7 +125,7 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + "Week " + (i+1) + " " + d);
 				eventDao.create(event);
 			}
 		} catch (SQLException e) {
-			Log.e(DatabaseHelper.class.getName(), "Unable to insert an event", e);
+//			Log.e(DatabaseHelper.class.getName(), "Unable to insert an event", e);
 		}
 	}
 	
@@ -163,7 +147,7 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + "Week " + (i+1) + " " + d);
 				needDao.create(need);
 			}
 		} catch (SQLException e) {
-			Log.e(DatabaseHelper.class.getName(), "Unable to insert a need", e);
+//			Log.e(DatabaseHelper.class.getName(), "Unable to insert a need", e);
 		}
 	}
 	
@@ -197,7 +181,7 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + "Week " + (i+1) + " " + d);
 			Log.d("DatabaseHelper.onCreate", "needs created in database");
 		} 
 		catch (SQLException e) {
-			Log.e(DatabaseHelper.class.getName(), "Unable to create databases", e);
+//			Log.e(DatabaseHelper.class.getName(), "Unable to create databases", e);
 		}
 	}
 	
@@ -205,6 +189,38 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + "Week " + (i+1) + " " + d);
 	 * Called when a database exists but the DATABASE_VERSION has been incremented.
 	 */
 	public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion){
+		getEventDao();
+		EventDataHelper dataHelper = new EventDataHelper(this);
+		ReadUserPreferences();
+		
+		// The AssetManager does not have methods for deleting assets.
+		// Presumably they are meant to be immutable. Hence, any photo
+		// files associated with tips will be left in place
+		
+		// Delete all the Tip event records		
+		List<Event> tips = dataHelper.getTips();
+		try {
+			eventDao.delete(tips);
+		}
+		catch (SQLException e){
+//			Log.e(MainActivity.DEBUG_TAG, "Cannot delete tips", e);
+		}		
+		// Read the updated "Tips" file packaged in the app, create Tip records
+		List<String[]> tipList = readCSVFile(TIP_FILE);
+		createEvents(tipList);
+
+		// Delete all records in the Need table
+		getNeedDao();
+		List<Need> needs = dataHelper.getNeeds();
+		try {
+			needDao.delete(needs);
+		}
+		catch (SQLException e){
+//			Log.e(MainActivity.DEBUG_TAG, "Cannot delete needs", e);
+		}
+		// Read the updated "Needs" file packaged in the app, create the Need records
+		List<String[]> needList = readCSVFile(NEED_FILE);
+		createNeeds(needList);
 	}
 
 	public Dao<Event, Integer> getEventDao() {
@@ -213,7 +229,7 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + "Week " + (i+1) + " " + d);
 				eventDao = getDao(Event.class);
 			}
 			catch (SQLException e){
-				Log.e(MainActivity.DEBUG_TAG, "Cannot retrieve event dao", e);
+//				Log.e(MainActivity.DEBUG_TAG, "Cannot retrieve event dao", e);
 			}
 		}
 		return eventDao;
@@ -224,7 +240,7 @@ Log.d(MainActivity.DEBUG_TAG, "***** " + "Week " + (i+1) + " " + d);
 				needDao = getDao(Need.class);
 			}
 			catch (SQLException e){
-				Log.e(MainActivity.DEBUG_TAG, "Cannot retrieve need dao", e);
+//				Log.e(MainActivity.DEBUG_TAG, "Cannot retrieve need dao", e);
 			}
 		}
 		return needDao;
