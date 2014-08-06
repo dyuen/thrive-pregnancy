@@ -49,11 +49,11 @@ Defines the layout of individual items in the I Need list
                 android:id="@+id/img_needresource"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="24dp"
+                android:paddingRight="32dp"
                 android:src="@drawable/ic_info_selector"
-                style="@style/edit_button_style"
-                android:adjustViewBounds="true"
+                android:adjustViewBounds="false"
                 android:contentDescription="@string/INeed_Resources_Title"
+                android:background="@android:color/transparent"
                 />
 	</TableRow>
 </TableLayout>
