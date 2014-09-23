@@ -139,6 +139,7 @@ public class StartupActivity extends FragmentActivity implements OnDateSetListen
 	        		// Proceed to the main screen
 		        	Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 		        	startActivity(intent);
+		        	this.finish();
 	    		}
 	        	else {
 	        		// Remind user to enter both name and date
