@@ -10,3 +10,7 @@ Thrive Pregnancy “passport” smartphone app includes:
 - Information about the care women can expect during pregnancy;
 - A place to keep notes and a record of appointments, tests and results;
 - A list of resources in Vancouver.
+
+
+
+For details visit: https://www.nourifbc.com/prenatal-post-natal-massage
